@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelia - Registro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card">
+            <img src="../assets/logo.svg" alt="Travelia" class="auth-logo">
+            <h1>Crear cuenta</h1>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    <input type="text" id="nombre" required placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="correo" required placeholder="tu@correo.com">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="contrasena" required placeholder="Mínimo 8 caracteres">
+                </div>
+                <p id="errorMsg" class="error-msg" hidden></p>
+                <button type="submit" class="btn btn-primary btn-full">Registrarme</button>
+            </form>
+            <p class="auth-link">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+        </div>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/pages/register.js"></script>
+</body>
+</html>

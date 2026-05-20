@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travelia — Red Social de Turismo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ══════════════ DARK THEME ══════════════ */
+  :root, [data-theme="dark"] {
+    --primary: #6C63FF;
+    --primary-light: #8B85FF;
+    --primary-dark: #4A42CC;
+    --accent: #00D4AA;
+    --accent-warm: #FF7B54;
+    --bg-deep: #0F0E2A;
+    --bg-mid: #1A1840;
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-bg-strong: rgba(255,255,255,0.12);
+    --glass-border: rgba(255,255,255,0.15);
+    --glass-border-strong: rgba(255,255,255,0.25);
+    --text-primary: #F0EEFF;
+    --text-secondary: rgba(240,238,255,0.65);
+    --text-muted: rgba(240,238,255,0.4);
+    --sidebar-bg: rgba(15,14,42,0.85);
+    --topbar-bg: rgba(15,14,42,0.70);
+    --notif-border: var(--bg-deep);
+    --glow-a: rgba(108,99,255,0.20);
+    --glow-b: rgba(0,212,170,0.12);
+    --profile-hero-bg: linear-gradient(135deg, #1a1547 0%, #0d2540 40%, #0d3d38 100%);
+    --sidebar-w: 240px;
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --success: #22D3A5;
+    --warning: #FBBF24;
+    --danger: #F87171;
+  }
+
+  /* ══════════════ LIGHT THEME ══════════════ */
+  [data-theme="light"] {
+    --primary: #6C63FF;
+    --primary-light: #5750DD;
+    --primary-dark: #4A42CC;
+    --accent: #00A882;
+    --accent-warm: #E8602A;
+    --bg-deep: #F4F3FF;
+    --bg-mid: #ECEAFF;
+    --glass-bg: rgba(255,255,255,0.75);
+    --glass-bg-strong: rgba(255,255,255,0.92);
+    --glass-border: rgba(108,99,255,0.15);
+    --glass-border-strong: rgba(108,99,255,0.30);
+    --text-primary: #1A1740;
+    --text-secondary: rgba(26,23,64,0.70);
+    --text-muted: rgba(26,23,64,0.45);
+    --sidebar-bg: rgba(244,243,255,0.92);
+    --topbar-bg: rgba(244,243,255,0.82);
+    --notif-border: #F4F3FF;
+    --glow-a: rgba(108,99,255,0.10);
+    --glow-b: rgba(0,168,130,0.08);
+    --profile-hero-bg: linear-gradient(135deg, #c5c0ff 0%, #a8d4ff 40%, #a2f0e0 100%);
+    --success: #059669;
+    --warning: #D97706;
+    --danger: #DC2626;
+  }
+
+  /* ══════════════ RESET ══════════════ */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+  body::before {
+    content:''; position:fixed; top:-30%; left:-10%;
+    width:70%; height:70%;
+    background: radial-gradient(ellipse, var(--glow-a) 0%, transparent 70%);
+    pointer-events:none; z-index:0;
+  }
+  body::after {
+    content:''; position:fixed; bottom:-20%; right:-10%;
+    width:60%; height:60%;
+    background: radial-gradient(ellipse, var(--glow-b) 0%, transparent 70%);
+    pointer-events:none; z-index:0;
+  }
+
+  /* ══════════════ SIDEBAR ══════════════ */
+  .sidebar {
+    position:fixed; top:0; left:0;
+    width:var(--sidebar-w); height:100vh;
+    background:var(--sidebar-bg);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border-right:1px solid var(--glass-border);
+    display:flex; flex-direction:column;
+    padding:28px 16px;
+    z-index:100; gap:4px;
+    transition: background 0.3s, border-color 0.3s;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+  .logo {
+    display:flex; align-items:center; gap:10px;
+    padding:0 8px 24px;
+    border-bottom:1px solid var(--glass-border);
+    margin-bottom:8px; flex-shrink:0;
+  }
+  .logo-icon {
+    width:36px; height:36px;
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .logo-text {
+    font-size:20px; font-weight:700;
+    background:linear-gradient(90deg, var(--text-primary), var(--primary-light));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  [data-theme="light"] .logo-text {
+    background:linear-gradient(90deg, var(--text-primary), var(--primary));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .nav-label {
+    font-size:10px; font-weight:600; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--text-muted);
+    padding:12px 12px 4px; flex-shrink:0;
+  }
+  .nav-item {
+    display:flex; align-items:center; gap:12px;
+    padding:10px 12px; border-radius:var(--radius-sm);
+    cursor:pointer; transition:all 0.2s;
+    font-size:14px; font-weight:400;
+    color:var(--text-secondary);
+    border:1px solid transparent;
+    text-decoration:none; flex-shrink:0;
+  }
+  .nav-item:hover { background:var(--glass-bg); color:var(--text-primary); border-color:var(--glass-border); }
+  .nav-item.active { background:rgba(108,99,255,0.18); color:var(--primary-light); border-color:rgba(108,99,255,0.3); font-weight:500; }
+  [data-theme="light"] .nav-item.active { background:rgba(108,99,255,0.12); }
+  .nav-icon { width:20px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:inherit; }
+  .nav-icon svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .nav-badge { margin-left:auto; background:var(--primary); color:#fff; font-size:10px; font-weight:600; padding:2px 7px; border-radius:20px; }
+  .sidebar-footer { margin-top:auto; border-top:1px solid var(--glass-border); padding-top:16px; flex-shrink:0; }
+  .sidebar-user { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--radius-sm); cursor:pointer; transition:background 0.2s; }
+  .sidebar-user:hover { background:var(--glass-bg); }
+  .avatar-sm {
+    width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg, var(--primary), var(--accent));
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:600; color:#fff;
+    flex-shrink:0; border:2px solid rgba(255,255,255,0.2); overflow:hidden;
+  }
+  .sidebar-user-info { flex:1; min-width:0; }
+  .sidebar-user-name { font-size:13px; font-weight:500; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sidebar-user-role { font-size:11px; color:var(--text-muted); }
+
+  /* ══════════════ MAIN ══════════════ */
+  .main { margin-left:var(--sidebar-w); min-height:100vh; position:relative; z-index:1; }
+
+  /* ══════════════ TOPBAR ══════════════ */
+  .topbar {
+    position:sticky; top:0;
+    background:var(--topbar-bg);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--glass-border);
+    padding:0 28px; height:60px;
+    display:flex; align-items:center; gap:16px;
+    z-index:50; transition:background 0.3s;
+  }
+  .topbar-title { font-size:16px; font-weight:500; }
+  .topbar-search { flex:1; max-width:360px; position:relative; margin-left:8px; }
+  .topbar-search input {
+    width:100%; background:var(--glass-bg); border:1px solid var(--glass-border);
+    border-radius:30px; padding:7px 16px 7px 36px;
+    font-size:13px; color:var(--text-primary); outline:none;
+    font-family:'Inter',sans-serif; transition:border-color 0.2s, background 0.3s;
+  }
+  .topbar-search input::placeholder { color:var(--text-muted); }
+  .topbar-search input:focus { border-color:var(--primary-light); }
+  .topbar-search .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); display:flex; }
+  .topbar-search .search-icon svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .topbar-actions { margin-left:auto; display:flex; align-items:center; gap:10px; }
+  .icon-btn {
+    width:36px; height:36px; background:var(--glass-bg);
+    border:1px solid var(--glass-border); border-radius:var(--radius-sm);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--text-secondary); transition:all 0.2s; position:relative;
+  }
+  .icon-btn svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .icon-btn:hover { background:var(--glass-bg-strong); color:var(--text-primary); }
+  .notif-dot { position:absolute; top:6px; right:6px; width:7px; height:7px; background:var(--accent-warm); border-radius:50%; border:1.5px solid var(--notif-border); }
+  .theme-toggle { width:36px; height:36px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-secondary); transition:all 0.2s; }
+  .theme-toggle:hover { background:var(--glass-bg-strong); color:var(--text-primary); }
+  .theme-toggle svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .icon-sun { display:none; } .icon-moon { display:block; }
+  [data-theme="light"] .icon-sun { display:block; } [data-theme="light"] .icon-moon { display:none; }
+
+  /* ══════════════ TABS ══════════════ */
+  .page-tabs { display:flex; gap:4px; padding:20px 28px 0; flex-wrap:wrap; }
+  .page-tab {
+    padding:8px 18px; border-radius:30px; font-size:13px; font-weight:500;
+    cursor:pointer; transition:all 0.2s; color:var(--text-muted); border:1px solid transparent;
+  }
+  .page-tab.active { background:rgba(108,99,255,0.18); color:var(--primary-light); border-color:rgba(108,99,255,0.3); }
+  .page-tab:hover:not(.active) { color:var(--text-secondary); }
+
+  /* ══════════════ GLASS CARDS ══════════════ */
+  .glass-card {
+    background:var(--glass-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:20px;
+    transition:background 0.3s, border-color 0.3s;
+  }
+  .glass-card-strong {
+    background:var(--glass-bg-strong); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--glass-border-strong); border-radius:var(--radius-lg);
+    transition:background 0.3s, border-color 0.3s;
+  }
+
+  /* ══════════════ BUTTONS ══════════════ */
+  .btn-primary {
+    background:linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color:#fff; border:none; border-radius:30px; padding:10px 20px;
+    font-size:13px; font-weight:600; cursor:pointer;
+    transition:opacity 0.2s, transform 0.1s; white-space:nowrap;
+    font-family:'Inter',sans-serif; box-shadow:0 4px 20px rgba(108,99,255,0.35);
+    display:flex; align-items:center; gap:6px;
+  }
+  .btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+  .btn-primary:active { transform:translateY(0); }
+  .btn-outline {
+    background:var(--glass-bg); border:1px solid var(--glass-border-strong);
+    color:var(--text-primary); border-radius:20px; padding:8px 18px;
+    font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s;
+    font-family:'Inter',sans-serif; display:flex; align-items:center; gap:6px;
+  }
+  .btn-outline:hover { background:var(--glass-bg-strong); }
+  .btn-outline svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .btn-follow {
+    background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.3);
+    color:var(--primary-light); border-radius:20px; padding:4px 12px;
+    font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s;
+    font-family:'Inter',sans-serif; white-space:nowrap;
+  }
+  .btn-follow:hover { background:rgba(108,99,255,0.25); }
+  .btn-danger-sm {
+    background:rgba(248,113,113,0.12); border:1px solid rgba(248,113,113,0.25);
+    color:var(--danger); border-radius:20px; padding:5px 14px;
+    font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s;
+    font-family:'Inter',sans-serif; white-space:nowrap;
+  }
+  .btn-danger-sm:hover { background:rgba(248,113,113,0.22); }
+  .btn-success-sm {
+    background:rgba(34,211,165,0.12); border:1px solid rgba(34,211,165,0.25);
+    color:var(--success); border-radius:20px; padding:5px 14px;
+    font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s;
+    font-family:'Inter',sans-serif; white-space:nowrap;
+  }
+  .btn-ghost-sm {
+    background:var(--glass-bg); border:1px solid var(--glass-border);
+    color:var(--text-secondary); border-radius:20px; padding:5px 14px;
+    font-size:12px; font-weight:500; cursor:pointer; transition:all 0.2s;
+    font-family:'Inter',sans-serif; white-space:nowrap;
+  }
+  .btn-ghost-sm:hover { background:var(--glass-bg-strong); }
+
+  /* ══════════════ AVATARS ══════════════ */
+  .avatar {
+    width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; font-weight:600; color:#fff;
+    flex-shrink:0; border:2px solid rgba(255,255,255,0.15); overflow:hidden;
+  }
+  .av-purple, .purple { background:linear-gradient(135deg,#6C63FF,#A78BFA); }
+  .av-teal,   .teal   { background:linear-gradient(135deg,#00D4AA,#0EA5E9); }
+  .av-coral,  .coral  { background:linear-gradient(135deg,#FF7B54,#F97316); }
+  .av-pink,   .pink   { background:linear-gradient(135deg,#EC4899,#A855F7); }
+  .av-green  { background:linear-gradient(135deg,#34D399,#059669); }
+  .av-indigo { background:linear-gradient(135deg,#818CF8,#6366F1); }
+
+  /* ══════════════ STATUS CHIPS ══════════════ */
+  .chip { display:inline-flex; align-items:center; gap:4px; border-radius:20px; padding:3px 10px; font-size:11px; font-weight:600; }
+  .chip svg { width:10px; height:10px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .chip-green  { background:rgba(34,211,165,0.12); color:var(--success); border:1px solid rgba(34,211,165,0.25); }
+  .chip-orange { background:rgba(251,191,36,0.12); color:var(--warning); border:1px solid rgba(251,191,36,0.25); }
+  .chip-red    { background:rgba(248,113,113,0.12); color:var(--danger); border:1px solid rgba(248,113,113,0.25); }
+  .chip-purple { background:rgba(108,99,255,0.15); color:var(--primary-light); border:1px solid rgba(108,99,255,0.3); }
+  .chip-teal   { background:rgba(0,212,170,0.12); color:var(--accent); border:1px solid rgba(0,212,170,0.25); }
+
+  /* ══════════════ WIDGET TITLE ══════════════ */
+  .widget-title {
+    font-size:11px; font-weight:600; color:var(--text-secondary);
+    margin-bottom:14px; letter-spacing:0.08em; text-transform:uppercase;
+    display:flex; align-items:center; gap:7px;
+  }
+  .widget-title svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* ══════════════ FORM INPUTS ══════════════ */
+  .form-input {
+    width:100%; background:var(--glass-bg); border:1px solid var(--glass-border);
+    border-radius:var(--radius-sm); padding:9px 14px; font-size:13px;
+    color:var(--text-primary); outline:none; font-family:'Inter',sans-serif;
+    transition:border-color 0.2s, background 0.3s;
+  }
+  .form-input:focus { border-color:var(--primary-light); }
+  .form-input::placeholder { color:var(--text-muted); }
+  select.form-input { cursor:pointer; }
+  select.form-input option { background:var(--bg-deep); color:var(--text-primary); }
+  .form-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:6px; display:block; }
+
+  /* Toggle switch */
+  .toggle-wrap { display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+  .toggle-label { font-size:13px; color:var(--text-secondary); }
+  .toggle-sub { font-size:11px; color:var(--text-muted); margin-top:1px; }
+  .toggle { position:relative; width:40px; height:22px; flex-shrink:0; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-slider { position:absolute; inset:0; cursor:pointer; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:22px; transition:.25s; }
+  .toggle-slider::before { content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:var(--text-muted); left:2px; top:2px; transition:.25s; }
+  .toggle input:checked + .toggle-slider { background:rgba(108,99,255,0.3); border-color:var(--primary-light); }
+  .toggle input:checked + .toggle-slider::before { transform:translateX(18px); background:var(--primary-light); }
+
+  /* ══════════════ PAGE SYSTEM ══════════════ */
+  .page { display:none; }
+  .page.visible { display:block; }
+  .page-inner { padding:24px 28px; }
+
+  /* ══════════════ LAYOUT HELPERS ══════════════ */
+  .two-col { display:grid; grid-template-columns:1fr 300px; gap:24px; }
+  .two-col-r { display:grid; grid-template-columns:280px 1fr; gap:24px; }
+  .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .four-col { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .right-sidebar { display:flex; flex-direction:column; gap:20px; }
+
+  .sec-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .sec-title { font-size:15px; font-weight:600; }
+  .sec-link { font-size:12px; color:var(--primary-light); cursor:pointer; background:none; border:none; font-family:'Inter',sans-serif; }
+  .sec-link:hover { text-decoration:underline; }
+  .sec-count { font-size:12px; color:var(--text-muted); }
+  .divider { height:1px; background:var(--glass-border); margin:16px 0; }
+  .stars { display:flex; gap:2px; align-items:center; }
+  .star-fill { color:#FBBF24; font-size:12px; }
+  .star-empty { color:var(--text-muted); font-size:12px; }
+
+  /* ══════════════ POST BADGES ══════════════ */
+  .post-badge { font-size:11px; font-weight:500; padding:3px 10px; border-radius:20px; }
+  .badge-tour       { background:rgba(108,99,255,0.2); color:#A78BFA; border:1px solid rgba(108,99,255,0.3); }
+  .badge-hospedaje  { background:rgba(0,212,170,0.15); color:#00D4AA; border:1px solid rgba(0,212,170,0.25); }
+  .badge-restaurante{ background:rgba(255,123,84,0.15); color:#FF7B54; border:1px solid rgba(255,123,84,0.25); }
+  .badge-actividad  { background:rgba(234,179,8,0.15); color:#FCD34D; border:1px solid rgba(234,179,8,0.25); }
+  [data-theme="light"] .badge-tour       { background:rgba(108,99,255,0.12); }
+  [data-theme="light"] .badge-hospedaje  { background:rgba(0,168,130,0.10); color:var(--accent); border-color:rgba(0,168,130,0.2); }
+  [data-theme="light"] .badge-restaurante{ background:rgba(232,96,42,0.10); color:var(--accent-warm); border-color:rgba(232,96,42,0.2); }
+  [data-theme="light"] .badge-actividad  { background:rgba(180,140,0,0.10); color:#a07800; border-color:rgba(180,140,0,0.2); }
+
+  /* ══════════════ ACTION BUTTONS ══════════════ */
+  .action-btn {
+    display:flex; align-items:center; gap:6px; padding:6px 12px;
+    border-radius:var(--radius-sm); font-size:13px; color:var(--text-muted);
+    cursor:pointer; transition:all 0.2s; border:1px solid transparent;
+  }
+  .action-btn:hover { background:var(--glass-bg); color:var(--text-secondary); }
+  .action-btn.liked { color:#F472B6; }
+  .action-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .action-btn.liked svg { fill:#F472B6; stroke:#F472B6; }
+  .action-count { font-size:12px; }
+  .action-spacer { flex:1; }
+
+  .post-tag {
+    display:inline-flex; align-items:center; gap:5px;
+    background:rgba(0,212,170,0.1); border:1px solid rgba(0,212,170,0.2);
+    border-radius:20px; padding:3px 10px; font-size:12px; color:var(--accent); margin-bottom:12px;
+  }
+  .post-tag svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+
+  /* ══════════════════════════════════════════
+     FEED PAGE
+  ══════════════════════════════════════════ */
+  #page-feed .content {
+    display:grid; grid-template-columns:1fr 300px;
+    gap:24px; padding:24px 28px; max-width:1100px;
+  }
+
+  .create-post { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .create-post-input {
+    flex:1; background:var(--glass-bg); border:1px solid var(--glass-border);
+    border-radius:30px; padding:11px 20px; font-size:14px; color:var(--text-muted);
+    cursor:pointer; transition:border-color 0.2s;
+  }
+  .create-post-input:hover { border-color:var(--glass-border-strong); color:var(--text-secondary); }
+  .create-actions button {
+    background:none; border:none; color:var(--text-muted); font-size:13px;
+    cursor:pointer; display:flex; align-items:center; gap:6px;
+    font-family:'Inter',sans-serif; transition:color 0.2s;
+    padding:4px 6px; border-radius:6px;
+  }
+  .create-actions button:hover { color:var(--text-secondary); background:var(--glass-bg); }
+  .create-actions button svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+  .post { margin-bottom:16px; overflow:hidden; }
+  .post-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .post-author { flex:1; }
+  .post-author-name { font-size:14px; font-weight:500; }
+  .post-meta { font-size:12px; color:var(--text-muted); margin-top:1px; }
+  .post-body { font-size:14px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px; }
+  .post-image { width:100%; height:220px; border-radius:var(--radius-md); margin-bottom:12px; overflow:hidden; position:relative; }
+  .post-image img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s ease; }
+  .post-image:hover img { transform:scale(1.03); }
+  .post-image-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.55)); }
+  .post-image-label { position:absolute; bottom:12px; left:12px; font-size:13px; font-weight:500; color:rgba(255,255,255,0.95); display:flex; align-items:center; gap:5px; }
+  .post-image-label svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .post-actions { display:flex; align-items:center; gap:4px; padding-top:12px; border-top:1px solid var(--glass-border); }
+
+  .business-label { font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; display:flex; align-items:center; gap:5px; }
+  .business-label svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+
+  /* feed tabs */
+  .feed-tabs { display:flex; gap:4px; padding:20px 28px 0; }
+  .feed-tab { padding:8px 18px; border-radius:30px; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; color:var(--text-muted); border:1px solid transparent; }
+  .feed-tab.active { background:rgba(108,99,255,0.18); color:var(--primary-light); border-color:rgba(108,99,255,0.3); }
+  .feed-tab:hover:not(.active) { color:var(--text-secondary); }
+
+  /* right sidebar widgets */
+  .trending-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--glass-border); cursor:pointer; }
+  .trending-item:last-child { border-bottom:none; padding-bottom:0; }
+  .trending-num { font-size:18px; font-weight:700; color:var(--glass-border-strong); min-width:24px; text-align:center; }
+  [data-theme="light"] .trending-num { color:var(--glass-border-strong); }
+  .trending-info { flex:1; }
+  .trending-name { font-size:13px; font-weight:500; }
+  .trending-posts { font-size:11px; color:var(--text-muted); margin-top:1px; }
+  .trending-icon svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; color:var(--text-muted); }
+
+  .friend-item { display:flex; align-items:center; gap:10px; padding:8px 0; }
+  .friend-info { flex:1; }
+  .friend-name { font-size:13px; font-weight:500; }
+  .friend-status { font-size:11px; color:var(--text-muted); }
+
+  .reserva-card { background:rgba(108,99,255,0.12); border:1px solid rgba(108,99,255,0.25); border-radius:var(--radius-md); padding:12px; margin-bottom:8px; }
+  .reserva-card-title { font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px; }
+  .reserva-card-title svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; color:var(--accent-warm); }
+  .reserva-card-meta { font-size:12px; color:var(--text-muted); margin-top:3px; }
+  .reserva-card-status { font-size:11px; color:#A78BFA; margin-top:4px; font-weight:500; display:flex; align-items:center; gap:4px; }
+  .reserva-card-status svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2.5; }
+
+  /* ══════════════════════════════════════════
+     PROFILE PAGE
+  ══════════════════════════════════════════ */
+  .profile-hero { position:relative; height:200px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:-50px; background:var(--profile-hero-bg); }
+  .profile-hero-pattern { position:absolute; inset:0; opacity:0.3; background-image:radial-gradient(circle at 20% 50%, rgba(108,99,255,0.5) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,212,170,0.4) 0%, transparent 40%), radial-gradient(circle at 60% 80%, rgba(255,123,84,0.3) 0%, transparent 40%); }
+  .profile-hero-location { position:absolute; bottom:16px; left:20px; font-size:13px; color:rgba(255,255,255,0.85); display:flex; align-items:center; gap:5px; }
+  .profile-hero-location svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .profile-header { display:flex; align-items:flex-end; gap:16px; padding:0 24px 20px; border-bottom:1px solid var(--glass-border); margin-bottom:24px; }
+  .profile-avatar { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:700; color:#fff; border:4px solid var(--bg-deep); flex-shrink:0; position:relative; z-index:2; overflow:hidden; }
+  .profile-name-block { flex:1; padding-bottom:4px; }
+  .profile-name { font-size:22px; font-weight:700; }
+  .profile-handle { font-size:14px; color:var(--text-muted); margin-top:2px; }
+  .profile-actions { display:flex; gap:8px; padding-bottom:4px; }
+  .profile-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .stat-card { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md); padding:16px; text-align:center; position:relative; overflow:hidden; transition:border-color 0.2s, transform 0.2s, background 0.3s; cursor:pointer; }
+  .stat-card:hover { border-color:var(--glass-border-strong); transform:translateY(-2px); }
+  .stat-card::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:60%; height:2px; border-radius:0 0 4px 4px; }
+  .stat-card.purple::before { background:var(--primary); }
+  .stat-card.teal::before { background:var(--accent); }
+  .stat-card.coral::before { background:var(--accent-warm); }
+  .stat-card.pink::before { background:#EC4899; }
+  .stat-value { font-size:28px; font-weight:700; margin-bottom:2px; }
+  .stat-label { font-size:12px; color:var(--text-muted); font-weight:400; }
+  .stat-card.purple .stat-value { color:#A78BFA; }
+  .stat-card.teal .stat-value { color:var(--accent); }
+  .stat-card.coral .stat-value { color:var(--accent-warm); }
+  .stat-card.pink .stat-value { color:#F472B6; }
+  .profile-body { display:grid; grid-template-columns:300px 1fr; gap:24px; }
+  .profile-info-card { padding:20px; }
+  .info-section { margin-bottom:20px; }
+  .info-section-title { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:12px; }
+  .info-row { display:flex; align-items:center; gap:10px; padding:7px 0; font-size:13px; color:var(--text-secondary); border-bottom:1px solid rgba(108,99,255,0.06); }
+  .info-row:last-child { border-bottom:none; }
+  .info-icon { color:var(--text-muted); width:20px; flex-shrink:0; display:flex; }
+  .info-icon svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .info-value { color:var(--text-primary); }
+  .friends-mini { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .friend-avatar-mini { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:#fff; border:2px solid var(--bg-deep); cursor:pointer; transition:transform 0.2s; overflow:hidden; }
+  .friend-avatar-mini:hover { transform:translateY(-3px); }
+  .bio-text { font-size:14px; color:var(--text-secondary); line-height:1.6; padding:12px 0; border-top:1px solid var(--glass-border); border-bottom:1px solid var(--glass-border); margin-bottom:16px; }
+  .section-nav { display:flex; gap:4px; margin-bottom:16px; }
+  .section-tab { padding:7px 16px; font-size:13px; font-weight:500; color:var(--text-muted); border-radius:20px; cursor:pointer; transition:all 0.2s; border:1px solid transparent; }
+  .section-tab.active { background:var(--glass-bg); color:var(--text-primary); border-color:var(--glass-border); }
+  .profile-posts-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  .profile-post-card { padding:16px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; }
+  .profile-post-card:hover { transform:translateY(-2px); border-color:var(--glass-border-strong); }
+  .profile-post-cat { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+  .profile-post-cat svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+  .profile-post-title { font-size:14px; font-weight:500; margin-bottom:6px; line-height:1.4; }
+  .profile-post-loc { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:4px; margin-bottom:10px; }
+  .profile-post-loc svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .profile-post-footer { display:flex; align-items:center; gap:12px; font-size:12px; color:var(--text-muted); }
+  .profile-post-stat { display:flex; align-items:center; gap:4px; }
+  .profile-post-stat svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .profile-post-featured { grid-column:1 / -1; display:grid; grid-template-columns:280px 1fr; gap:0; overflow:hidden; cursor:pointer; transition:transform 0.2s, border-color 0.2s; padding:0; }
+  .profile-post-featured:hover { transform:translateY(-2px); border-color:var(--glass-border-strong); }
+  .profile-post-featured .pfeat-img { width:100%; height:100%; min-height:180px; overflow:hidden; position:relative; }
+  .profile-post-featured .pfeat-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+  .profile-post-featured:hover .pfeat-img img { transform:scale(1.04); }
+  .profile-post-featured .pfeat-img-overlay { position:absolute; inset:0; background:linear-gradient(to right, transparent 60%, var(--glass-bg)); }
+  .profile-post-featured .pfeat-body { padding:20px 20px 16px; display:flex; flex-direction:column; gap:8px; }
+  .pfeat-owner { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-muted); }
+  .pfeat-owner .avatar-xs { width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#fff; }
+  .pfeat-title { font-size:16px; font-weight:600; line-height:1.35; color:var(--text-primary); }
+  .pfeat-body-text { font-size:13px; color:var(--text-secondary); line-height:1.55; flex:1; }
+  .pfeat-footer { display:flex; align-items:center; gap:14px; padding-top:10px; border-top:1px solid var(--glass-border); font-size:12px; color:var(--text-muted); }
+  .pfeat-stat { display:flex; align-items:center; gap:4px; }
+  .pfeat-stat svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.8; }
+
+  /* ══════════════════════════════════════════
+     NOTIFICACIONES
+  ══════════════════════════════════════════ */
+  .notif-item { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid var(--glass-border); cursor:pointer; }
+  .notif-item:last-child { border-bottom:none; }
+  .notif-item.unread { background:rgba(108,99,255,0.04); margin:0 -20px; padding:14px 20px; border-radius:var(--radius-sm); }
+  .notif-icon-wrap { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:17px; }
+  .ni-purple { background:rgba(108,99,255,0.2); }
+  .ni-teal   { background:rgba(0,212,170,0.15); }
+  .ni-coral  { background:rgba(255,123,84,0.15); }
+  .ni-pink   { background:rgba(236,72,153,0.15); }
+  .ni-green  { background:rgba(34,211,165,0.15); }
+  .notif-body { flex:1; }
+  .notif-text { font-size:13px; color:var(--text-secondary); line-height:1.5; }
+  .notif-text strong { color:var(--text-primary); font-weight:500; }
+  .notif-time { font-size:11px; color:var(--text-muted); margin-top:3px; }
+  .unread-dot { width:8px; height:8px; border-radius:50%; background:var(--primary-light); flex-shrink:0; margin-top:5px; }
+
+  /* ══════════════════════════════════════════
+     AMIGOS
+  ══════════════════════════════════════════ */
+  .friend-card { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); overflow:hidden; transition:transform 0.2s, border-color 0.2s; }
+  .friend-card:hover { transform:translateY(-2px); border-color:var(--glass-border-strong); }
+  .friend-card-banner { height:60px; position:relative; }
+  .friend-card-body { padding:0 16px 16px; }
+  .friend-card-avatar { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#fff; border:3px solid var(--bg-deep); margin-top:-26px; margin-bottom:10px; overflow:hidden; }
+  .friend-card-name { font-size:14px; font-weight:600; }
+  .friend-card-handle { font-size:12px; color:var(--text-muted); margin-top:1px; margin-bottom:8px; }
+  .friend-card-common { font-size:11px; color:var(--text-muted); margin-bottom:12px; }
+  .friend-list-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--glass-border); }
+  .friend-list-row:last-child { border-bottom:none; }
+  .frow-info { flex:1; min-width:0; }
+  .frow-name { font-size:13px; font-weight:500; }
+  .frow-sub { font-size:11px; color:var(--text-muted); margin-top:1px; }
+  .frow-actions { display:flex; gap:6px; flex-shrink:0; }
+
+  /* ══════════════════════════════════════════
+     BUSCAR
+  ══════════════════════════════════════════ */
+  .search-hero { background:linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,212,170,0.08)); border:1px solid rgba(108,99,255,0.2); border-radius:var(--radius-lg); padding:28px; text-align:center; margin-bottom:24px; }
+  .search-hero h2 { font-size:22px; font-weight:700; margin-bottom:6px; }
+  .search-hero p { font-size:14px; color:var(--text-secondary); margin-bottom:20px; }
+  .search-big { max-width:520px; margin:0 auto; background:var(--glass-bg-strong); border:1px solid var(--glass-border-strong); border-radius:40px; display:flex; align-items:center; gap:10px; padding:0 18px; height:50px; }
+  .search-big svg { color:var(--text-muted); flex-shrink:0; width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .search-big input { flex:1; background:none; border:none; outline:none; font-family:'Inter',sans-serif; font-size:14px; color:var(--text-primary); }
+  .search-big input::placeholder { color:var(--text-muted); }
+  .filter-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .filter-pill { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--glass-border); background:var(--glass-bg); color:var(--text-secondary); display:flex; align-items:center; gap:5px; transition:all 0.2s; }
+  .filter-pill:hover { border-color:var(--glass-border-strong); color:var(--text-primary); }
+  .filter-pill.active { background:rgba(108,99,255,0.18); border-color:rgba(108,99,255,0.3); color:var(--primary-light); }
+  .result-card { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:transform 0.2s, border-color 0.2s; }
+  .result-card:hover { transform:translateY(-2px); border-color:var(--glass-border-strong); }
+  .result-img { height:130px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:36px; }
+  .result-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+  .result-card:hover .result-img img { transform:scale(1.04); }
+  .result-img-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.55)); }
+  .result-type-badge { position:absolute; top:10px; right:10px; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; }
+  .rb-hotel { background:rgba(108,99,255,0.85); color:#fff; }
+  .rb-rest  { background:rgba(255,123,84,0.85); color:#fff; }
+  .rb-tour  { background:rgba(0,212,170,0.85); color:#fff; }
+  .result-body { padding:14px; }
+  .result-name { font-size:14px; font-weight:600; margin-bottom:3px; }
+  .result-loc { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:4px; margin-bottom:8px; }
+  .result-loc svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .result-footer { display:flex; align-items:center; justify-content:space-between; }
+  .result-price { font-size:13px; font-weight:700; color:var(--accent); }
+
+  /* ══════════════════════════════════════════
+     HOTELES
+  ══════════════════════════════════════════ */
+  .hotel-card { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:transform 0.2s, border-color 0.2s; }
+  .hotel-card:hover { transform:translateY(-3px); border-color:var(--glass-border-strong); }
+  .hotel-img { height:170px; position:relative; overflow:hidden; }
+  .hotel-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+  .hotel-card:hover .hotel-img img { transform:scale(1.04); }
+  .hotel-img-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.65)); }
+  .hotel-price-badge { position:absolute; top:12px; right:12px; background:rgba(0,212,170,0.9); color:#fff; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:700; }
+  .hotel-save-btn { position:absolute; top:12px; left:12px; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; }
+  .hotel-body { padding:16px; }
+  .hotel-name { font-size:15px; font-weight:700; margin-bottom:4px; }
+  .hotel-loc { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:4px; margin-bottom:8px; }
+  .hotel-loc svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .hotel-tags { display:flex; gap:5px; flex-wrap:wrap; margin:10px 0; }
+  .hotel-tag { padding:3px 9px; border-radius:20px; font-size:11px; background:var(--glass-bg-strong); border:1px solid var(--glass-border); color:var(--text-muted); }
+  .hotel-footer { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--glass-border); }
+  .filter-panel { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:20px; }
+  .filter-group { margin-bottom:18px; }
+  .filter-group:last-child { margin-bottom:0; }
+  .filter-group-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:10px; }
+  .range-input { width:100%; accent-color:var(--primary); cursor:pointer; margin:6px 0; }
+  .range-labels { display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); }
+  .check-item { display:flex; align-items:center; gap:8px; padding:5px 0; cursor:pointer; }
+  .check-item input[type=checkbox] { accent-color:var(--primary); width:14px; height:14px; cursor:pointer; }
+  .check-item label { font-size:13px; color:var(--text-secondary); cursor:pointer; }
+  .star-filter-row { display:flex; gap:5px; flex-wrap:wrap; }
+  .star-filter-btn { padding:5px 12px; border-radius:8px; border:1px solid var(--glass-border); background:var(--glass-bg); font-size:12px; font-weight:500; color:var(--text-muted); cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif; }
+  .star-filter-btn.active { background:rgba(251,191,36,0.12); border-color:rgba(251,191,36,0.3); color:var(--warning); }
+
+  /* ══════════════════════════════════════════
+     RESERVAS
+  ══════════════════════════════════════════ */
+  .reserva-item { display:flex; align-items:center; gap:14px; padding:16px 0; border-bottom:1px solid var(--glass-border); }
+  .reserva-item:last-child { border-bottom:none; }
+  .reserva-icon { width:48px; height:48px; border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .ri-hotel { background:rgba(108,99,255,0.15); }
+  .ri-rest  { background:rgba(255,123,84,0.15); }
+  .reserva-info { flex:1; min-width:0; }
+  .reserva-name { font-size:14px; font-weight:600; }
+  .reserva-meta { font-size:12px; color:var(--text-muted); margin-top:3px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .reserva-actions { display:flex; gap:6px; flex-shrink:0; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .stat-mini { background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md); padding:16px; text-align:center; position:relative; overflow:hidden; }
+  .stat-mini::before { content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:50%; height:2px; border-radius:0 0 4px 4px; }
+  .sm-purple::before { background:var(--primary); }
+  .sm-green::before  { background:var(--success); }
+  .sm-orange::before { background:var(--warning); }
+  .sm-red::before    { background:var(--danger); }
+  .stat-mini-num { font-size:26px; font-weight:700; margin-bottom:2px; }
+  .sm-purple .stat-mini-num { color:#A78BFA; }
+  .sm-green  .stat-mini-num { color:var(--success); }
+  .sm-orange .stat-mini-num { color:var(--warning); }
+  .sm-red    .stat-mini-num { color:var(--danger); }
+  .stat-mini-label { font-size:12px; color:var(--text-muted); }
+  .cta-strip { background:linear-gradient(135deg,rgba(108,99,255,0.18),rgba(0,212,170,0.1)); border:1px solid rgba(108,99,255,0.25); border-radius:var(--radius-lg); padding:20px 24px; display:flex; align-items:center; gap:16px; margin-bottom:24px; }
+  .cta-strip-icon { font-size:32px; flex-shrink:0; }
+  .cta-strip-info { flex:1; }
+  .cta-strip-info h3 { font-size:16px; font-weight:600; }
+  .cta-strip-info p { font-size:13px; color:var(--text-secondary); margin-top:2px; }
+
+  /* ══════════════════════════════════════════
+     MI NEGOCIO
+  ══════════════════════════════════════════ */
+  .biz-banner { height:120px; position:relative; }
+  .biz-banner-edit { position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:12px; font-weight:500; padding:5px 12px; border-radius:20px; cursor:pointer; display:flex; align-items:center; gap:5px; font-family:'Inter',sans-serif; transition:background 0.2s; }
+  .biz-banner-edit:hover { background:rgba(0,0,0,0.65); }
+  .biz-banner-edit svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+  .biz-header { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-top:none; border-radius:0 0 var(--radius-lg) var(--radius-lg); padding:0 24px 20px; display:flex; align-items:flex-end; gap:16px; }
+  .biz-logo { width:72px; height:72px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:28px; border:3px solid var(--bg-deep); margin-top:-36px; flex-shrink:0; overflow:hidden; }
+  .biz-info { flex:1; padding-top:10px; }
+  .biz-name { font-size:20px; font-weight:700; }
+  .biz-meta { font-size:12px; color:var(--text-muted); margin-top:3px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .biz-actions { display:flex; gap:8px; padding-top:10px; flex-shrink:0; }
+  .biz-stats { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--glass-border); }
+  .biz-stat { padding:14px; text-align:center; border-right:1px solid var(--glass-border); }
+  .biz-stat:last-child { border-right:none; }
+  .biz-stat-num { font-size:20px; font-weight:700; }
+  .biz-stat-label { font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .mesa-chip { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-sm); margin-bottom:8px; }
+  .mesa-num-badge { width:30px; height:30px; border-radius:8px; background:rgba(108,99,255,0.2); color:var(--primary-light); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .mesa-cap { font-size:11px; color:var(--text-muted); }
+  .review-item { padding:14px 0; border-bottom:1px solid var(--glass-border); }
+  .review-item:last-child { border-bottom:none; }
+  .review-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .review-text { font-size:13px; color:var(--text-secondary); line-height:1.55; }
+
+  /* ══════════════════════════════════════════
+     AJUSTES
+  ══════════════════════════════════════════ */
+  .settings-layout { display:grid; grid-template-columns:220px 1fr; gap:24px; align-items:start; }
+  .settings-nav { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:10px; position:sticky; top:80px; }
+  .settings-nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:var(--radius-sm); cursor:pointer; color:var(--text-secondary); font-size:13px; font-weight:400; transition:all 0.2s; border:1px solid transparent; }
+  .settings-nav-item:hover { background:var(--glass-bg-strong); color:var(--text-primary); }
+  .settings-nav-item.active { background:rgba(108,99,255,0.18); color:var(--primary-light); border-color:rgba(108,99,255,0.3); font-weight:500; }
+  .settings-nav-item.danger { color:rgba(248,113,113,0.75); }
+  .settings-nav-item.danger:hover { background:rgba(248,113,113,0.1); color:var(--danger); }
+  .settings-nav-item svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .settings-divider { height:1px; background:var(--glass-border); margin:6px 0; }
+  .settings-section { margin-bottom:16px; }
+  .settings-section-title { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .settings-row { display:flex; align-items:center; gap:16px; padding:14px 0; border-bottom:1px solid var(--glass-border); }
+  .settings-row:last-child { border-bottom:none; }
+  .settings-row-info { flex:1; }
+  .settings-row-label { font-size:13px; font-weight:500; }
+  .settings-row-sub { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .avatar-upload { display:flex; align-items:center; gap:16px; }
+  .avatar-lg { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--accent)); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; color:#fff; border:3px solid var(--glass-border-strong); flex-shrink:0; }
+
+  .notif-icon-wrap svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .reserva-icon svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .cta-strip-icon { display:flex; align-items:center; justify-content:center; }
+  .cta-strip-icon svg { width:36px; height:36px; stroke:var(--primary-light); fill:none; stroke-width:1.5; }
+  .reserva-meta span { display:inline-flex; align-items:center; gap:4px; }
+  .reserva-meta svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:1.8; flex-shrink:0; }
+  .biz-logo { display:flex; align-items:center; justify-content:center; }
+  .biz-logo svg { width:32px; height:32px; stroke:rgba(255,255,255,0.9); fill:none; stroke-width:1.6; }
+  .hotel-save-btn svg { width:14px; height:14px; stroke:rgba(255,255,255,0.9); fill:none; stroke-width:2; }
+  .filter-pill svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.8; flex-shrink:0; }
+
+
+  /* ══════════════════════════════════════════════
+     RESTAURANTES
+  ══════════════════════════════════════════════ */
+  .rest-card { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); overflow:hidden; cursor:pointer; transition:transform 0.2s, border-color 0.2s; }
+  .rest-card:hover { transform:translateY(-3px); border-color:var(--glass-border-strong); }
+  .rest-img { height:180px; position:relative; overflow:hidden; }
+  .rest-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+  .rest-card:hover .rest-img img { transform:scale(1.04); }
+  .rest-img-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.65)); }
+  .rest-price-badge { position:absolute; top:12px; right:12px; background:rgba(255,123,84,0.9); color:#fff; padding:4px 10px; border-radius:8px; font-size:12px; font-weight:700; }
+  .rest-save-btn { position:absolute; top:12px; left:12px; width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .rest-save-btn svg { width:14px; height:14px; stroke:rgba(255,255,255,0.9); fill:none; stroke-width:2; }
+  .rest-cuisine-badge { position:absolute; bottom:12px; left:12px; background:rgba(0,0,0,0.55); backdrop-filter:blur(8px); color:rgba(255,255,255,0.9); font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.15); }
+  .rest-body { padding:16px; }
+  .rest-name { font-size:15px; font-weight:700; margin-bottom:4px; }
+  .rest-loc { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:4px; margin-bottom:8px; }
+  .rest-loc svg { width:11px; height:11px; stroke:currentColor; fill:none; stroke-width:2.5; }
+  .rest-tags { display:flex; gap:5px; flex-wrap:wrap; margin:10px 0; }
+  .rest-tag { padding:3px 9px; border-radius:20px; font-size:11px; background:var(--glass-bg-strong); border:1px solid var(--glass-border); color:var(--text-muted); }
+  .rest-footer { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--glass-border); }
+  .rest-featured { background:var(--glass-bg); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:var(--radius-lg); overflow:hidden; display:grid; grid-template-columns:320px 1fr; cursor:pointer; transition:transform 0.2s, border-color 0.2s; margin-bottom:24px; }
+  .rest-featured:hover { transform:translateY(-2px); border-color:rgba(255,123,84,0.4); }
+  .rest-featured .feat-img { position:relative; overflow:hidden; }
+  .rest-featured .feat-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s; }
+  .rest-featured:hover .feat-img img { transform:scale(1.03); }
+  .rest-featured .feat-img-overlay { position:absolute; inset:0; background:linear-gradient(to right, transparent 60%, var(--glass-bg)); }
+  .feat-body { padding:24px; display:flex; flex-direction:column; gap:10px; }
+  .feat-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(255,123,84,0.15); border:1px solid rgba(255,123,84,0.3); color:var(--accent-warm); font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; width:fit-content; }
+  .feat-badge svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+  .feat-title { font-size:20px; font-weight:700; line-height:1.25; }
+  .feat-desc { font-size:13px; color:var(--text-secondary); line-height:1.6; flex:1; }
+  .feat-meta { display:flex; flex-wrap:wrap; gap:10px; font-size:12px; color:var(--text-muted); }
+  .feat-meta span { display:flex; align-items:center; gap:4px; }
+  .feat-meta svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; }
+  .feat-footer { display:flex; align-items:center; gap:10px; padding-top:10px; border-top:1px solid var(--glass-border); }
+  .promo-banner { background:linear-gradient(135deg,rgba(255,123,84,0.2),rgba(236,72,153,0.15)); border:1px solid rgba(255,123,84,0.3); border-radius:var(--radius-lg); padding:18px 24px; display:flex; align-items:center; gap:16px; margin-bottom:24px; }
+  .promo-icon { font-size:28px; flex-shrink:0; }
+  .promo-info { flex:1; }
+  .promo-info h3 { font-size:15px; font-weight:600; }
+  .promo-info p { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+  .top-rest-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--glass-border); cursor:pointer; }
+  .top-rest-item:last-child { border-bottom:none; padding-bottom:0; }
+  .top-rest-rank { font-size:18px; font-weight:700; color:var(--glass-border-strong); min-width:24px; text-align:center; }
+  .top-rest-img { width:40px; height:40px; border-radius:8px; overflow:hidden; flex-shrink:0; }
+  .top-rest-img img { width:100%; height:100%; object-fit:cover; }
+  .top-rest-info { flex:1; }
+  .top-rest-name { font-size:13px; font-weight:500; }
+  .top-rest-sub { font-size:11px; color:var(--text-muted); margin-top:1px; }
+  .cuisine-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .cuisine-pill { display:flex; align-items:center; gap:6px; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; border:1px solid var(--glass-border); background:var(--glass-bg); color:var(--text-secondary); transition:all 0.2s; }
+  .cuisine-pill:hover { border-color:var(--glass-border-strong); color:var(--text-primary); }
+  .cuisine-pill.active { background:rgba(255,123,84,0.15); border-color:rgba(255,123,84,0.35); color:var(--accent-warm); }
+  .cuisine-pill .pill-emoji { font-size:15px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="16" r="13" stroke="white" stroke-width="1.6" stroke-opacity="0.5"/>
+        <path d="M18 3C13.03 3 9 7.03 9 12C9 18.75 18 29 18 29C18 29 27 18.75 27 12C27 7.03 22.97 3 18 3Z" fill="white" fill-opacity="0.18" stroke="white" stroke-width="1.5"/>
+        <circle cx="18" cy="12" r="3.2" fill="white"/>
+        <line x1="18" y1="3.5" x2="18" y2="5.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.7"/>
+        <line x1="27" y1="12" x2="25" y2="12" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.7"/>
+        <line x1="9" y1="12" x2="11" y2="12" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.7"/>
+      </svg>
+    </div>
+    <span class="logo-text">Travelia</span>
+  </div>
+
+  <span class="nav-label">Principal</span>
+  <a class="nav-item active" id="nav-feed" onclick="showPage('feed')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Feed
+  </a>
+  <a class="nav-item" id="nav-profile" onclick="showPage('profile')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Mi Perfil
+  </a>
+  <a class="nav-item" id="nav-notificaciones" onclick="showPage('notificaciones')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>Notificaciones
+    <span class="nav-badge">3</span>
+  </a>
+  <a class="nav-item" id="nav-amigos" onclick="showPage('amigos')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Amigos
+    <span class="nav-badge">2</span>
+  </a>
+
+  <span class="nav-label">Descubrir</span>
+  <a class="nav-item" id="nav-buscar" onclick="showPage('buscar')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>Buscar
+  </a>
+  <a class="nav-item" id="nav-hoteles" onclick="showPage('hoteles')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>Hoteles
+  </a>
+  <a class="nav-item" id="nav-restaurantes" onclick="showPage('restaurantes')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>Restaurantes
+  </a>
+  <a class="nav-item" id="nav-reservas" onclick="showPage('reservas')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Reservas
+  </a>
+
+  <span class="nav-label">Gestión</span>
+  <a class="nav-item" id="nav-minegocio" onclick="showPage('minegocio')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>Mi Negocio
+  </a>
+  <a class="nav-item" id="nav-ajustes" onclick="showPage('ajustes')" href="#">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>Ajustes
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user" onclick="showPage('profile')">
+      <div class="avatar-sm">EN</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">Erick Narváez</div>
+        <div class="sidebar-user-role">Usuario · Cali, Colombia</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<main class="main">
+
+<!-- ════ TOPBAR ════ -->
+<div class="topbar">
+  <span class="topbar-title" id="topbar-title">Feed de viajes</span>
+  <div class="topbar-search">
+    <span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <input type="text" placeholder="Buscar destinos, negocios, usuarios…">
+  </div>
+  <div class="topbar-actions">
+    <div class="icon-btn" onclick="showPage('notificaciones')">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-dot"></span>
+    </div>
+    <div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+    <div class="icon-btn" onclick="showPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <div class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: FEED
+══════════════════════════════════════════════ -->
+<div id="page-feed" class="page visible">
+  <div class="feed-tabs">
+    <div class="feed-tab active" onclick="switchFeedTab(this)">Para ti</div>
+    <div class="feed-tab" onclick="switchFeedTab(this)">Siguiendo</div>
+    <div class="feed-tab" onclick="switchFeedTab(this)">Colombia</div>
+    <div class="feed-tab" onclick="switchFeedTab(this)">Internacional</div>
+  </div>
+  <div class="content">
+    <!-- FEED COLUMN -->
+    <div>
+      <div class="glass-card" style="margin-bottom:20px;">
+        <div class="create-post">
+          <div class="avatar purple">EN</div>
+          <div class="create-post-input">¿Qué destino quieres compartir hoy?</div>
+          <button class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Publicar
+          </button>
+        </div>
+        <div class="create-actions" style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--glass-border);">
+          <button><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Foto</button>
+          <button><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Ubicación</button>
+          <button><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Etiqueta negocio</button>
+        </div>
+      </div>
+
+      <!-- POST 1 -->
+      <div class="glass-card post">
+        <div class="post-header">
+          <div class="avatar teal">KC</div>
+          <div class="post-author"><div class="post-author-name">Kiara Castillo</div><div class="post-meta">Hace 54 minutos · Cartagena, Colombia </div></div>
+          <span class="post-badge badge-tour">Tour</span>
+        </div>
+        <div class="post-body">Increíble atardecer en la Ciudad Amurallada.</div>
+        <div class="post-image">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Ciudad Amurallada" loading="lazy">
+          <div class="post-image-overlay"></div>
+          <div class="post-image-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Ciudad Amurallada, Cartagena</div>
+        </div>
+        <div><span class="post-tag"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hotel Santa Clara</span></div>
+        <div class="post-actions">
+          <div class="action-btn liked"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="action-count">142</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="action-count">24</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Compartir</div>
+          <div class="action-spacer"></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- POST 2: Negocio -->
+      <div class="glass-card post" style="border-color:rgba(0,212,170,0.25);">
+        <div class="business-label"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Publicación de Negocio</div>
+        <div class="post-header">
+          <div class="avatar coral">RO</div>
+          <div class="post-author"><div class="post-author-name">Restaurante Ocho Ríos</div><div class="post-meta">Hace 4 horas · Cali, Colombia </div></div>
+          <span class="post-badge badge-restaurante">Restaurante</span>
+        </div>
+        <div class="post-body">¡Nueva carta de mariscos disponible! Disfruta los mejores ceviches del Valle del Cauca con vista al río. Reserva tu mesa directamente en Travelia.</div>
+        <div class="post-actions">
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="action-count">87</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="action-count">12</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Reservar mesa</div>
+          <div class="action-spacer"></div>
+          <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.8</div>
+        </div>
+      </div>
+
+      <!-- POST 3 -->
+      <div class="glass-card post">
+        <div class="post-header">
+          <div class="avatar pink">JS</div>
+          <div class="post-author"><div class="post-author-name">Juliana Salcedo</div><div class="post-meta">Ayer · Medellín, Colombia </div></div>
+          <span class="post-badge badge-actividad">Actividad</span>
+        </div>
+        <div class="post-body">El Parque Arví desde el metrocable es una experiencia que no tiene precio. 3 horas de sendero, aire fresco y un picnic con la mejor vista de Medellín. ¡Esto es vivir!</div>
+        <div class="post-image">
+          <img src="https://images.unsplash.com/photo-1512813195386-6cf811ad3542?w=800&q=80" alt="Parque Arví" loading="lazy">
+          <div class="post-image-overlay"></div>
+          <div class="post-image-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Parque Arví, Medellín</div>
+        </div>
+        <div class="post-actions">
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="action-count">231</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="action-count">45</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Compartir</div>
+          <div class="action-spacer"></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- POST 4 -->
+      <div class="glass-card post">
+        <div class="post-header">
+          <div class="avatar purple">CA</div>
+          <div class="post-author"><div class="post-author-name">Carlos Arango</div><div class="post-meta">Hace 3 días · San Andrés, Colombia </div></div>
+          <span class="post-badge badge-hospedaje">Hospedaje</span>
+        </div>
+        <div class="post-body">El mar de los siete colores en San Andrés es real y supera cualquier foto. El agua cristalina de Johnny Cay te dejará sin palabras. Ya estoy buscando vuelos para volver el próximo mes.</div>
+        <div class="post-image">
+          <img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=800&q=80" alt="San Andrés" loading="lazy">
+          <div class="post-image-overlay"></div>
+          <div class="post-image-label"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Johnny Cay, San Andrés</div>
+        </div>
+        <div><span class="post-tag"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hotel Decameron San Luis</span></div>
+        <div class="post-actions">
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="action-count">318</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="action-count">62</span></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Compartir</div>
+          <div class="action-spacer"></div>
+          <div class="action-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR FEED -->
+    <div class="right-sidebar">
+      <div class="glass-card">
+        <div class="widget-title"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Destinos tendencia</div>
+        <div class="trending-item"><div class="trending-num">1</div><div class="trending-info"><div class="trending-name">Cartagena</div><div class="trending-posts">2.4k publicaciones</div></div><span class="trending-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span></div>
+        <div class="trending-item"><div class="trending-num">2</div><div class="trending-info"><div class="trending-name">Medellín</div><div class="trending-posts">1.9k publicaciones</div></div><span class="trending-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></span></div>
+        <div class="trending-item"><div class="trending-num">3</div><div class="trending-info"><div class="trending-name">San Andrés</div><div class="trending-posts">1.1k publicaciones</div></div><span class="trending-icon"><svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 3s-3 1-4.5 2.5L11 9 2.8 6.2l-2 2 7.3 4.3-1.7 4.3 1.2 1.2L10 16l4.3 1.7 2-2z"/></svg></span></div>
+        <div class="trending-item"><div class="trending-num">4</div><div class="trending-info"><div class="trending-name">Bogotá</div><div class="trending-posts">980 publicaciones</div></div><span class="trending-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span></div>
+      </div>
+      <div class="glass-card">
+        <div class="widget-title"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Sugerencias de amigos</div>
+        <div class="friend-item"><div class="avatar-sm" style="background:linear-gradient(135deg,#6C63FF,#A78BFA);">CA</div><div class="friend-info"><div class="friend-name">Carlos Arango</div><div class="friend-status">3 amigos en común</div></div><button class="btn-follow">+ Seguir</button></div>
+        <div class="friend-item"><div class="avatar-sm" style="background:linear-gradient(135deg,#EC4899,#A855F7);">VP</div><div class="friend-info"><div class="friend-name">Valentina Pérez</div><div class="friend-status">5 amigos en común</div></div><button class="btn-follow">+ Seguir</button></div>
+        <div class="friend-item"><div class="avatar-sm" style="background:linear-gradient(135deg,#00D4AA,#0EA5E9);">LG</div><div class="friend-info"><div class="friend-name">Luis Gómez</div><div class="friend-status">1 amigo en común</div></div><button class="btn-follow">+ Seguir</button></div>
+      </div>
+      <div class="glass-card">
+        <div class="widget-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Tus próximas reservas</div>
+        <div class="reserva-card"><div class="reserva-card-title"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurante Ocho Ríos</div><div class="reserva-card-meta">15 mayo · 7:30 PM · 2 personas</div><div class="reserva-card-status"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmada · Mesa #4</div></div>
+        <button style="width:100%;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:9px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:Inter,sans-serif;transition:background 0.2s;" onclick="showPage('reservas')" onmouseover="this.style.background='var(--glass-bg-strong)'" onmouseout="this.style.background='var(--glass-bg)'">Ver todas mis reservas →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: MI PERFIL
+══════════════════════════════════════════════ -->
+<div id="page-profile" class="page">
+  <div class="profile-hero" style="margin:0 28px 0;">
+    <div class="profile-hero-pattern"></div>
+    <div class="profile-hero-location"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cali, Valle del Cauca, Colombia</div>
+  </div>
+  <div style="padding:0 28px 28px;">
+    <div class="glass-card-strong profile-header" style="padding:0 24px 20px;">
+      <div class="profile-avatar">EN</div>
+      <div class="profile-name-block"><div class="profile-name">Erick Narváez Vega</div><div class="profile-handle">@ericknv · Miembro desde Mayo 2024</div></div>
+      <div class="profile-actions">
+        <button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar perfil</button>
+        <button class="btn-outline" onclick="showPage('ajustes')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Ajustes</button>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="stat-card purple glass-card"><div class="stat-value">48</div><div class="stat-label">Publicaciones</div></div>
+      <div class="stat-card teal glass-card"><div class="stat-value">312</div><div class="stat-label">Amigos</div></div>
+      <div class="stat-card coral glass-card"><div class="stat-value">17</div><div class="stat-label">Destinos</div></div>
+      <div class="stat-card pink glass-card"><div class="stat-value">6</div><div class="stat-label">Reservas</div></div>
+    </div>
+    <div class="profile-body">
+      <div>
+        <div class="glass-card profile-info-card">
+          <p class="bio-text">Viajero apasionado desde Cali. Amante del café colombiano, las montañas andinas y el mar Caribe. Comparto cada rincón que descubro.</p>
+          <div class="info-section">
+            <div class="info-section-title">Información</div>
+            <div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><span>Correo</span><span class="info-value" style="margin-left:auto;">e.narvaez@email.com</span></div>
+            <div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span>Ciudad</span><span class="info-value" style="margin-left:auto;">Cali, Colombia</span></div>
+            <div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Rol</span><span style="margin-left:auto;background:rgba(108,99,255,0.2);color:#A78BFA;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;">Usuario</span></div>
+            <div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Registro</span><span class="info-value" style="margin-left:auto;">Mayo 2024</span></div>
+          </div>
+          <div class="info-section">
+            <div class="info-section-title">Amigos (312)</div>
+            <div class="friends-mini">
+              <div class="friend-avatar-mini" style="background:linear-gradient(135deg,#00D4AA,#0EA5E9);" title="María R.">MR</div>
+              <div class="friend-avatar-mini" style="background:linear-gradient(135deg,#EC4899,#A855F7);" title="Juliana S.">JS</div>
+              <div class="friend-avatar-mini" style="background:linear-gradient(135deg,#FF7B54,#F97316);" title="Carlos A.">CA</div>
+              <div class="friend-avatar-mini" style="background:linear-gradient(135deg,#6C63FF,#A78BFA);" title="Luis G.">LG</div>
+              <div class="friend-avatar-mini" style="background:linear-gradient(135deg,#34D399,#059669);" title="Valentina P.">VP</div>
+              <div class="friend-avatar-mini" style="background:var(--glass-bg);color:var(--text-muted);" title="Ver todos" onclick="showPage('amigos')">+307</div>
+            </div>
+          </div>
+          <div class="info-section" style="margin-bottom:0;">
+            <div class="info-section-title">Destinos favoritos</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
+              <span style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);color:var(--accent);font-size:12px;padding:4px 10px;border-radius:20px;">Cartagena</span>
+              <span style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);color:var(--accent);font-size:12px;padding:4px 10px;border-radius:20px;">Medellín</span>
+              <span style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);color:var(--accent);font-size:12px;padding:4px 10px;border-radius:20px;">San Andrés</span>
+              <span style="background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);color:#A78BFA;font-size:12px;padding:4px 10px;border-radius:20px;">+ 14 más</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-nav">
+          <div class="section-tab active">Publicaciones</div>
+          <div class="section-tab">Guardados</div>
+          <div class="section-tab">Reseñas</div>
+        </div>
+        <div class="profile-posts-grid">
+          <div class="glass-card profile-post-card profile-post-featured">
+            <div class="pfeat-img"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80" alt="Valle de Cocora" loading="lazy"><div class="pfeat-img-overlay"></div></div>
+            <div class="pfeat-body">
+              <div class="pfeat-owner"><div class="avatar-xs">EN</div><span>Erick Narváez · Hace 3 días</span><span class="post-badge badge-tour" style="margin-left:auto;font-size:10px;">Tour</span></div>
+              <div class="pfeat-title">Valle de Cocora: entre palmas de cera y niebla andina</div>
+              <div class="pfeat-body-text">Subir hasta las palmas de cera más altas del mundo con la niebla abrazando cada sendero es una experiencia que no se olvida. Salento sigue siendo uno de mis destinos favoritos.</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Salento, Quindío</div>
+              <div class="pfeat-footer">
+                <div class="pfeat-stat"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>89 me gusta</div>
+                <div class="pfeat-stat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>14 comentarios</div>
+                <span style="margin-left:auto;"><span style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.2);color:var(--accent);font-size:11px;padding:3px 9px;border-radius:20px;">Eje Cafetero</span></span>
+              </div>
+            </div>
+          </div>
+          <div class="glass-card profile-post-card"><div class="profile-post-cat" style="color:var(--accent);"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Hospedaje</div><div class="profile-post-title">Hacienda Bambusa: el paraíso cafetero que soñé</div><div class="profile-post-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Montenegro, Quindío</div><div class="profile-post-footer"><div class="profile-post-stat"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>124</div><div class="profile-post-stat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>31</div><span style="margin-left:auto;font-size:11px;color:var(--text-muted);">Hace 1 sem</span></div></div>
+          <div class="glass-card profile-post-card"><div class="profile-post-cat" style="color:var(--accent-warm);"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurante</div><div class="profile-post-title">Andrés Carne de Res: el restaurante que es un universo</div><div class="profile-post-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Chía, Cundinamarca</div><div class="profile-post-footer"><div class="profile-post-stat"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>201</div><div class="profile-post-stat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>57</div><span style="margin-left:auto;font-size:11px;color:var(--text-muted);">Hace 2 sem</span></div></div>
+          <div class="glass-card profile-post-card"><div class="profile-post-cat" style="color:#FCD34D;"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Actividad</div><div class="profile-post-title">Rafting en el Río Fonce: adrenalina pura en Socorro</div><div class="profile-post-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Socorro, Santander</div><div class="profile-post-footer"><div class="profile-post-stat"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>67</div><div class="profile-post-stat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>9</div><span style="margin-left:auto;font-size:11px;color:var(--text-muted);">Hace 3 sem</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: NOTIFICACIONES
+══════════════════════════════════════════════ -->
+<div id="page-notificaciones" class="page">
+  <div class="page-tabs">
+    <div class="page-tab active" onclick="switchTab(this)">Todas</div>
+    <div class="page-tab" onclick="switchTab(this)">Sin leer <span style="background:var(--primary);color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;margin-left:3px">3</span></div>
+    <div class="page-tab" onclick="switchTab(this)">Menciones</div>
+    <div class="page-tab" onclick="switchTab(this)">Social</div>
+  </div>
+  <div class="page-inner">
+    <div class="two-col">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div style="font-size:15px;font-weight:600;">Notificaciones</div><button class="sec-link">Marcar todas como leídas</button></div>
+        <div class="glass-card" style="padding:0 20px;">
+          <div style="padding:14px 0 6px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);">Hoy</div>
+          <div class="notif-item unread"><div class="notif-icon-wrap ni-pink"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Kiara Castillo</strong> y <strong>12 personas más</strong> le dieron me gusta a tu publicación <em>"Valle de Cocora"</em></div><div class="notif-time">Hace 8 minutos</div></div><div class="unread-dot"></div></div>
+          <div class="notif-item unread"><div class="notif-icon-wrap ni-teal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Carlos Arango</strong> comentó en tu publicación: <em>"¡Increíble vista! ¿Cuánto dura la caminata?"</em></div><div class="notif-time">Hace 42 minutos</div></div><div class="unread-dot"></div></div>
+          <div class="notif-item unread"><div class="notif-icon-wrap ni-purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Valentina Pérez</strong> aceptó tu solicitud de amistad</div><div class="notif-time">Hace 2 horas</div></div><div class="unread-dot"></div></div>
+          <div class="notif-item"><div class="notif-icon-wrap ni-coral"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Hotel Santa Clara</strong> confirmó tu reserva para el <strong>18 de mayo</strong></div><div class="notif-time">Hace 4 horas</div></div></div>
+          <div class="notif-item"><div class="notif-icon-wrap ni-purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Luis Gómez</strong> te envió una solicitud de amistad</div><div class="notif-time">Hace 5 horas</div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button class="btn-success-sm">Aceptar</button><button class="btn-ghost-sm">Rechazar</button></div></div>
+          <div style="padding:14px 0 6px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);border-top:1px solid var(--glass-border);">Ayer</div>
+          <div class="notif-item"><div class="notif-icon-wrap ni-green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Ana Torres</strong> dejó una reseña de 5 estrellas en <strong>Café del Viajero</strong></div><div class="notif-time">Ayer, 6:45 PM</div></div></div>
+          <div class="notif-item"><div class="notif-icon-wrap ni-teal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Marco Ruiz</strong> compartió tu publicación sobre <em>San Andrés</em></div><div class="notif-time">Ayer, 3:12 PM</div></div></div>
+          <div class="notif-item"><div class="notif-icon-wrap ni-pink"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="notif-body"><div class="notif-text"><strong>Sofía Hernández</strong> y <strong>8 personas más</strong> dieron me gusta a tu foto del Caño Cristales</div><div class="notif-time">Ayer, 11:30 AM</div></div></div>
+        </div>
+      </div>
+      <div class="right-sidebar">
+        <div class="glass-card">
+          <div class="widget-title"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Resumen de hoy</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:22px;font-weight:700;color:#A78BFA;">3</div><div style="font-size:11px;color:var(--text-muted);">Sin leer</div></div>
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:22px;font-weight:700;color:#F472B6;">24</div><div style="font-size:11px;color:var(--text-muted);">Likes hoy</div></div>
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:22px;font-weight:700;color:var(--accent);">7</div><div style="font-size:11px;color:var(--text-muted);">Comentarios</div></div>
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:22px;font-weight:700;color:var(--success);">1</div><div style="font-size:11px;color:var(--text-muted);">Solicitudes</div></div>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="widget-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurar alertas</div>
+          <div class="toggle-wrap"><div><div class="toggle-label">Likes</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div><div class="toggle-label">Comentarios</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div><div class="toggle-label">Solicitudes de amistad</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div><div class="toggle-label">Confirmaciones de reserva</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="toggle-wrap"><div><div class="toggle-label">Reseñas de mi negocio</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: AMIGOS
+══════════════════════════════════════════════ -->
+<div id="page-amigos" class="page">
+  <div class="page-tabs">
+    <div class="page-tab active" onclick="switchTab(this)">Mis amigos <span style="background:var(--glass-bg-strong);color:var(--text-muted);font-size:9px;padding:1px 5px;border-radius:10px;margin-left:3px">312</span></div>
+    <div class="page-tab" onclick="switchTab(this)">Solicitudes <span style="background:var(--success);color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;margin-left:3px">2</span></div>
+    <div class="page-tab" onclick="switchTab(this)">Sugerencias</div>
+    <div class="page-tab" onclick="switchTab(this)">Enviadas</div>
+  </div>
+  <div class="page-inner">
+    <div class="sec-header"><div class="sec-title">Solicitudes pendientes</div></div>
+    <div class="glass-card" style="padding:0 20px;margin-bottom:24px;">
+      <div class="friend-list-row"><div class="avatar av-coral" style="width:44px;height:44px;font-size:15px;">LG</div><div class="frow-info"><div class="frow-name">Luis Gómez</div><div class="frow-sub">@luisgomez · 1 amigo en común · Bogotá</div></div><div class="frow-actions"><button class="btn-success-sm">Aceptar</button><button class="btn-ghost-sm">Rechazar</button></div></div>
+      <div class="friend-list-row"><div class="avatar av-green" style="width:44px;height:44px;font-size:15px;">MR</div><div class="frow-info"><div class="frow-name">Marco Ruiz</div><div class="frow-sub">@marcor · 3 amigos en común · Medellín</div></div><div class="frow-actions"><button class="btn-success-sm">Aceptar</button><button class="btn-ghost-sm">Rechazar</button></div></div>
+    </div>
+    <div class="sec-header"><div class="sec-title">Sugerencias para ti</div><button class="sec-link">Ver todas</button></div>
+    <div class="three-col" style="margin-bottom:28px;">
+      <div class="friend-card"><div class="friend-card-banner" style="background:linear-gradient(135deg,#1a1547,#0d2540);"></div><div class="friend-card-body"><div class="friend-card-avatar av-purple" style="width:52px;height:52px;font-size:17px;">CA</div><div class="friend-card-name">Carlos Arango</div><div class="friend-card-handle">@carlosarango</div><div class="friend-card-common">3 amigos en común · Bogotá</div><button class="btn-follow" style="width:100%;padding:7px;text-align:center;">+ Seguir</button></div></div>
+      <div class="friend-card"><div class="friend-card-banner" style="background:linear-gradient(135deg,#2d0a3a,#4a0d5e);"></div><div class="friend-card-body"><div class="friend-card-avatar av-pink" style="width:52px;height:52px;font-size:17px;">VP</div><div class="friend-card-name">Valentina Pérez</div><div class="friend-card-handle">@valentinapz</div><div class="friend-card-common">5 amigos en común · Cali</div><button class="btn-follow" style="width:100%;padding:7px;text-align:center;background:rgba(108,99,255,0.25);">✓ Siguiendo</button></div></div>
+      <div class="friend-card"><div class="friend-card-banner" style="background:linear-gradient(135deg,#0d2a1a,#1a3a2a);"></div><div class="friend-card-body"><div class="friend-card-avatar av-teal" style="width:52px;height:52px;font-size:17px;">AT</div><div class="friend-card-name">Ana Torres</div><div class="friend-card-handle">@anatorres</div><div class="friend-card-common">2 amigos en común · Cartagena</div><button class="btn-follow" style="width:100%;padding:7px;text-align:center;">+ Seguir</button></div></div>
+    </div>
+    <div class="sec-header"><div class="sec-title">Mis amigos (312)</div><div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;display:flex;align-items:center;gap:6px;padding:5px 14px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input style="background:none;border:none;outline:none;font-family:Inter,sans-serif;font-size:12px;color:var(--text-primary);width:130px;" placeholder="Buscar amigo..."></div></div>
+    <div class="glass-card" style="padding:0 20px;">
+      <div class="friend-list-row"><div class="avatar av-teal" style="width:44px;height:44px;font-size:15px;">KC</div><div class="frow-info"><div class="frow-name">Kiara Castillo</div><div class="frow-sub">@kiaracast · Cartagena · 34 publicaciones</div></div><div class="frow-actions"><button class="btn-ghost-sm">Ver perfil</button><button class="btn-danger-sm">Eliminar</button></div></div>
+      <div class="friend-list-row"><div class="avatar av-pink" style="width:44px;height:44px;font-size:15px;">VP</div><div class="frow-info"><div class="frow-name">Valentina Pérez</div><div class="frow-sub">@valentinapz · Cali · 67 publicaciones</div></div><div class="frow-actions"><button class="btn-ghost-sm">Ver perfil</button><button class="btn-danger-sm">Eliminar</button></div></div>
+      <div class="friend-list-row"><div class="avatar av-green" style="width:44px;height:44px;font-size:15px;">SR</div><div class="frow-info"><div class="frow-name">Sofía Rodríguez</div><div class="frow-sub">@sofiar · Medellín · 51 publicaciones</div></div><div class="frow-actions"><button class="btn-ghost-sm">Ver perfil</button><button class="btn-danger-sm">Eliminar</button></div></div>
+      <div class="friend-list-row"><div class="avatar av-coral" style="width:44px;height:44px;font-size:15px;">JM</div><div class="frow-info"><div class="frow-name">Juan Martínez</div><div class="frow-sub">@juanm · Cali · 22 publicaciones</div></div><div class="frow-actions"><button class="btn-ghost-sm">Ver perfil</button><button class="btn-danger-sm">Eliminar</button></div></div>
+      <div class="friend-list-row"><div class="avatar av-indigo" style="width:44px;height:44px;font-size:15px;">PA</div><div class="frow-info"><div class="frow-name">Paula Acosta</div><div class="frow-sub">@paulaac · Barranquilla · 19 publicaciones</div></div><div class="frow-actions"><button class="btn-ghost-sm">Ver perfil</button><button class="btn-danger-sm">Eliminar</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: BUSCAR
+══════════════════════════════════════════════ -->
+<div id="page-buscar" class="page">
+  <div class="page-inner">
+    <div class="search-hero">
+      <h2>Descubre Colombia y el mundo</h2>
+      <p>Busca hoteles, restaurantes, destinos turísticos y viajeros</p>
+      <div class="search-big"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Ej: Hoteles en Cartagena, restaurantes en Bogotá…"></div>
+    </div>
+    <div class="filter-pills">
+      <div class="filter-pill active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Hoteles</div><div class="filter-pill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurantes</div><div class="filter-pill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>Tours</div><div class="filter-pill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Usuarios</div><div class="filter-pill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Todas las ciudades</div><div class="filter-pill"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Cualquier rating</div>
+    </div>
+    <div class="sec-header"><div class="sec-title">Resultados</div><span class="sec-count">24 resultados</span></div>
+    <div class="three-col">
+      <div class="result-card"><div class="result-img"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=70" alt=""><div class="result-img-overlay"></div><span class="result-type-badge rb-hotel">Hotel</span></div><div class="result-body"><div class="result-name">Hotel Santa Clara</div><div class="result-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cartagena</div><div class="result-footer"><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;">5.0</span></div><div class="result-price">$280/n</div></div></div></div>
+      <div class="result-card"><div class="result-img"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=70" alt=""><div class="result-img-overlay"></div><span class="result-type-badge rb-hotel">Hotel</span></div><div class="result-body"><div class="result-name">Casa Medina</div><div class="result-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Bogotá</div><div class="result-footer"><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;">4.6</span></div><div class="result-price">$180/n</div></div></div></div>
+      <div class="result-card"><div class="result-img"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=70" alt=""><div class="result-img-overlay"></div><span class="result-type-badge rb-rest">Restaurante</span></div><div class="result-body"><div class="result-name">La Pepita Burger</div><div class="result-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Medellín</div><div class="result-footer"><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;">4.8</span></div><div class="result-price" style="color:var(--accent-warm);">Reservar</div></div></div></div>
+      <div class="result-card"><div class="result-img"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=70" alt=""><div class="result-img-overlay"></div><span class="result-type-badge rb-tour">Tour</span></div><div class="result-body"><div class="result-name">Valle de Cocora</div><div class="result-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Salento, Quindío</div><div class="result-footer"><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;">5.0</span></div><div class="result-price">Ver más</div></div></div></div>
+      <div class="result-card"><div class="result-img"><img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=400&q=70" alt=""><div class="result-img-overlay"></div><span class="result-type-badge rb-hotel">Hotel</span></div><div class="result-body"><div class="result-name">Decameron San Luis</div><div class="result-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>San Andrés</div><div class="result-footer"><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;">4.4</span></div><div class="result-price">$320/n</div></div></div></div>
+      <div class="result-card"><div class="result-img"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=70" alt=""><div class="result-img-overlay"></div><span class="result-type-badge rb-rest">Restaurante</span></div><div class="result-body"><div class="result-name">Café de la Oficina</div><div class="result-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cali</div><div class="result-footer"><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;">4.9</span></div><div class="result-price" style="color:var(--accent-warm);">Reservar</div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: HOTELES
+══════════════════════════════════════════════ -->
+<div id="page-hoteles" class="page">
+  <div class="page-tabs">
+    <div class="page-tab active" onclick="switchTab(this)">Para ti</div>
+    <div class="page-tab" onclick="switchTab(this)">Más valorados</div>
+    <div class="page-tab" onclick="switchTab(this)">Colombia</div>
+    <div class="page-tab" onclick="switchTab(this)">Internacional</div>
+    <div class="page-tab" onclick="switchTab(this)">Guardados</div>
+  </div>
+  <div class="page-inner">
+    <div class="glass-card" style="margin-bottom:24px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:2;min-width:140px;"><label class="form-label">Destino</label><input class="form-input" placeholder="Ciudad o hotel…"></div>
+        <div style="flex:1;min-width:120px;"><label class="form-label">Check-in</label><input type="date" class="form-input"></div>
+        <div style="flex:1;min-width:120px;"><label class="form-label">Check-out</label><input type="date" class="form-input"></div>
+        <div style="min-width:110px;"><label class="form-label">Personas</label><select class="form-input"><option>1 persona</option><option>2 personas</option><option>3 personas</option><option>4+</option></select></div>
+        <button class="btn-primary" style="height:38px;border-radius:var(--radius-sm);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscar</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:24px;">
+      <div>
+        <div class="sec-header"><div class="sec-title">Hoteles destacados</div><span class="sec-count">18 hoteles</span></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+          <div class="hotel-card"><div class="hotel-img"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&q=75" alt="Hotel Santa Clara"><div class="hotel-img-overlay"></div><div class="hotel-price-badge">$280/noche</div><div class="hotel-save-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div></div><div class="hotel-body"><div class="hotel-name">Hotel Santa Clara</div><div class="hotel-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cartagena</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">5.0</span></div><div class="hotel-tags"><span class="hotel-tag">Pool</span><span class="hotel-tag">Spa</span><span class="hotel-tag">Restaurante</span></div><div class="hotel-footer"><span style="font-size:12px;color:var(--text-muted)">Disponible</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div></div>
+          <div class="hotel-card"><div class="hotel-img"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500&q=75" alt="Casa Medina"><div class="hotel-img-overlay"></div><div class="hotel-price-badge">$180/noche</div><div class="hotel-save-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div></div><div class="hotel-body"><div class="hotel-name">Casa Medina Bogotá</div><div class="hotel-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Bogotá</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.6</span></div><div class="hotel-tags"><span class="hotel-tag">Wifi</span><span class="hotel-tag">Desayuno</span><span class="hotel-tag">Bar</span></div><div class="hotel-footer"><span style="font-size:12px;color:var(--text-muted)">2 hab. disp.</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div></div>
+          <div class="hotel-card"><div class="hotel-img"><img src="https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=500&q=75" alt="Decameron"><div class="hotel-img-overlay"></div><div class="hotel-price-badge">$320/noche</div><div class="hotel-save-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div></div><div class="hotel-body"><div class="hotel-name">Decameron San Luis</div><div class="hotel-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>San Andrés</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.4</span></div><div class="hotel-tags"><span class="hotel-tag">Todo incl.</span><span class="hotel-tag">Playa</span></div><div class="hotel-footer"><span style="font-size:12px;color:var(--text-muted)">Disponible</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div></div>
+          <div class="hotel-card"><div class="hotel-img"><img src="https://images.unsplash.com/photo-1504700610630-ac6aba3536d3?w=500&q=75" alt="Hacienda"><div class="hotel-img-overlay"></div><div class="hotel-price-badge">$95/noche</div><div class="hotel-save-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div></div><div class="hotel-body"><div class="hotel-name">Hacienda Bambusa</div><div class="hotel-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Montenegro, Quindío</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.9</span></div><div class="hotel-tags"><span class="hotel-tag">Finca</span><span class="hotel-tag">Caballos</span><span class="hotel-tag">Café</span></div><div class="hotel-footer"><span style="font-size:12px;color:var(--text-muted)">3 hab. disp.</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="filter-panel" style="position:sticky;top:80px;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:16px;">Filtros</div>
+          <div class="filter-group"><div class="filter-group-title">Precio por noche</div><input type="range" class="range-input" min="0" max="600" value="300"><div class="range-labels"><span>$0</span><span>$300</span><span>$600+</span></div></div>
+          <div class="divider"></div>
+          <div class="filter-group"><div class="filter-group-title">Calificación</div><div class="star-filter-row"><button class="star-filter-btn active">5 ★</button><button class="star-filter-btn active">4+ ★</button><button class="star-filter-btn">3+ ★</button><button class="star-filter-btn">Todos</button></div></div>
+          <div class="divider"></div>
+          <div class="filter-group"><div class="filter-group-title">Servicios</div><div class="check-item"><input type="checkbox" checked id="f1"><label for="f1">WiFi gratis</label></div><div class="check-item"><input type="checkbox" id="f2"><label for="f2">Piscina</label></div><div class="check-item"><input type="checkbox" checked id="f3"><label for="f3">Desayuno incluido</label></div><div class="check-item"><input type="checkbox" id="f4"><label for="f4">Spa</label></div><div class="check-item"><input type="checkbox" id="f5"><label for="f5">Estacionamiento</label></div><div class="check-item"><input type="checkbox" id="f6"><label for="f6">Pet friendly</label></div></div>
+          <div class="divider"></div>
+          <div class="filter-group"><div class="filter-group-title">Ciudad</div><div class="check-item"><input type="checkbox" checked id="c1"><label for="c1">Cartagena</label></div><div class="check-item"><input type="checkbox" checked id="c2"><label for="c2">Bogotá</label></div><div class="check-item"><input type="checkbox" id="c3"><label for="c3">Medellín</label></div><div class="check-item"><input type="checkbox" id="c4"><label for="c4">San Andrés</label></div><div class="check-item"><input type="checkbox" id="c5"><label for="c5">Cali</label></div></div>
+          <button class="btn-primary" style="width:100%;justify-content:center;border-radius:var(--radius-sm);">Aplicar filtros</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: RESERVAS
+══════════════════════════════════════════════ -->
+<div id="page-reservas" class="page">
+  <div class="page-tabs">
+    <div class="page-tab active" onclick="switchTab(this)">Todas</div>
+    <div class="page-tab" onclick="switchTab(this)">Próximas</div>
+    <div class="page-tab" onclick="switchTab(this)">Hoteles</div>
+    <div class="page-tab" onclick="switchTab(this)">Restaurantes</div>
+    <div class="page-tab" onclick="switchTab(this)">Pasadas</div>
+  </div>
+  <div class="page-inner">
+    <div class="cta-strip"><div class="cta-strip-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="cta-strip-info"><h3>Tus próximas aventuras</h3><p>Gestiona todas tus reservas de hoteles y restaurantes en un solo lugar</p></div><button class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva reserva</button></div>
+    <div class="stats-row">
+      <div class="stat-mini sm-purple"><div class="stat-mini-num">6</div><div class="stat-mini-label">Total</div></div>
+      <div class="stat-mini sm-green"><div class="stat-mini-num">3</div><div class="stat-mini-label">Confirmadas</div></div>
+      <div class="stat-mini sm-orange"><div class="stat-mini-num">2</div><div class="stat-mini-label">Pendientes</div></div>
+      <div class="stat-mini sm-red"><div class="stat-mini-num">1</div><div class="stat-mini-label">Canceladas</div></div>
+    </div>
+    <div class="glass-card" style="padding:0 20px;">
+      <div class="reserva-item"><div class="reserva-icon ri-hotel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div><div class="reserva-info"><div class="reserva-name">Hotel Santa Clara</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>18–21 mayo 2026</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>2 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>Hab. Deluxe</span></div></div><span class="chip chip-green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmada</span><div class="reserva-actions"><button class="btn-ghost-sm">Ver detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+      <div class="reserva-item"><div class="reserva-icon ri-rest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div><div class="reserva-info"><div class="reserva-name">La Pepita Burger</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>15 mayo 2026</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:30 PM</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>4 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>Mesa #3</span></div></div><span class="chip chip-orange">Pendiente</span><div class="reserva-actions"><button class="btn-ghost-sm">Ver detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+      <div class="reserva-item"><div class="reserva-icon ri-hotel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div><div class="reserva-info"><div class="reserva-name">Hacienda Bambusa</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2–5 junio 2026</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>2 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>Cabaña Guadua</span></div></div><span class="chip chip-green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmada</span><div class="reserva-actions"><button class="btn-ghost-sm">Ver detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+      <div class="reserva-item"><div class="reserva-icon ri-rest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div><div class="reserva-info"><div class="reserva-name">Café de la Oficina</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>20 mayo 2026</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>12:30 PM</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>3 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>Mesa #7</span></div></div><span class="chip chip-orange">Pendiente</span><div class="reserva-actions"><button class="btn-ghost-sm">Ver detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+      <div class="reserva-item"><div class="reserva-icon ri-hotel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div><div class="reserva-info"><div class="reserva-name">Decameron San Luis</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>10–15 julio 2026</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>2 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>Suite Mar</span></div></div><span class="chip chip-green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmada</span><div class="reserva-actions"><button class="btn-ghost-sm">Ver detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+      <div class="reserva-item" style="opacity:0.55;"><div class="reserva-icon ri-rest"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div><div class="reserva-info"><div class="reserva-name">Andrés Carne de Res</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>3 abril 2026</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>8:00 PM</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>6 personas</span></div></div><span class="chip chip-red">Cancelada</span><div class="reserva-actions"><button class="btn-ghost-sm">Volver a reservar</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: MI NEGOCIO
+══════════════════════════════════════════════ -->
+<div id="page-minegocio" class="page">
+  <div class="page-inner">
+    <div style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px;">
+      <div class="biz-banner" style="background:linear-gradient(135deg,#1a1547 0%,#0d2540 50%,#0d3d38 100%);position:relative;"><div style="position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(108,99,255,0.4) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(0,212,170,0.3) 0%,transparent 40%);opacity:0.5;"></div><button class="biz-banner-edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar portada</button></div>
+      <div class="biz-header"><div class="biz-logo" style="background:linear-gradient(135deg,#FF7B54,#EC4899);"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div><div class="biz-info"><div class="biz-name">Café del Viajero</div><div class="biz-meta"><span style="display:inline-flex;align-items:center;gap:4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>Restaurante</span><span>·</span><span style="display:inline-flex;align-items:center;gap:4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cali, Valle del Cauca</span><span>·</span><span style="color:#FBBF24;display:inline-flex;align-items:center;gap:3px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.8 <span style="color:var(--text-muted)">(63 reseñas)</span></span></div></div><div class="biz-actions"><button class="btn-outline"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar negocio</button><button class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva publicación</button></div></div>
+      <div class="biz-stats" style="background:var(--glass-bg);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);"><div class="biz-stat"><div class="biz-stat-num" style="color:#A78BFA;">24</div><div class="biz-stat-label">Publicaciones</div></div><div class="biz-stat"><div class="biz-stat-num" style="color:var(--accent);">63</div><div class="biz-stat-label">Reseñas</div></div><div class="biz-stat"><div class="biz-stat-num" style="color:#FBBF24;">4.8</div><div class="biz-stat-label">Calificación</div></div><div class="biz-stat"><div class="biz-stat-num" style="color:#F472B6;">142</div><div class="biz-stat-label">Seguidores</div></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;">
+      <div>
+        <div class="glass-card" style="padding:0;margin-bottom:20px;overflow:hidden;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;"><div style="font-size:14px;font-weight:600;">Reservas de hoy</div><div style="display:flex;gap:8px;"><button class="btn-ghost-sm">Historial</button><button class="btn-primary" style="padding:6px 14px;font-size:12px;border-radius:20px;">Gestionar mesas</button></div></div>
+          <div style="padding:0 20px;">
+            <div class="reserva-item"><div class="avatar av-purple" style="width:42px;height:42px;font-size:14px;border-radius:var(--radius-sm);">CA</div><div class="reserva-info"><div class="reserva-name">Carlos Arango</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7:30 PM</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>4 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>Mesa #3</span></div></div><span class="chip chip-orange">Pendiente</span><div class="reserva-actions"><button class="btn-success-sm">Confirmar</button><button class="btn-danger-sm">Cancelar</button></div></div>
+            <div class="reserva-item"><div class="avatar av-pink" style="width:42px;height:42px;font-size:14px;border-radius:var(--radius-sm);">VP</div><div class="reserva-info"><div class="reserva-name">Valentina Pérez</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>8:00 PM</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>2 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>Mesa #1</span></div></div><span class="chip chip-green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmada</span><div class="reserva-actions"><button class="btn-ghost-sm">Detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+            <div class="reserva-item"><div class="avatar av-teal" style="width:42px;height:42px;font-size:14px;border-radius:var(--radius-sm);">LG</div><div class="reserva-info"><div class="reserva-name">Luis Gómez</div><div class="reserva-meta"><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>9:00 PM</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>6 personas</span><span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v5a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H7v-2a2 2 0 0 0-4 0Z"/><path d="M5 18v2"/><path d="M19 18v2"/></svg>Mesa #5</span></div></div><span class="chip chip-green"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Confirmada</span><div class="reserva-actions"><button class="btn-ghost-sm">Detalle</button><button class="btn-danger-sm">Cancelar</button></div></div>
+          </div>
+        </div>
+        <div class="sec-header"><div class="sec-title">Reseñas recientes</div><button class="sec-link">Ver todas</button></div>
+        <div class="glass-card" style="padding:0 20px;">
+          <div class="review-item"><div class="review-header"><div class="avatar av-teal" style="width:36px;height:36px;font-size:12px;">AT</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;">Ana Torres</div><div class="stars" style="margin-top:2px;"><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span></div></div><div style="font-size:11px;color:var(--text-muted);">Hace 2 días</div></div><div class="review-text">El café más auténtico de Cali. El personal es increíble y los tostados de origen son únicos. ¡Volveré sin duda!</div></div>
+          <div class="review-item"><div class="review-header"><div class="avatar" style="width:36px;height:36px;font-size:12px;background:linear-gradient(135deg,#6C63FF,#EC4899);">KC</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;">Kiara Castillo</div><div class="stars" style="margin-top:2px;"><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-empty" style="font-size:11px;">★</span></div></div><div style="font-size:11px;color:var(--text-muted);">Hace 5 días</div></div><div class="review-text">Muy buen ambiente para trabajar remotamente. El Wi-Fi funciona perfecto y la carta de desayunos es variada.</div></div>
+          <div class="review-item" style="border-bottom:none;"><div class="review-header"><div class="avatar av-green" style="width:36px;height:36px;font-size:12px;">SR</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;">Sofía Rodríguez</div><div class="stars" style="margin-top:2px;"><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span><span class="star-fill" style="font-size:11px;">★</span></div></div><div style="font-size:11px;color:var(--text-muted);">Hace 1 sem</div></div><div class="review-text">Pedí el cold brew y estuvo increíble. Vista al parque, música tranquila y el servicio muy atento. Lugar perfecto.</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="glass-card" style="margin-bottom:16px;">
+          <div class="widget-title"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Mesas del restaurante</div>
+          <div class="mesa-chip"><div class="mesa-num-badge">1</div><div style="flex:1;font-size:13px;">Mesa 1<div class="mesa-cap">2 personas</div></div><span class="chip chip-red">Ocupada</span></div>
+          <div class="mesa-chip"><div class="mesa-num-badge">2</div><div style="flex:1;font-size:13px;">Mesa 2<div class="mesa-cap">4 personas</div></div><span class="chip chip-teal">Libre</span></div>
+          <div class="mesa-chip"><div class="mesa-num-badge">3</div><div style="flex:1;font-size:13px;">Mesa 3<div class="mesa-cap">4 personas</div></div><span class="chip chip-orange">Reservada</span></div>
+          <div class="mesa-chip"><div class="mesa-num-badge">4</div><div style="flex:1;font-size:13px;">Mesa 4<div class="mesa-cap">6 personas</div></div><span class="chip chip-teal">Libre</span></div>
+          <div class="mesa-chip" style="margin-bottom:0;"><div class="mesa-num-badge">5</div><div style="flex:1;font-size:13px;">Mesa 5<div class="mesa-cap">8 personas</div></div><span class="chip chip-red">Ocupada</span></div>
+          <button class="btn-ghost-sm" style="width:100%;margin-top:12px;padding:8px;text-align:center;">+ Agregar mesa</button>
+        </div>
+        <div class="glass-card">
+          <div class="widget-title"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Rendimiento</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:20px;font-weight:700;color:var(--success);">12</div><div style="font-size:11px;color:var(--text-muted);">Reservas hoy</div></div>
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#FBBF24;">4.8</div><div style="font-size:11px;color:var(--text-muted);">Rating prom.</div></div>
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#A78BFA;">63</div><div style="font-size:11px;color:var(--text-muted);">Reseñas</div></div>
+            <div style="background:var(--glass-bg-strong);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:12px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#F472B6;">142</div><div style="font-size:11px;color:var(--text-muted);">Seguidores</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: AJUSTES
+══════════════════════════════════════════════ -->
+<div id="page-ajustes" class="page">
+  <div class="page-inner">
+    <div class="settings-layout">
+      <div class="settings-nav">
+        <div class="settings-nav-item active" onclick="switchSettingsNav(this)"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Perfil</div>
+        <div class="settings-nav-item" onclick="switchSettingsNav(this)"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Cuenta y seguridad</div>
+        <div class="settings-divider"></div>
+        <div class="settings-nav-item" onclick="switchSettingsNav(this)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notificaciones</div>
+        <div class="settings-nav-item" onclick="switchSettingsNav(this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Privacidad</div>
+        <div class="settings-nav-item" onclick="switchSettingsNav(this)"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Apariencia</div>
+        <div class="settings-divider"></div>
+        <div class="settings-nav-item" onclick="showPage('minegocio')"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Mi negocio</div>
+        <div class="settings-nav-item danger"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Cerrar sesión</div>
+      </div>
+      <div>
+        <div class="settings-section">
+          <div class="glass-card">
+            <div style="border-bottom:1px solid var(--glass-border);padding-bottom:14px;margin-bottom:4px;"><div class="settings-section-title">Foto de perfil</div><div style="font-size:13px;color:var(--text-muted);margin-top:3px;">Actualiza tu foto y nombre público</div></div>
+            <div class="settings-row"><div class="settings-row-info"><div class="avatar-upload"><div class="avatar-lg">EN</div><div><button class="btn-outline" style="margin-bottom:6px;">Cambiar foto</button><div style="font-size:11px;color:var(--text-muted);">JPG, PNG o GIF · Máx. 5 MB</div></div></div></div></div>
+            <div class="settings-row"><div class="settings-row-info"><div class="settings-row-label">Nombre completo</div><div class="settings-row-sub">Tu nombre visible en el feed</div></div><input class="form-input" value="Erick Narváez Vega" style="width:220px;"></div>
+            <div class="settings-row"><div class="settings-row-info"><div class="settings-row-label">Nombre de usuario</div><div class="settings-row-sub">travelia.co/@ericknv</div></div><input class="form-input" value="@ericknv" style="width:220px;"></div>
+            <div class="settings-row"><div class="settings-row-info"><div class="settings-row-label">Biografía</div></div><textarea class="form-input" style="width:220px;height:72px;resize:none;padding:8px 12px;">Viajero apasionado desde Cali. Amante del café colombiano…</textarea></div>
+            <div class="settings-row" style="border-bottom:none;"><div class="settings-row-info"><div class="settings-row-label">Ciudad</div></div><input class="form-input" value="Cali, Valle del Cauca" style="width:220px;"></div>
+            <div style="padding-top:14px;display:flex;justify-content:flex-end;"><button class="btn-primary">Guardar cambios</button></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="glass-card">
+            <div style="border-bottom:1px solid var(--glass-border);padding-bottom:14px;margin-bottom:4px;"><div class="settings-section-title">Cuenta y seguridad</div></div>
+            <div class="settings-row"><div class="settings-row-info"><div class="settings-row-label">Correo electrónico</div><div class="settings-row-sub">ericknv@correo.com · Verificado ✓</div></div><button class="btn-ghost-sm">Cambiar</button></div>
+            <div class="settings-row" style="border-bottom:none;"><div class="settings-row-info"><div class="settings-row-label">Contraseña</div><div class="settings-row-sub">Última actualización hace 3 meses</div></div><button class="btn-ghost-sm">Cambiar</button></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="glass-card">
+            <div style="border-bottom:1px solid var(--glass-border);padding-bottom:14px;margin-bottom:4px;"><div class="settings-section-title">Notificaciones</div></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Likes en mis publicaciones</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Comentarios</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Solicitudes de amistad</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Confirmaciones de reserva</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Resumen semanal por correo</div><div class="toggle-sub">Recibe un email cada semana</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="glass-card">
+            <div style="border-bottom:1px solid var(--glass-border);padding-bottom:14px;margin-bottom:4px;"><div class="settings-section-title">Privacidad</div></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Perfil público</div><div class="toggle-sub">Cualquiera puede ver tu perfil</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Mostrar ubicación en publicaciones</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Permitir solicitudes de amistad</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="glass-card">
+            <div style="border-bottom:1px solid var(--glass-border);padding-bottom:14px;margin-bottom:4px;"><div class="settings-section-title">Apariencia</div></div>
+            <div class="toggle-wrap"><div><div class="toggle-label">Modo oscuro</div><div class="toggle-sub">Actualmente activado</div></div><label class="toggle"><input type="checkbox" checked onchange="toggleTheme()"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="glass-card" style="border-color:rgba(248,113,113,0.3);">
+            <div style="border-bottom:1px solid rgba(248,113,113,0.2);padding-bottom:14px;margin-bottom:14px;"><div class="settings-section-title" style="color:var(--danger);">Zona de peligro</div></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn-danger-sm" style="padding:9px 18px;font-size:13px;">Desactivar cuenta</button><button class="btn-danger-sm" style="padding:9px 18px;font-size:13px;">Eliminar cuenta permanentemente</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     PÁGINA: RESTAURANTES
+══════════════════════════════════════════════ -->
+<div id="page-restaurantes" class="page">
+  <div class="page-tabs">
+    <div class="page-tab active" onclick="switchTab(this)">Para ti</div>
+    <div class="page-tab" onclick="switchTab(this)">Mejor valorados</div>
+    <div class="page-tab" onclick="switchTab(this)">Cerca de mí</div>
+    <div class="page-tab" onclick="switchTab(this)">Colombia</div>
+    <div class="page-tab" onclick="switchTab(this)">Internacional</div>
+    <div class="page-tab" onclick="switchTab(this)">Guardados</div>
+  </div>
+  <div class="page-inner">
+
+    <!-- Buscador -->
+    <div class="glass-card" style="margin-bottom:24px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="flex:2;min-width:140px;"><label class="form-label">Restaurante o cocina</label><input class="form-input" placeholder="Ej: mariscos, pizza, ceviche…"></div>
+        <div style="flex:1;min-width:130px;"><label class="form-label">Ciudad</label><select class="form-input"><option>Todas las ciudades</option><option>Cali</option><option>Bogotá</option><option>Medellín</option><option>Cartagena</option><option>Barranquilla</option><option>Santa Marta</option></select></div>
+        <div style="flex:1;min-width:120px;"><label class="form-label">Fecha reserva</label><input type="date" class="form-input"></div>
+        <div style="min-width:110px;"><label class="form-label">Personas</label><select class="form-input"><option>1 persona</option><option selected>2 personas</option><option>3 personas</option><option>4 personas</option><option>5+</option></select></div>
+        <button class="btn-primary" style="height:38px;border-radius:var(--radius-sm);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscar</button>
+      </div>
+    </div>
+
+    <!-- Promo -->
+    <div class="promo-banner">
+      <div class="promo-icon">🎉</div>
+      <div class="promo-info">
+        <h3>¡Reserva antes del domingo y obtén 10% off en tu próxima visita!</h3>
+        <p>Válido en más de 80 restaurantes afiliados a Travelia en Colombia</p>
+      </div>
+      <button class="btn-primary" style="flex-shrink:0;">Ver oferta</button>
+    </div>
+
+    <!-- Pills de cocina -->
+    <div class="cuisine-pills">
+      <div class="cuisine-pill active"><span class="pill-emoji">🍽️</span>Todos</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🦞</span>Mariscos</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🥩</span>Carnes</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🌮</span>Mexicana</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🍕</span>Italiana</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🍣</span>Japonesa</div>
+      <div class="cuisine-pill"><span class="pill-emoji">☕</span>Café</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🥗</span>Vegetariana</div>
+      <div class="cuisine-pill"><span class="pill-emoji">🍔</span>Burgers</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:24px;">
+      <div>
+
+        <!-- Destacado -->
+        <div class="rest-featured">
+          <div class="feat-img">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=80" alt="La Pepita Burger">
+            <div class="feat-img-overlay"></div>
+          </div>
+          <div class="feat-body">
+            <div class="feat-badge"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Destacado del mes</div>
+            <div class="feat-title">La Pepita Burger</div>
+            <div class="feat-desc">El local de hamburguesas gourmet más querido de Medellín. Sus ingredientes locales, panes artesanales y salsas secretas la han convertido en leyenda. No hay mesa libre sin reserva.</div>
+            <div class="feat-meta">
+              <span><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Medellín, Antioquia</span>
+              <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>12:00 – 11:00 PM</span>
+              <span style="color:#FBBF24;display:flex;align-items:center;gap:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FBBF24" stroke="#FBBF24" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>4.8 · 312 reseñas</span>
+            </div>
+            <div class="feat-footer">
+              <span style="font-size:13px;font-weight:700;color:var(--accent-warm);">$25.000 – $65.000</span>
+              <button class="btn-primary" style="margin-left:auto;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Reservar mesa</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-header"><div class="sec-title">Restaurantes destacados</div><span class="sec-count">36 resultados</span></div>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+
+          <div class="rest-card">
+            <div class="rest-img"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=75" alt="Café de la Oficina" loading="lazy"><div class="rest-img-overlay"></div><span class="rest-price-badge">$15K – $45K</span><div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><span class="rest-cuisine-badge">☕ Café &amp; Desayunos</span></div>
+            <div class="rest-body"><div class="rest-name">Café de la Oficina</div><div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cali, Valle del Cauca</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.9</span><span style="font-size:11px;color:var(--text-muted);margin-left:4px;">· 201 reseñas</span></div><div class="rest-tags"><span class="rest-tag">Wi-Fi</span><span class="rest-tag">Terraza</span><span class="rest-tag">Pet friendly</span></div><div class="rest-footer"><span style="font-size:12px;color:var(--success);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>Abierto ahora</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div>
+          </div>
+
+          <div class="rest-card">
+            <div class="rest-img"><img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=500&q=75" alt="Restaurante Ocho Ríos" loading="lazy"><div class="rest-img-overlay"></div><span class="rest-price-badge">$30K – $80K</span><div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><span class="rest-cuisine-badge">🦞 Mariscos</span></div>
+            <div class="rest-body"><div class="rest-name">Restaurante Ocho Ríos</div><div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cali, Valle del Cauca</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.8</span><span style="font-size:11px;color:var(--text-muted);margin-left:4px;">· 87 reseñas</span></div><div class="rest-tags"><span class="rest-tag">Vista al río</span><span class="rest-tag">Reservas</span></div><div class="rest-footer"><span style="font-size:12px;color:var(--success);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>Abierto ahora</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div>
+          </div>
+
+          <div class="rest-card">
+            <div class="rest-img"><img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=500&q=75" alt="Andrés Carne de Res" loading="lazy"><div class="rest-img-overlay"></div><span class="rest-price-badge">$50K – $130K</span><div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><span class="rest-cuisine-badge">🥩 Parrilla</span></div>
+            <div class="rest-body"><div class="rest-name">Andrés Carne de Res</div><div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Chía, Cundinamarca</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.7</span><span style="font-size:11px;color:var(--text-muted);margin-left:4px;">· 524 reseñas</span></div><div class="rest-tags"><span class="rest-tag">Música en vivo</span><span class="rest-tag">Bar</span><span class="rest-tag">Grupo</span></div><div class="rest-footer"><span style="font-size:12px;color:var(--warning);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--warning);display:inline-block;"></span>Abre a las 5PM</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div>
+          </div>
+
+          <div class="rest-card">
+            <div class="rest-img"><img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=500&q=75" alt="Sushi Nami" loading="lazy"><div class="rest-img-overlay"></div><span class="rest-price-badge">$40K – $120K</span><div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><span class="rest-cuisine-badge">🍣 Japonesa</span></div>
+            <div class="rest-body"><div class="rest-name">Sushi Nami</div><div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Bogotá, D.C.</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.5</span><span style="font-size:11px;color:var(--text-muted);margin-left:4px;">· 178 reseñas</span></div><div class="rest-tags"><span class="rest-tag">Omakase</span><span class="rest-tag">Bar de sakes</span></div><div class="rest-footer"><span style="font-size:12px;color:var(--success);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>Abierto ahora</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div>
+          </div>
+
+          <div class="rest-card">
+            <div class="rest-img"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=75" alt="La Mulata Cartagenera" loading="lazy"><div class="rest-img-overlay"></div><span class="rest-price-badge">$20K – $55K</span><div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><span class="rest-cuisine-badge">🍔 Burgers</span></div>
+            <div class="rest-body"><div class="rest-name">La Mulata Cartagenera</div><div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cartagena, Bolívar</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.9</span><span style="font-size:11px;color:var(--text-muted);margin-left:4px;">· 396 reseñas</span></div><div class="rest-tags"><span class="rest-tag">Cocina típica</span><span class="rest-tag">Sin reserva</span></div><div class="rest-footer"><span style="font-size:12px;color:var(--success);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>Abierto ahora</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div>
+          </div>
+
+          <div class="rest-card">
+            <div class="rest-img"><img src="https://images.unsplash.com/photo-1613564834361-9436948817d1?w=500&q=75" alt="Salvo Patria" loading="lazy"><div class="rest-img-overlay"></div><span class="rest-price-badge">$35K – $90K</span><div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div><span class="rest-cuisine-badge">🥗 Gourmet</span></div>
+            <div class="rest-body"><div class="rest-name">Salvo Patria</div><div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Bogotá, D.C.</div><div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span><span style="font-size:12px;font-weight:600;margin-left:4px;color:var(--text-primary)">4.6</span><span style="font-size:11px;color:var(--text-muted);margin-left:4px;">· 143 reseñas</span></div><div class="rest-tags"><span class="rest-tag">Coctelería</span><span class="rest-tag">Terraza</span><span class="rest-tag">Live DJ</span></div><div class="rest-footer"><span style="font-size:12px;color:var(--danger);display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--danger);display:inline-block;"></span>Cerrado</span><button class="btn-primary" style="padding:7px 16px;font-size:12px;border-radius:20px;">Reservar</button></div></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Panel de filtros + Top valorados -->
+      <div>
+        <div class="filter-panel" style="position:sticky;top:80px;margin-bottom:16px;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:16px;">Filtros</div>
+          <div class="filter-group"><div class="filter-group-title">Precio promedio</div><input type="range" class="range-input" min="0" max="150000" value="80000"><div class="range-labels"><span>$10K</span><span>$80K</span><span>$150K+</span></div></div>
+          <div class="divider"></div>
+          <div class="filter-group"><div class="filter-group-title">Calificación</div><div class="star-filter-row"><button class="star-filter-btn active">5 ★</button><button class="star-filter-btn active">4+ ★</button><button class="star-filter-btn">3+ ★</button><button class="star-filter-btn">Todos</button></div></div>
+          <div class="divider"></div>
+          <div class="filter-group"><div class="filter-group-title">Características</div><div class="check-item"><input type="checkbox" checked id="rf1"><label for="rf1">Acepta reservas</label></div><div class="check-item"><input type="checkbox" id="rf2"><label for="rf2">Música en vivo</label></div><div class="check-item"><input type="checkbox" id="rf3"><label for="rf3">Pet friendly</label></div><div class="check-item"><input type="checkbox" id="rf4"><label for="rf4">Terraza exterior</label></div><div class="check-item"><input type="checkbox" id="rf5"><label for="rf5">Opciones veganas</label></div><div class="check-item"><input type="checkbox" id="rf6"><label for="rf6">Abierto ahora</label></div></div>
+          <div class="divider"></div>
+          <div class="filter-group"><div class="filter-group-title">Ciudad</div><div class="check-item"><input type="checkbox" checked id="rc1"><label for="rc1">Cali</label></div><div class="check-item"><input type="checkbox" checked id="rc2"><label for="rc2">Bogotá</label></div><div class="check-item"><input type="checkbox" id="rc3"><label for="rc3">Medellín</label></div><div class="check-item"><input type="checkbox" id="rc4"><label for="rc4">Cartagena</label></div><div class="check-item"><input type="checkbox" id="rc5"><label for="rc5">Barranquilla</label></div></div>
+          <button class="btn-primary" style="width:100%;justify-content:center;border-radius:var(--radius-sm);">Aplicar filtros</button>
+        </div>
+        <div class="glass-card">
+          <div class="widget-title"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Top valorados</div>
+          <div class="top-rest-item"><div class="top-rest-rank">1</div><div class="top-rest-img"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=80&q=70" alt=""></div><div class="top-rest-info"><div class="top-rest-name">Café de la Oficina</div><div class="top-rest-sub" style="color:#FBBF24;">★ 4.9 · Cali</div></div></div>
+          <div class="top-rest-item"><div class="top-rest-rank">2</div><div class="top-rest-img"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&q=70" alt=""></div><div class="top-rest-info"><div class="top-rest-name">La Mulata Cartagenera</div><div class="top-rest-sub" style="color:#FBBF24;">★ 4.9 · Cartagena</div></div></div>
+          <div class="top-rest-item"><div class="top-rest-rank">3</div><div class="top-rest-img"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=80&q=70" alt=""></div><div class="top-rest-info"><div class="top-rest-name">La Pepita Burger</div><div class="top-rest-sub" style="color:#FBBF24;">★ 4.8 · Medellín</div></div></div>
+          <div class="top-rest-item"><div class="top-rest-rank">4</div><div class="top-rest-img"><img src="https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=80&q=70" alt=""></div><div class="top-rest-info"><div class="top-rest-name">Restaurante Ocho Ríos</div><div class="top-rest-sub" style="color:#FBBF24;">★ 4.8 · Cali</div></div></div>
+          <div class="top-rest-item"><div class="top-rest-rank">5</div><div class="top-rest-img"><img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=80&q=70" alt=""></div><div class="top-rest-info"><div class="top-rest-name">Sushi Nami</div><div class="top-rest-sub" style="color:#FBBF24;">★ 4.5 · Bogotá</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+  const pageMap = {
+    feed: 'Feed de viajes',
+    profile: 'Mi Perfil',
+    notificaciones: 'Notificaciones',
+    amigos: 'Amigos',
+    buscar: 'Buscar',
+    hoteles: 'Hoteles',
+    reservas: 'Mis Reservas',
+    minegocio: 'Mi Negocio',
+    restaurantes: 'Restaurantes',
+    ajustes: 'Ajustes'
+  };
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const page = document.getElementById('page-' + name);
+    if (page) page.classList.add('visible');
+    const nav = document.getElementById('nav-' + name);
+    if (nav) nav.classList.add('active');
+    document.getElementById('topbar-title').textContent = pageMap[name] || name;
+    window.scrollTo(0, 0);
+  }
+
+  function switchTab(el) {
+    const parent = el.closest('.page-tabs');
+    parent.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function switchFeedTab(el) {
+    document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function switchSettingsNav(el) {
+    document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+    if (!el.classList.contains('danger')) el.classList.add('active');
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  }
+
+  document.querySelectorAll('.filter-pill').forEach(p => {
+    p.addEventListener('click', () => p.classList.toggle('active'));
+  });
+
+  document.querySelectorAll('.star-filter-btn').forEach(b => {
+    b.addEventListener('click', () => b.classList.toggle('active'));
+  });
+
+  document.querySelectorAll('.section-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      this.closest('.section-nav').querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.cuisine-pill').forEach(p => {
+    p.addEventListener('click', () => {
+      p.closest('.cuisine-pills').querySelectorAll('.cuisine-pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

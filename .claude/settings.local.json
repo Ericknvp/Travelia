@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\narva\\\\Travelia\\\\backend\" -Recurse -Filter \"*.sql\")",
+      "Bash(Select-Object FullName)",
+      "PowerShell(Start-Sleep -Seconds 2; try { $r = Invoke-WebRequest -Uri \"http://localhost:5000/api/auth/me\" -UseBasicParsing; $r.StatusCode } catch { \"Server not responding: $_\" })"
+    ]
+  }
+}

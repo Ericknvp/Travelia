@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travelia - Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card">
+            <img src="../assets/logo.svg" alt="Travelia" class="auth-logo">
+            <h1>Bienvenido</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Correo electrónico</label>
+                    <input type="email" id="correo" required placeholder="tu@correo.com">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="contrasena" required placeholder="••••••••">
+                </div>
+                <p id="errorMsg" class="error-msg" hidden></p>
+                <button type="submit" class="btn btn-primary btn-full">Iniciar sesión</button>
+            </form>
+            <p class="auth-link">¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
+        </div>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    <script src="../js/pages/login.js"></script>
+</body>
+</html>

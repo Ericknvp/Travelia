@@ -1,0 +1,46 @@
+.topbar {
+  position: sticky; top: 0;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 28px; height: 60px;
+  display: flex; align-items: center; gap: 16px;
+  z-index: 50; transition: background 0.3s;
+}
+.topbar-title { font-size: 16px; font-weight: 500; }
+
+.topbar-search { flex: 1; max-width: 360px; position: relative; margin-left: 8px; }
+.topbar-search input {
+  width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 30px; padding: 7px 16px 7px 36px;
+  font-size: 13px; color: var(--text-primary); outline: none;
+  font-family: 'Inter', sans-serif; transition: border-color 0.2s, background 0.3s;
+}
+.topbar-search input::placeholder { color: var(--text-muted); }
+.topbar-search input:focus { border-color: var(--primary-light); }
+.topbar-search .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); display: flex; }
+.topbar-search .search-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+.icon-btn {
+  width: 36px; height: 36px; background: var(--glass-bg);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary); transition: all 0.2s; position: relative;
+}
+.icon-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn:hover { background: var(--glass-bg-strong); color: var(--text-primary); }
+
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--accent-warm); border-radius: 50%; border: 1.5px solid var(--notif-border); }
+
+.theme-toggle {
+  width: 36px; height: 36px; background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary); transition: all 0.2s;
+}
+.theme-toggle:hover { background: var(--glass-bg-strong); color: var(--text-primary); }
+.theme-toggle svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.icon-sun { display: none; } .icon-moon { display: block; }
+[data-theme="light"] .icon-sun { display: block; } [data-theme="light"] .icon-moon { display: none; }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travelia - Mi Perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/topbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topbar" id="topbar"></div>
+    <div id="pageContent"><p class="loading">Cargando...</p></div>
+  </main>
+
+  <!-- Modal: editar perfil -->
+  <div class="login-modal-overlay" id="editProfileModal">
+    <div class="login-modal" style="max-width:480px;text-align:left;">
+      <button class="login-modal-close" id="closeEditProfile">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3 style="margin-bottom:20px;">Editar perfil</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div><label class="form-label">Nombre completo</label><input class="form-input" id="editNombre"></div>
+        <div><label class="form-label">Nombre de usuario (@)</label><input class="form-input" id="editUsername" placeholder="ej: juan_viajero"></div>
+        <div><label class="form-label">Biografía</label><textarea class="form-input" id="editBio" rows="3" style="resize:vertical;"></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><label class="form-label">Ciudad</label><input class="form-input" id="editCiudad"></div>
+          <div><label class="form-label">País</label><input class="form-input" id="editPais"></div>
+        </div>
+        <div>
+          <label class="form-label">Foto de perfil</label>
+          <input type="file" id="editFotoFile" accept="image/*" style="display:none;">
+          <div id="editFotoArea" onclick="document.getElementById('editFotoFile').click()" style="border:2px dashed var(--glass-border);border-radius:var(--radius-md);padding:16px;text-align:center;cursor:pointer;transition:border-color 0.2s;position:relative;">
+            <div id="editFotoPlaceholder">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div style="font-size:12px;color:var(--text-muted);">Haz clic para subir foto</div>
+            </div>
+            <div id="editFotoPreview" style="display:none;">
+              <img id="editFotoImg" style="max-height:120px;border-radius:var(--radius-sm);object-fit:cover;">
+              <div style="font-size:11px;color:var(--text-muted);margin-top:6px;" id="editFotoName"></div>
+            </div>
+          </div>
+          <input class="form-input" id="editFoto" placeholder="O pega una URL de foto..." style="margin-top:8px;">
+        </div>
+        <p id="editError" style="color:var(--accent-warm);font-size:13px;" hidden></p>
+        <button class="btn-primary" id="btnGuardarPerfil" style="width:100%;justify-content:center;">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: editar publicación -->
+  <div class="login-modal-overlay" id="editPubModal">
+    <div class="login-modal" style="max-width:480px;text-align:left;">
+      <button class="login-modal-close" id="closeEditPub">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h3 style="margin-bottom:20px;">Editar publicación</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div><label class="form-label">Título</label><input class="form-input" id="editPubTitulo"></div>
+        <div><label class="form-label">Contenido</label><textarea class="form-input" id="editPubContenido" rows="4" style="resize:vertical;"></textarea></div>
+        <div><label class="form-label">Ciudad</label><input class="form-input" id="editPubCiudad"></div>
+        <p id="editPubError" style="color:var(--accent-warm);font-size:13px;" hidden></p>
+        <button class="btn-primary" id="btnGuardarPub" style="width:100%;justify-content:center;">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/pages/perfil.js"></script>
+</body>
+</html>

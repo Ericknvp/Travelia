@@ -31,8 +31,9 @@ function renderPost(p) {
 
     let avatarInner, authorName, authorSub, authorHref;
     if (isNegocio) {
-        const negInitials = p.negocio_nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
-        avatarInner = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`;
+        avatarInner = p.foto_negocio
+            ? `<img src="${p.foto_negocio}" alt="${p.negocio_nombre}">`
+            : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`;
         authorName  = `<a href="negocio.html?id=${p.id_negocio_etiquetado}" style="color:inherit;text-decoration:none;font-weight:600;">${p.negocio_nombre}</a>`;
         authorSub   = `<span style="font-size:11px;background:rgba(108,99,255,0.2);color:#A78BFA;padding:1px 7px;border-radius:20px;font-weight:500;margin-right:6px;">Negocio</span>`;
     } else {

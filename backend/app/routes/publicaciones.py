@@ -28,7 +28,7 @@ def feed():
             if filter_negocio:
                 cur.execute("""
                     SELECT p.*, u.nombre AS autor, u.url_foto_perfil AS foto_autor,
-                           n.nombre AS negocio_nombre
+                           n.nombre AS negocio_nombre, n.url_foto_portada AS foto_negocio
                     FROM publicaciones p
                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                     LEFT JOIN negocios n ON p.id_negocio_etiquetado = n.id_negocio
@@ -38,7 +38,7 @@ def feed():
             elif filter_user:
                 cur.execute("""
                     SELECT p.*, u.nombre AS autor, u.url_foto_perfil AS foto_autor,
-                           n.nombre AS negocio_nombre
+                           n.nombre AS negocio_nombre, n.url_foto_portada AS foto_negocio
                     FROM publicaciones p
                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                     LEFT JOIN negocios n ON p.id_negocio_etiquetado = n.id_negocio
@@ -48,7 +48,7 @@ def feed():
             else:
                 cur.execute("""
                     SELECT p.*, u.nombre AS autor, u.url_foto_perfil AS foto_autor,
-                           n.nombre AS negocio_nombre
+                           n.nombre AS negocio_nombre, n.url_foto_portada AS foto_negocio
                     FROM publicaciones p
                     JOIN usuarios u ON p.id_usuario = u.id_usuario
                     LEFT JOIN negocios n ON p.id_negocio_etiquetado = n.id_negocio

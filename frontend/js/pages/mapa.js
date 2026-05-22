@@ -24,21 +24,20 @@ const CAT_CHIP_ACTIVE = {
 // ── Geocoding ──────────────────────────────────────────────────────────────────
 
 function geoGet(city) {
-    try { return JSON.parse(sessionStorage.getItem("tgeo_" + city)); }
-    catch { return undefined; }
+    const raw = sessionStorage.getItem("tgeo_" + city);
+    if (raw === null) return undefined;          // clave no existe → no cacheado
+    try { return JSON.parse(raw); } catch { return undefined; }
 }
 function geoSet(city, val) {
-    try { sessionStorage.setItem("tgeo_" + city, JSON.stringify(val)); }
-    catch {}
+    try { sessionStorage.setItem("tgeo_" + city, JSON.stringify(val)); } catch {}
 }
 
 async function geocodeCity(city) {
     const cached = geoGet(city);
-    if (cached !== undefined) return cached;
+    if (cached !== undefined) return cached;     // null = ya intentado sin resultado
     try {
         const r = await fetch(
-            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`,
-            { headers: { "Accept-Language": "es", "User-Agent": "Travelia-App/1.0" } }
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`
         );
         const data = await r.json();
         if (data?.[0]) {
@@ -53,17 +52,19 @@ async function geocodeCity(city) {
 
 // ── Marker icon ────────────────────────────────────────────────────────────────
 
+let _pinSeq = 0;
 function pinIcon(color, count) {
+    const fid = "psf" + (++_pinSeq);
     const label = count > 1
         ? `<text x="16" y="17" text-anchor="middle" font-size="8.5" font-weight="700" fill="white" font-family="Inter,sans-serif">${count > 9 ? "9+" : count}</text>`
         : "";
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="46" viewBox="0 0 32 46">
         <defs>
-            <filter id="ps" x="-50%" y="-20%" width="200%" height="160%">
+            <filter id="${fid}" x="-50%" y="-20%" width="200%" height="160%">
                 <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.55)"/>
             </filter>
         </defs>
-        <path d="M16 2C9.37 2 4 7.37 4 14C4 24 16 42 16 42C16 42 28 24 28 14C28 7.37 22.63 2 16 2Z" fill="${color}" filter="url(#ps)"/>
+        <path d="M16 2C9.37 2 4 7.37 4 14C4 24 16 42 16 42C16 42 28 24 28 14C28 7.37 22.63 2 16 2Z" fill="${color}" filter="url(#${fid})"/>
         <circle cx="16" cy="14" r="6.5" fill="white" fill-opacity="0.18"/>
         <circle cx="16" cy="14" r="4.5" fill="white" fill-opacity="0.9"/>
         ${label}
@@ -194,6 +195,16 @@ async function initMapa() {
         const coords = await geocodeCity(city);
         if (coords) coordsMap[city] = coords;
         if (!alreadyCached) await new Promise(r => setTimeout(r, 420));
+    }
+
+    const geocoded = Object.keys(coordsMap).length;
+    if (geocoded === 0) {
+        document.getElementById("mapaLoading").innerHTML =
+            `<div style="text-align:center;font-family:Inter,sans-serif;">
+                <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">No se pudo obtener la ubicación de las ciudades.</div>
+                <div style="font-size:12px;color:var(--text-muted);">Ciudades en publicaciones: <b style="color:var(--text-primary)">${cities.join(", ")}</b></div>
+             </div>`;
+        return;
     }
 
     document.getElementById("mapaLoading").style.display = "none";

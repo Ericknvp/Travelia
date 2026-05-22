@@ -29,7 +29,6 @@ function openEditModal() {
     document.getElementById("editBio").value      = perfilData.bio || "";
     document.getElementById("editCiudad").value   = perfilData.ciudad || "";
     document.getElementById("editPais").value     = perfilData.pais || "";
-    document.getElementById("editFoto").value     = perfilData.url_foto_perfil || "";
     document.getElementById("editError").hidden   = true;
     document.getElementById("editProfileModal").classList.add("open");
 }
@@ -52,7 +51,6 @@ document.getElementById("editFotoFile")?.addEventListener("change", e => {
         document.getElementById("editFotoName").textContent = file.name;
         document.getElementById("editFotoPlaceholder").style.display = "none";
         document.getElementById("editFotoPreview").style.display = "block";
-        document.getElementById("editFoto").value = "";
     };
     reader.readAsDataURL(file);
 });
@@ -71,7 +69,7 @@ document.getElementById("btnGuardarPerfil")?.addEventListener("click", async () 
     const btn = document.getElementById("btnGuardarPerfil");
     btn.disabled = true; btn.textContent = "Guardando...";
 
-    let url_foto_perfil = document.getElementById("editFoto").value.trim();
+    let url_foto_perfil = "";
     const fileInput = document.getElementById("editFotoFile");
     if (fileInput?.files[0]) {
         const fd = new FormData();

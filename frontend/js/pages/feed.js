@@ -303,6 +303,7 @@ document.getElementById("btnSubmitPost")?.addEventListener("click", async () => 
     const contenido  = document.getElementById("postContenido").value.trim();
     const categoria  = document.getElementById("postCategoria").value;
     const ciudad     = document.getElementById("postCiudad").value.trim();
+    const pais       = document.getElementById("postPais").value.trim();
     const fileInput  = document.getElementById("postFile");
     const errEl      = document.getElementById("postError");
 
@@ -330,7 +331,7 @@ document.getElementById("btnSubmitPost")?.addEventListener("click", async () => 
         }
     }
 
-    const res = await api.post("/publicaciones/", { titulo, contenido, categoria, ciudad, url_imagen });
+    const res = await api.post("/publicaciones/", { titulo, contenido, categoria, ciudad, pais, url_imagen });
     btn.disabled = false;
     btn.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Publicar`;
 
@@ -339,6 +340,7 @@ document.getElementById("btnSubmitPost")?.addEventListener("click", async () => 
         document.getElementById("postTitulo").value = "";
         document.getElementById("postContenido").value = "";
         document.getElementById("postCiudad").value = "";
+        document.getElementById("postPais").value = "";
         clearFile();
         showToast("Publicación creada exitosamente.");
         cargarFeed();

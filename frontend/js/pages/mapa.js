@@ -119,21 +119,23 @@ function renderMarkers() {
         ? allPubs
         : allPubs.filter(p => p.categoria === activeFilter);
 
-    const byCity = {};
+    const byKey = {};
     for (const p of filtered) {
         const city = p.ciudad.trim();
-        if (!coordsMap[city]) continue;
-        (byCity[city] = byCity[city] || []).push(p);
+        const country = (p.pais || "").trim();
+        const key = country ? `${city}|${country}` : city;
+        if (!coordsMap[key]) continue;
+        (byKey[key] = byKey[key] || { city, posts: [] }).posts.push(p);
     }
 
     let total = 0;
-    for (const [city, posts] of Object.entries(byCity)) {
+    for (const [key, { city, posts }] of Object.entries(byKey)) {
         const catCount = {};
         posts.forEach(p => { catCount[p.categoria] = (catCount[p.categoria] || 0) + 1; });
         const top = Object.entries(catCount).sort((a, b) => b[1] - a[1])[0]?.[0];
         const color = CAT_COLORS[top] || "#8B85FF";
 
-        const marker = L.marker(coordsMap[city], { icon: pinIcon(color, posts.length) })
+        const marker = L.marker(coordsMap[key], { icon: pinIcon(color, posts.length) })
             .bindPopup(buildPopup(city, posts), { maxWidth: 310 })
             .addTo(map);
         leafletMarkers.push(marker);
@@ -185,15 +187,24 @@ async function initMapa() {
         return;
     }
 
-    const cities = [...new Set(allPubs.map(p => p.ciudad.trim()))];
-    setMsg(`Geocodificando ciudades (0/${cities.length})...`);
+    // Agrupa por ciudad+pais para evitar ambigüedades (ej: Cartagena España vs Colombia)
+    const cityMeta = {};
+    for (const p of allPubs) {
+        const city = p.ciudad.trim();
+        const country = (p.pais || "").trim();
+        const key = country ? `${city}|${country}` : city;
+        if (!cityMeta[key]) cityMeta[key] = { city, country, query: country ? `${city}, ${country}` : city };
+    }
+    const cityKeys = Object.keys(cityMeta);
+    setMsg(`Geocodificando ciudades (0/${cityKeys.length})...`);
 
-    for (let i = 0; i < cities.length; i++) {
-        const city = cities[i];
-        setMsg(`Geocodificando ciudades (${i + 1}/${cities.length})...`);
-        const alreadyCached = geoGet(city) !== undefined;
-        const coords = await geocodeCity(city);
-        if (coords) coordsMap[city] = coords;
+    for (let i = 0; i < cityKeys.length; i++) {
+        const key = cityKeys[i];
+        const { query } = cityMeta[key];
+        setMsg(`Geocodificando ciudades (${i + 1}/${cityKeys.length})...`);
+        const alreadyCached = geoGet(query) !== undefined;
+        const coords = await geocodeCity(query);
+        if (coords) coordsMap[key] = coords;
         if (!alreadyCached) await new Promise(r => setTimeout(r, 420));
     }
 
@@ -202,7 +213,7 @@ async function initMapa() {
         document.getElementById("mapaLoading").innerHTML =
             `<div style="text-align:center;font-family:Inter,sans-serif;">
                 <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">No se pudo obtener la ubicación de las ciudades.</div>
-                <div style="font-size:12px;color:var(--text-muted);">Ciudades en publicaciones: <b style="color:var(--text-primary)">${cities.join(", ")}</b></div>
+                <div style="font-size:12px;color:var(--text-muted);">Ciudades buscadas: <b style="color:var(--text-primary)">${cityKeys.map(k => cityMeta[k].query).join(", ")}</b></div>
              </div>`;
         return;
     }

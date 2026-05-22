@@ -109,20 +109,24 @@
         <label class="form-label">Contenido</label>
         <textarea class="form-input" id="postContenido" rows="4" placeholder="Cuéntanos tu experiencia..." style="resize:vertical;"></textarea>
       </div>
+      <div>
+        <label class="form-label">Categoría</label>
+        <select class="form-input" id="postCategoria">
+          <option value="tour">Tour</option>
+          <option value="hospedaje">Hospedaje</option>
+          <option value="restaurante">Restaurante</option>
+          <option value="actividad">Actividad</option>
+          <option value="sitio">Sitio turístico</option>
+        </select>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div>
-          <label class="form-label">Categoría</label>
-          <select class="form-input" id="postCategoria">
-            <option value="tour">Tour</option>
-            <option value="hospedaje">Hospedaje</option>
-            <option value="restaurante">Restaurante</option>
-            <option value="actividad">Actividad</option>
-            <option value="sitio">Sitio turístico</option>
-          </select>
-        </div>
         <div>
           <label class="form-label">Ciudad</label>
           <input class="form-input" id="postCiudad" placeholder="Ej: Cartagena">
+        </div>
+        <div>
+          <label class="form-label">País</label>
+          <input class="form-input" id="postPais" placeholder="Ej: Colombia">
         </div>
       </div>
       <div>

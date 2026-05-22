@@ -201,7 +201,7 @@
     user-select: none;
     /* JS sets inline transform for parallax */
 }
-.fc-emoji { font-size: 22px; line-height: 1; }
+.fc-icon  { color: var(--primary); display: flex; flex-shrink: 0; }
 .fc-name  { font-size: 12px; font-weight: 600; color: var(--text-primary); }
 .fc-stars { font-size: 10px; color: #FBBF24; margin-top: 2px; letter-spacing: 1px; }
 

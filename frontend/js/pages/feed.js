@@ -352,8 +352,18 @@ document.getElementById("btnSubmitPost")?.addEventListener("click", async () => 
 
 const user = getUser();
 if (user) {
+    const photoInner = user.foto
+        ? `<img src="${user.foto}" alt="${user.nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+        : getInitials(user.nombre);
+
     const avatar = document.getElementById("createAvatar");
-    if (avatar) avatar.textContent = getInitials(user.nombre);
+    if (avatar) avatar.innerHTML = photoInner;
+
+    const modalAvatar = document.getElementById("postModalAvatar");
+    if (modalAvatar) modalAvatar.innerHTML = photoInner;
+
+    const modalName = document.getElementById("postModalUserName");
+    if (modalName) modalName.textContent = user.nombre;
 }
 
 async function cargarSugerencias() {

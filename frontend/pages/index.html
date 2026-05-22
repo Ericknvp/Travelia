@@ -95,7 +95,11 @@
     <button class="login-modal-close" id="closeCreatePost">
       <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
-    <h3 style="margin-bottom:20px;">Nueva publicación</h3>
+    <h3 style="margin-bottom:16px;">Nueva publicación</h3>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div class="avatar av-purple" id="postModalAvatar" style="width:40px;height:40px;font-size:14px;flex-shrink:0;overflow:hidden;">?</div>
+      <div id="postModalUserName" style="font-weight:600;font-size:14px;color:var(--text-primary);"></div>
+    </div>
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div>
         <label class="form-label">Título</label>

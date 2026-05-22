@@ -14,23 +14,28 @@ async function cargarRestaurantes() {
         <div class="page-inner"><p class="loading">No hay restaurantes registrados aún.</p></div>`;
         return;
     }
-    const cards = res.map(r => `
-    <div class="rest-card">
+    const cards = res.map(r => {
+        const rating = r.calificacion_promedio ? Number(r.calificacion_promedio).toFixed(1) : null;
+        const starsHtml = Array.from({length: 5}, (_, i) =>
+            `<span style="color:${i < Math.round(r.calificacion_promedio || 0) ? "#FBBF24" : "var(--text-muted)"};">★</span>`
+        ).join("");
+        return `
+    <div class="rest-card" style="cursor:pointer;" onclick="window.location.href='negocio.html?id=${r.id_negocio}'">
         <div class="rest-img">
             ${r.url_foto_portada ? `<img src="${r.url_foto_portada}" alt="${r.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--accent-warm),#F97316);"></div>`}
             <div class="rest-img-overlay"></div>
-            <div class="rest-price-badge">${r.precio_promedio ? "$" + r.precio_promedio : "Ver precio"}</div>
-            <div class="rest-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+            ${rating ? `<div class="rest-price-badge">★ ${rating}</div>` : ""}
         </div>
         <div class="rest-body">
             <div class="rest-name">${r.nombre}</div>
             <div class="rest-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${r.ciudad || "Colombia"}</div>
             <div class="rest-footer">
-                <div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span></div>
-                <button class="btn-primary" onclick="requireAuthOrModal(() => {})">Reservar</button>
+                <div class="stars">${starsHtml}</div>
+                <button class="btn-primary" onclick="event.stopPropagation();window.location.href='negocio.html?id=${r.id_negocio}'">Ver perfil</button>
             </div>
         </div>
-    </div>`).join("");
+    </div>`;
+    }).join("");
 
     content.innerHTML = `
     <div class="page-tabs">

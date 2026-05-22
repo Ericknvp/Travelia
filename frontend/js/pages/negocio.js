@@ -33,9 +33,10 @@ async function cargarNegocio() {
         return;
     }
 
-    const [neg, pubs] = await Promise.all([
+    const [neg, pubs, resenias] = await Promise.all([
         api.get(`/negocios/${negocioId}`),
-        api.get(`/publicaciones/?negocio_id=${negocioId}`)
+        api.get(`/publicaciones/?negocio_id=${negocioId}`),
+        api.get(`/negocios/${negocioId}/resenia`)
     ]);
 
     if (!neg || neg.error) {
@@ -77,27 +78,65 @@ async function cargarNegocio() {
             </div>
         </div>
 
-        <div style="margin-top:24px;" id="negPubsSection">
-            ${!pubs || pubs.error || pubs.length === 0
-                ? `<p class="loading">No hay publicaciones de este negocio.</p>`
-                : `<div style="margin-bottom:14px;font-size:15px;font-weight:600;">Publicaciones (${pubs.length})</div>
-                   <div style="display:flex;flex-direction:column;gap:14px;">
-                     ${pubs.map(p => `
-                     <div class="glass-card post" style="padding:16px;">
-                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                             ${p.categoria ? `<span class="post-badge ${badgeMap[p.categoria?.toLowerCase()] || "badge-tour"}">${p.categoria}</span>` : ""}
-                             <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">${timeAgo(p.fecha_creacion)}</span>
-                         </div>
-                         ${p.titulo ? `<div style="font-size:15px;font-weight:600;margin-bottom:6px;">${p.titulo}</div>` : ""}
-                         ${p.url_imagen ? `<img src="${p.url_imagen}" style="width:100%;max-height:220px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:8px;">` : ""}
-                         <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${p.contenido}</div>
-                         <div style="display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--text-muted);">
-                             <span style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${p.likes || 0}</span>
-                             <span style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${p.comentarios || 0}</span>
-                         </div>
-                     </div>`).join("")}
-                   </div>`
-            }
+        <div style="margin-top:24px;display:flex;flex-direction:column;gap:24px;">
+            <div id="negPubsSection">
+                ${!pubs || pubs.error || pubs.length === 0
+                    ? `<p class="loading">No hay publicaciones de este negocio.</p>`
+                    : `<div style="margin-bottom:14px;font-size:15px;font-weight:600;">Publicaciones (${pubs.length})</div>
+                       <div style="display:flex;flex-direction:column;gap:14px;">
+                         ${pubs.map(p => `
+                         <div class="glass-card post" style="padding:16px;">
+                             <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                 ${p.categoria ? `<span class="post-badge ${badgeMap[p.categoria?.toLowerCase()] || "badge-tour"}">${p.categoria}</span>` : ""}
+                                 <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">${timeAgo(p.fecha_creacion)}</span>
+                             </div>
+                             ${p.titulo ? `<div style="font-size:15px;font-weight:600;margin-bottom:6px;">${p.titulo}</div>` : ""}
+                             ${p.url_imagen ? `<img src="${p.url_imagen}" style="width:100%;max-height:220px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:8px;">` : ""}
+                             <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${p.contenido}</div>
+                             <div style="display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--text-muted);">
+                                 <span style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${p.likes || 0}</span>
+                                 <span style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${p.comentarios || 0}</span>
+                             </div>
+                         </div>`).join("")}
+                       </div>`
+                }
+            </div>
+
+            <div id="reseniasSection">
+                <div style="margin-bottom:14px;font-size:15px;font-weight:600;">Reseñas (${Array.isArray(resenias) ? resenias.length : 0})</div>
+                ${!isOwner ? `
+                <div class="glass-card" style="padding:20px;margin-bottom:16px;" id="formResenia">
+                    <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Deja tu reseña</div>
+                    <div style="display:flex;gap:6px;margin-bottom:12px;" id="starSelector">
+                        ${[1,2,3,4,5].map(n => `
+                        <span data-val="${n}" style="font-size:28px;cursor:pointer;color:var(--text-muted);transition:color 0.15s;" onmouseover="hoverStars(${n})" onmouseout="resetStars()" onclick="selectStar(${n})">★</span>`).join("")}
+                    </div>
+                    <textarea class="form-input" id="reseniaTexto" rows="3" placeholder="Cuéntanos tu experiencia..." style="resize:vertical;margin-bottom:10px;"></textarea>
+                    <p id="reseniaError" style="color:var(--accent-warm);font-size:13px;margin-bottom:8px;" hidden></p>
+                    <button class="btn-primary" id="btnEnviarResenia" style="width:100%;justify-content:center;">Enviar reseña</button>
+                </div>` : ""}
+                <div style="display:flex;flex-direction:column;gap:12px;" id="reseniasList">
+                    ${!Array.isArray(resenias) || resenias.length === 0
+                        ? `<p class="loading">Aún no hay reseñas. ¡Sé el primero!</p>`
+                        : resenias.map(r => {
+                            const initials = r.autor ? r.autor.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2) : "?";
+                            const avatarInner = r.foto_autor ? `<img src="${r.foto_autor}" alt="${r.autor}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials;
+                            const starsHtml = Array.from({length:5},(_,i) => `<span style="color:${i < r.calificacion ? "#FBBF24" : "var(--text-muted)"};">★</span>`).join("");
+                            return `
+                            <div class="glass-card" style="padding:16px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                                    <div class="avatar av-purple" style="width:36px;height:36px;font-size:12px;flex-shrink:0;">${avatarInner}</div>
+                                    <div>
+                                        <div style="font-size:13px;font-weight:600;">${r.autor}</div>
+                                        <div style="font-size:18px;line-height:1;">${starsHtml}</div>
+                                    </div>
+                                </div>
+                                ${r.texto ? `<div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${r.texto}</div>` : ""}
+                            </div>`;
+                        }).join("")
+                    }
+                </div>
+            </div>
         </div>
     </div>`;
 }
@@ -178,6 +217,48 @@ document.getElementById("btnSubmitNegPost")?.addEventListener("click", async () 
         cargarNegocio();
     } else {
         errEl.textContent = res?.error || "Error al publicar.";
+        errEl.hidden = false;
+    }
+});
+
+// ── Star rating ───────────────────────────────────────────────────────────────
+
+let selectedStar = 0;
+
+function hoverStars(n) {
+    document.querySelectorAll("#starSelector span").forEach((s, i) => {
+        s.style.color = i < n ? "#FBBF24" : "var(--text-muted)";
+    });
+}
+
+function resetStars() {
+    document.querySelectorAll("#starSelector span").forEach((s, i) => {
+        s.style.color = i < selectedStar ? "#FBBF24" : "var(--text-muted)";
+    });
+}
+
+function selectStar(n) {
+    selectedStar = n;
+    resetStars();
+}
+
+document.addEventListener("click", async e => {
+    if (!e.target.matches("#btnEnviarResenia")) return;
+    if (!isLoggedIn()) { requireAuthOrModal(() => {}); return; }
+    const texto = document.getElementById("reseniaTexto")?.value.trim();
+    const errEl = document.getElementById("reseniaError");
+    if (!selectedStar) { errEl.textContent = "Selecciona una puntuación."; errEl.hidden = false; return; }
+    errEl.hidden = true;
+    const btn = document.getElementById("btnEnviarResenia");
+    btn.disabled = true; btn.textContent = "Enviando...";
+    const res = await api.post(`/negocios/${negocioId}/resenia`, { calificacion: selectedStar, texto });
+    btn.disabled = false; btn.textContent = "Enviar reseña";
+    if (res?.mensaje) {
+        showToast("Reseña enviada.");
+        selectedStar = 0;
+        cargarNegocio();
+    } else {
+        errEl.textContent = res?.error || "Error al enviar reseña.";
         errEl.hidden = false;
     }
 });

@@ -14,23 +14,28 @@ async function cargarHoteles() {
         <div class="page-inner"><p class="loading">No hay hoteles registrados aún.</p></div>`;
         return;
     }
-    const cards = res.map(h => `
-    <div class="hotel-card">
+    const cards = res.map(h => {
+        const rating = h.calificacion_promedio ? Number(h.calificacion_promedio).toFixed(1) : null;
+        const starsHtml = Array.from({length: 5}, (_, i) =>
+            `<span style="color:${i < Math.round(h.calificacion_promedio || 0) ? "#FBBF24" : "var(--text-muted)"};">★</span>`
+        ).join("");
+        return `
+    <div class="hotel-card" style="cursor:pointer;" onclick="window.location.href='negocio.html?id=${h.id_negocio}'">
         <div class="hotel-img">
             ${h.url_foto_portada ? `<img src="${h.url_foto_portada}" alt="${h.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--primary),var(--accent));"></div>`}
             <div class="hotel-img-overlay"></div>
-            <div class="hotel-price-badge">${h.precio_promedio ? "$" + h.precio_promedio + "/n" : "Ver precio"}</div>
-            <div class="hotel-save-btn"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+            ${rating ? `<div class="hotel-price-badge">★ ${rating}</div>` : ""}
         </div>
         <div class="hotel-body">
             <div class="hotel-name">${h.nombre}</div>
             <div class="hotel-loc"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${h.ciudad || "Colombia"}</div>
             <div class="hotel-footer">
-                <div class="stars"><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-fill">★</span><span class="star-empty">★</span></div>
-                <button class="btn-primary" onclick="requireAuthOrModal(() => {})">Reservar</button>
+                <div class="stars">${starsHtml}</div>
+                <button class="btn-primary" onclick="event.stopPropagation();window.location.href='negocio.html?id=${h.id_negocio}'">Ver perfil</button>
             </div>
         </div>
-    </div>`).join("");
+    </div>`;
+    }).join("");
 
     content.innerHTML = `
     <div class="page-tabs">

@@ -103,6 +103,22 @@ def eliminar(id_negocio):
         conn.close()
 
 
+@negocios_bp.route("/<int:id_negocio>/resenia", methods=["GET"])
+def listar_resenias(id_negocio):
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT r.*, u.nombre AS autor, u.url_foto_perfil AS foto_autor
+                FROM resenias r
+                JOIN usuarios u ON r.id_usuario = u.id_usuario
+                WHERE r.id_negocio = %s
+                ORDER BY r.fecha_resenia DESC
+            """, (id_negocio,))
+            return jsonify(cur.fetchall())
+    finally:
+        conn.close()
+
 @negocios_bp.route("/<int:id_negocio>/resenia", methods=["POST"])
 @token_required
 def crear_resenia(id_negocio):

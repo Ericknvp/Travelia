@@ -214,7 +214,7 @@ async function cargarPerfil() {
                             <span style="margin-left:auto;background:rgba(108,99,255,0.2);color:#A78BFA;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;">${res.rol || "usuario"}</span>
                         </div>
                     </div>
-                    <button onclick="logout()" style="width:100%;margin-top:12px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:var(--danger);border-radius:var(--radius-sm);padding:9px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;" onmouseover="this.style.background='rgba(248,113,113,0.2)'" onmouseout="this.style.background='rgba(248,113,113,0.1)'">
+                    <button onclick="confirmLogout()" style="width:100%;margin-top:12px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:var(--danger);border-radius:var(--radius-sm);padding:9px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;" onmouseover="this.style.background='rgba(248,113,113,0.2)'" onmouseout="this.style.background='rgba(248,113,113,0.1)'">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                         Cerrar sesión
                     </button>

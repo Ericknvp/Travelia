@@ -125,6 +125,7 @@ async function cargarUsuario() {
                          ${pubs.map(p => `
                          <div class="glass-card post" style="padding:16px;">
                              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                                 ${p.id_negocio_etiquetado && p.negocio_nombre ? `<span style="font-size:11px;background:rgba(108,99,255,0.2);color:#A78BFA;padding:1px 7px;border-radius:20px;font-weight:500;display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><a href="negocio.html?id=${p.id_negocio_etiquetado}" style="color:inherit;text-decoration:none;">${p.negocio_nombre}</a></span>` : ""}
                                  ${p.categoria ? `<span class="post-badge ${badgeMap[p.categoria?.toLowerCase()] || "badge-tour"}">${p.categoria}</span>` : ""}
                                  <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">${timeAgo(p.fecha_creacion)}</span>
                              </div>

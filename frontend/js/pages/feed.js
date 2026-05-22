@@ -29,16 +29,18 @@ function renderPost(p) {
     const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
     const colorClass = colors[p.id_publicacion % colors.length];
 
-    let avatarInner, authorName, authorSub, authorHref;
+    let avatarInner, authorName, authorSub, avatarHref;
     if (isNegocio) {
+        avatarHref  = `negocio.html?id=${p.id_negocio_etiquetado}`;
         avatarInner = p.foto_negocio
             ? `<img src="${p.foto_negocio}" alt="${p.negocio_nombre}">`
             : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`;
-        authorName  = `<a href="negocio.html?id=${p.id_negocio_etiquetado}" style="color:inherit;text-decoration:none;font-weight:600;">${p.negocio_nombre}</a>`;
+        authorName  = `<a href="${avatarHref}" style="color:inherit;text-decoration:none;font-weight:600;">${p.negocio_nombre}</a>`;
         authorSub   = `<span style="font-size:11px;background:rgba(108,99,255,0.2);color:#A78BFA;padding:1px 7px;border-radius:20px;font-weight:500;margin-right:6px;">Negocio</span>`;
     } else {
+        avatarHref  = `usuario.html?id=${p.id_usuario}`;
         avatarInner = p.foto_autor ? `<img src="${p.foto_autor}" alt="${p.autor}">` : getInitials(p.autor);
-        authorName  = p.autor;
+        authorName  = `<a href="${avatarHref}" style="color:inherit;text-decoration:none;font-weight:600;">${p.autor}</a>`;
         authorSub   = "";
     }
 
@@ -53,7 +55,7 @@ function renderPost(p) {
     return `
     <div class="glass-card post" data-id="${p.id_publicacion}">
         <div class="post-header">
-            <div class="avatar ${isNegocio ? "av-indigo" : colorClass}">${avatarInner}</div>
+            <a href="${avatarHref}" style="text-decoration:none;"><div class="avatar ${isNegocio ? "av-indigo" : colorClass}">${avatarInner}</div></a>
             <div class="post-author">
                 <div class="post-author-name">${authorName}</div>
                 <div class="post-meta">${authorSub}<span class="time-ago" data-fecha="${p.fecha_creacion}">${timeAgo(p.fecha_creacion)}</span>${p.ciudad ? " · " + p.ciudad : ""}</div>

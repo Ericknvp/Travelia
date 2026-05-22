@@ -31,10 +31,11 @@ function colorForTipo(tipo) {
 }
 
 function textoNotif(n) {
-    if (n.tipo === "like") return `<strong>${n.nombre_origen}</strong> le dio me gusta a tu publicación`;
-    if (n.tipo === "comentario") return `<strong>${n.nombre_origen}</strong> comentó en tu publicación${n.texto_preview ? `: "${n.texto_preview}"` : ""}`;
-    if (n.tipo === "amistad") return `<strong>${n.nombre_origen}</strong> te envió una solicitud de amistad`;
-    return `Nueva notificación de <strong>${n.nombre_origen}</strong>`;
+    const link = `<a href="usuario.html?id=${n.id_usuario_origen}" style="color:inherit;text-decoration:none;font-weight:600;">${n.nombre_origen}</a>`;
+    if (n.tipo === "like") return `${link} le dio me gusta a tu publicación`;
+    if (n.tipo === "comentario") return `${link} comentó en tu publicación${n.texto_preview ? `: "${n.texto_preview}"` : ""}`;
+    if (n.tipo === "amistad") return `${link} te envió una solicitud de amistad`;
+    return `Nueva notificación de ${link}`;
 }
 
 async function cargarNotificaciones() {
@@ -69,7 +70,7 @@ async function cargarNotificaciones() {
                         return `
                         <div class="notif-item ${!n.leida ? "unread" : ""}">
                             <div class="notif-icon-wrap ${colorForTipo(n.tipo)}" style="position:relative;">
-                                <div class="avatar" style="width:42px;height:42px;font-size:15px;">${avatar}</div>
+                                <a href="usuario.html?id=${n.id_usuario_origen}" style="text-decoration:none;"><div class="avatar" style="width:42px;height:42px;font-size:15px;">${avatar}</div></a>
                                 <div style="position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--bg-mid);display:flex;align-items:center;justify-content:center;">
                                     <div class="${colorForTipo(n.tipo)}" style="width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
                                         <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${iconForTipo(n.tipo)}</svg>

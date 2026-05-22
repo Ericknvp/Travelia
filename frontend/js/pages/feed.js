@@ -29,7 +29,8 @@ function renderPost(p) {
     const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
     const colorClass = colors[p.id_publicacion % colors.length];
     const avatarInner = p.foto_autor ? `<img src="${p.foto_autor}" alt="${p.autor}">` : initials;
-    const badge = p.tipo ? `<span class="post-badge ${badgeClass(p.tipo)}">${p.tipo}</span>` : "";
+    const tipoBadge = p.tipo || p.categoria;
+    const badge = tipoBadge ? `<span class="post-badge ${badgeClass(tipoBadge)}">${tipoBadge}</span>` : "";
     const imagen = p.url_imagen ? `
         <div class="post-image">
             <img src="${p.url_imagen}" alt="imagen" loading="lazy">
@@ -42,7 +43,7 @@ function renderPost(p) {
             <div class="avatar ${colorClass}">${avatarInner}</div>
             <div class="post-author">
                 <div class="post-author-name">${p.autor}</div>
-                <div class="post-meta">${timeAgo(p.fecha_creacion)}${p.ciudad ? " · " + p.ciudad : ""}</div>
+                <div class="post-meta"><span class="time-ago" data-fecha="${p.fecha_creacion}">${timeAgo(p.fecha_creacion)}</span>${p.ciudad ? " · " + p.ciudad : ""}</div>
             </div>
             ${badge}
         </div>
@@ -118,6 +119,29 @@ function closeComments() {
     currentCommentPost = null;
 }
 
+function renderComment(c, myUser) {
+    const isOwn = myUser && c.id_usuario === myUser.id;
+    const initials = getInitials(c.autor);
+    const avatar = c.foto_autor
+        ? `<img src="${c.foto_autor}" alt="${c.autor}" style="width:100%;height:100%;object-fit:cover;">`
+        : initials;
+    const actions = isOwn ? `
+        <button data-edit-comment="${c._id}" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:Inter,sans-serif;padding:0;">Editar</button>
+        <button data-delete-comment="${c._id}" style="background:none;border:none;color:var(--danger);font-size:11px;cursor:pointer;font-family:Inter,sans-serif;padding:0;">Eliminar</button>` : "";
+    return `
+    <div style="display:flex;gap:10px;margin-bottom:14px;" data-comment-id="${c._id}">
+        <div class="avatar av-purple" style="width:34px;height:34px;font-size:12px;flex-shrink:0;">${avatar}</div>
+        <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">${c.autor}</div>
+            <div class="comment-text" style="font-size:13px;color:var(--text-secondary);margin-top:2px;line-height:1.5;">${c.texto}</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px;">
+                <span style="font-size:11px;color:var(--text-muted);"><span class="time-ago" data-fecha="${c.fecha}">${timeAgo(c.fecha)}</span>${c.editado ? " · editado" : ""}</span>
+                ${actions}
+            </div>
+        </div>
+    </div>`;
+}
+
 async function loadComments(id) {
     const list = document.getElementById("commentsList");
     list.innerHTML = `<p class="loading" style="padding:20px 0;">Cargando comentarios...</p>`;
@@ -130,24 +154,66 @@ async function loadComments(id) {
         list.innerHTML = `<p class="loading" style="padding:20px 0;">Sin comentarios aún. ¡Sé el primero!</p>`;
         return;
     }
-    list.innerHTML = res.map(c => {
-        const initials = getInitials(c.autor);
-        const avatar = c.foto_autor ? `<img src="${c.foto_autor}" alt="${c.autor}" style="width:100%;height:100%;object-fit:cover;">` : initials;
-        return `
-        <div style="display:flex;gap:10px;margin-bottom:14px;">
-            <div class="avatar av-purple" style="width:34px;height:34px;font-size:12px;flex-shrink:0;">${avatar}</div>
-            <div style="flex:1;">
-                <div style="font-size:13px;font-weight:500;">${c.autor}</div>
-                <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;line-height:1.5;">${c.texto}</div>
-                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${timeAgo(c.fecha)}</div>
-            </div>
-        </div>`;
-    }).join("");
+    const myUser = getUser();
+    list.innerHTML = res.map(c => renderComment(c, myUser)).join("");
 }
 
 document.getElementById("closeCommentsModal")?.addEventListener("click", closeComments);
 document.getElementById("commentsModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("commentsModal")) closeComments();
+});
+
+document.getElementById("commentsList")?.addEventListener("click", async e => {
+    const deleteBtn = e.target.closest("[data-delete-comment]");
+    const editBtn   = e.target.closest("[data-edit-comment]");
+    const saveBtn   = e.target.closest("[data-save-comment]");
+    const cancelBtn = e.target.closest("[data-cancel-comment]");
+
+    if (deleteBtn) {
+        const commentId = deleteBtn.dataset.deleteComment;
+        if (!confirm("¿Eliminar este comentario?")) return;
+        const res = await api.delete(`/publicaciones/${currentCommentPost}/comentarios/${commentId}`);
+        if (res?.mensaje) {
+            deleteBtn.closest("[data-comment-id]").remove();
+            const countEl = document.querySelector(`.post[data-id="${currentCommentPost}"] [data-action="comment"] .action-count`);
+            if (countEl) countEl.textContent = Math.max(0, parseInt(countEl.textContent) - 1);
+        } else {
+            showToast(res?.error || "Error al eliminar comentario.", "error");
+        }
+    }
+
+    if (editBtn) {
+        const commentId = editBtn.dataset.editComment;
+        const container = editBtn.closest("[data-comment-id]");
+        const textEl = container.querySelector(".comment-text");
+        const currentText = textEl.textContent.trim();
+        container.dataset.originalText = currentText;
+        textEl.innerHTML = `<textarea class="form-input" style="resize:none;width:100%;font-size:13px;margin-top:4px;" rows="2">${currentText}</textarea>`;
+        const actionsRow = editBtn.parentElement;
+        editBtn.style.display = "none";
+        actionsRow.insertAdjacentHTML("beforeend", `
+            <button data-save-comment="${commentId}" style="background:none;border:none;color:var(--accent);font-size:11px;cursor:pointer;font-family:Inter,sans-serif;padding:0;">Guardar</button>
+            <button data-cancel-comment="${commentId}" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:Inter,sans-serif;padding:0;">Cancelar</button>
+        `);
+        container.querySelector("textarea").focus();
+    }
+
+    if (saveBtn) {
+        const commentId = saveBtn.dataset.saveComment;
+        const container = saveBtn.closest("[data-comment-id]");
+        const texto = container.querySelector("textarea")?.value.trim();
+        if (!texto) return;
+        const res = await api.put(`/publicaciones/${currentCommentPost}/comentarios/${commentId}`, { texto });
+        if (res?.mensaje) {
+            loadComments(currentCommentPost);
+        } else {
+            showToast(res?.error || "Error al editar comentario.", "error");
+        }
+    }
+
+    if (cancelBtn) {
+        loadComments(currentCommentPost);
+    }
 });
 
 document.getElementById("btnSendComment")?.addEventListener("click", async () => {
@@ -276,3 +342,9 @@ if (user) {
 }
 
 cargarFeed();
+
+setInterval(() => {
+    document.querySelectorAll(".time-ago[data-fecha]").forEach(el => {
+        el.textContent = timeAgo(el.dataset.fecha);
+    });
+}, 60000);

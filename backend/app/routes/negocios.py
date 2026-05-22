@@ -62,6 +62,47 @@ def obtener(id_negocio):
     finally:
         conn.close()
 
+@negocios_bp.route("/<int:id_negocio>", methods=["PUT"])
+@token_required
+def editar(id_negocio):
+    data = request.get_json()
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT id_usuario FROM negocios WHERE id_negocio=%s", (id_negocio,))
+            neg = cur.fetchone()
+        if not neg or neg["id_usuario"] != g.user_id:
+            return jsonify({"error": "Sin permiso"}), 403
+        campos = {k: v for k, v in data.items() if k in ("nombre", "tipo", "descripcion", "ciudad", "pais", "direccion", "url_foto_portada")}
+        if not campos:
+            return jsonify({"error": "Sin cambios"}), 400
+        set_clause = ", ".join(f"{k}=%s" for k in campos)
+        with conn.cursor() as cur:
+            cur.execute(f"UPDATE negocios SET {set_clause} WHERE id_negocio=%s", (*campos.values(), id_negocio))
+            conn.commit()
+        return jsonify({"mensaje": "Negocio actualizado"})
+    finally:
+        conn.close()
+
+
+@negocios_bp.route("/<int:id_negocio>", methods=["DELETE"])
+@token_required
+def eliminar(id_negocio):
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT id_usuario FROM negocios WHERE id_negocio=%s", (id_negocio,))
+            neg = cur.fetchone()
+        if not neg or neg["id_usuario"] != g.user_id:
+            return jsonify({"error": "Sin permiso"}), 403
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM negocios WHERE id_negocio=%s", (id_negocio,))
+            conn.commit()
+        return jsonify({"mensaje": "Negocio eliminado"})
+    finally:
+        conn.close()
+
+
 @negocios_bp.route("/<int:id_negocio>/resenia", methods=["POST"])
 @token_required
 def crear_resenia(id_negocio):

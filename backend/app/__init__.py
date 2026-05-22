@@ -1,11 +1,21 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
-import os
+import os, datetime, decimal
 load_dotenv()
+
+class _JSONProvider(Flask.json_provider_class):
+    def default(self, o):
+        if isinstance(o, (datetime.datetime, datetime.date)):
+            return o.isoformat()
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        return super().default(o)
 
 def create_app():
     app = Flask(__name__)
+    app.json_provider_class = _JSONProvider
+    app.json = _JSONProvider(app)
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["UPLOAD_FOLDER"] = os.path.join(os.path.dirname(__file__), "uploads")
 
@@ -17,6 +27,7 @@ def create_app():
          ],
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization"],
+         expose_headers=["Content-Type"],
          methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
     from .routes.auth import auth_bp

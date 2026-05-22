@@ -6,6 +6,16 @@ async function apiFetch(endpoint, options = {}) {
         const headers = { "Content-Type": "application/json", ...options.headers };
         if (token) headers["Authorization"] = `Bearer ${token}`;
         const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
+        if (res.status === 401) {
+            const data = await res.json().catch(() => ({}));
+            if (data.error === "Token expirado" || data.error === "Token inválido") {
+                localStorage.removeItem("travelia_token");
+                localStorage.removeItem("travelia_user");
+                window.location.href = "login.html";
+                return;
+            }
+            return data;
+        }
         const data = await res.json();
         return data;
     } catch (e) {
@@ -22,6 +32,12 @@ async function apiUpload(endpoint, formData) {
         const res = await fetch(`${API_URL}${endpoint}`, { method: "POST", headers, body: formData });
         if (!res.ok) {
             const err = await res.json().catch(() => ({}));
+            if (res.status === 401) {
+                localStorage.removeItem("travelia_token");
+                localStorage.removeItem("travelia_user");
+                window.location.href = "login.html";
+                return;
+            }
             return { error: err.error || `Error ${res.status} al subir archivo` };
         }
         return await res.json();

@@ -90,6 +90,32 @@ def listar_amigos():
     finally:
         conn.close()
 
+@amigos_bp.route("/estado/<int:target_id>", methods=["GET"])
+@token_required
+def estado_amistad(target_id):
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT id_amistad, id_solicitante, id_receptor, estado
+                FROM amistades
+                WHERE (id_solicitante=%s AND id_receptor=%s)
+                   OR (id_solicitante=%s AND id_receptor=%s)
+                LIMIT 1
+            """, (g.user_id, target_id, target_id, g.user_id))
+            rel = cur.fetchone()
+        if not rel:
+            return jsonify({"estado": "ninguno"})
+        if rel["estado"] == "aceptada":
+            return jsonify({"estado": "amigos", "id_amistad": rel["id_amistad"]})
+        if rel["estado"] == "pendiente":
+            if rel["id_solicitante"] == g.user_id:
+                return jsonify({"estado": "solicitud_enviada", "id_amistad": rel["id_amistad"]})
+            return jsonify({"estado": "solicitud_recibida", "id_amistad": rel["id_amistad"]})
+        return jsonify({"estado": "ninguno"})
+    finally:
+        conn.close()
+
 @amigos_bp.route("/solicitudes/pendientes", methods=["GET"])
 @token_required
 def solicitudes_pendientes():

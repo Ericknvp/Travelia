@@ -226,3 +226,43 @@ def comentar(pub_id):
     except Exception:
         pass
     return jsonify({"mensaje": "Comentario añadido"}), 201
+
+
+@pub_bp.route("/<int:pub_id>/comentarios/<string:comment_id>", methods=["DELETE"])
+@token_required
+def eliminar_comentario(pub_id, comment_id):
+    from bson import ObjectId
+    db = get_mongo_db()
+    try:
+        oid = ObjectId(comment_id)
+    except Exception:
+        return jsonify({"error": "ID inválido"}), 400
+    comentario = db.comentarios.find_one({"_id": oid, "id_publicacion": pub_id})
+    if not comentario:
+        return jsonify({"error": "Comentario no encontrado"}), 404
+    if comentario["id_usuario"] != g.user_id:
+        return jsonify({"error": "Sin permiso"}), 403
+    db.comentarios.delete_one({"_id": oid})
+    return jsonify({"mensaje": "Comentario eliminado"})
+
+
+@pub_bp.route("/<int:pub_id>/comentarios/<string:comment_id>", methods=["PUT"])
+@token_required
+def editar_comentario(pub_id, comment_id):
+    from bson import ObjectId
+    data = request.get_json()
+    texto = data.get("texto", "").strip()
+    if not texto:
+        return jsonify({"error": "Texto requerido"}), 400
+    db = get_mongo_db()
+    try:
+        oid = ObjectId(comment_id)
+    except Exception:
+        return jsonify({"error": "ID inválido"}), 400
+    comentario = db.comentarios.find_one({"_id": oid, "id_publicacion": pub_id})
+    if not comentario:
+        return jsonify({"error": "Comentario no encontrado"}), 404
+    if comentario["id_usuario"] != g.user_id:
+        return jsonify({"error": "Sin permiso"}), 403
+    db.comentarios.update_one({"_id": oid}, {"$set": {"texto": texto, "editado": True}})
+    return jsonify({"mensaje": "Comentario editado"})

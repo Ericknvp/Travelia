@@ -30,6 +30,9 @@ async function cargarUsuario() {
         return;
     }
 
+    const myUser = getUser();
+    const loggedIn = isLoggedIn();
+
     const [u, pubs] = await Promise.all([
         api.get(`/usuarios/${userId}`),
         api.get(`/publicaciones/?usuario_id=${userId}`)
@@ -40,13 +43,45 @@ async function cargarUsuario() {
         return;
     }
 
+    const isMe = myUser && myUser.id === u.id_usuario;
+
+    let friendshipStatus = { estado: "ninguno" };
+    if (loggedIn && !isMe) {
+        const fs = await api.get(`/amigos/estado/${u.id_usuario}`);
+        if (fs && !fs.error) friendshipStatus = fs;
+    }
+
+    let friendBtn = "";
+    if (isMe) {
+        friendBtn = `<a href="perfil.html" class="btn-outline">Mi perfil</a>`;
+    } else if (!loggedIn) {
+        friendBtn = `<a href="login.html" class="btn-primary">Iniciar sesión</a>`;
+    } else {
+        const fs = friendshipStatus;
+        if (fs.estado === "amigos") {
+            friendBtn = `<button class="btn-outline" id="btnAgregar" onclick="eliminarAmistad(${fs.id_amistad}, this)">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                Amigos
+            </button>`;
+        } else if (fs.estado === "solicitud_enviada") {
+            friendBtn = `<button class="btn-outline" id="btnAgregar" disabled style="opacity:0.6;">Solicitud enviada</button>`;
+        } else if (fs.estado === "solicitud_recibida") {
+            friendBtn = `<button class="btn-primary" id="btnAgregar" onclick="aceptarSolicitud(${fs.id_amistad}, this)">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                Aceptar solicitud
+            </button>`;
+        } else {
+            friendBtn = `<button class="btn-primary" id="btnAgregar" onclick="enviarSolicitud(${u.id_usuario}, this)">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Agregar amigo
+            </button>`;
+        }
+    }
+
     const initials    = getInitials(u.nombre);
     const colorClass  = colors[u.id_usuario % colors.length];
     const avatarInner = u.url_foto_perfil ? `<img src="${u.url_foto_perfil}" alt="${u.nombre}">` : initials;
     const handle      = u.username ? `@${u.username}` : "";
-
-    const myUser = getUser();
-    const isMe   = myUser && myUser.id === u.id_usuario;
 
     content.innerHTML = `
     <div class="profile-hero" style="margin:0 28px 0;">
@@ -62,15 +97,7 @@ async function cargarUsuario() {
                     ${handle ? `<div class="profile-handle">${handle}</div>` : ""}
                 </div>
                 <div class="profile-actions" id="profileActions">
-                    ${isMe
-                        ? `<a href="perfil.html" class="btn-outline">Mi perfil</a>`
-                        : isLoggedIn()
-                            ? `<button class="btn-primary" id="btnAgregar" onclick="enviarSolicitud(${u.id_usuario}, this)">
-                                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                                Agregar amigo
-                              </button>`
-                            : `<a href="login.html" class="btn-primary">Iniciar sesión</a>`
-                    }
+                    ${friendBtn}
                 </div>
             </div>
         </div>
@@ -121,6 +148,7 @@ async function enviarSolicitud(id_receptor, btn) {
     btn.textContent = "Enviando...";
     const res = await api.post("/amigos/solicitud", { id_receptor });
     if (res?.mensaje) {
+        btn.disabled = true;
         btn.textContent = "Solicitud enviada";
         btn.style.opacity = "0.6";
         showToast("Solicitud de amistad enviada.");
@@ -128,6 +156,37 @@ async function enviarSolicitud(id_receptor, btn) {
         btn.disabled = false;
         btn.innerHTML = `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar amigo`;
         showToast(res?.error || "Error al enviar solicitud.", "error");
+    }
+}
+
+async function aceptarSolicitud(id_amistad, btn) {
+    btn.disabled = true;
+    btn.textContent = "Aceptando...";
+    const res = await api.put(`/amigos/solicitud/${id_amistad}`, { estado: "aceptada" });
+    if (res?.mensaje) {
+        btn.outerHTML = `<button class="btn-outline" id="btnAgregar" onclick="eliminarAmistad(${id_amistad}, this)">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Amigos
+        </button>`;
+        showToast("¡Ahora son amigos!");
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Aceptar solicitud`;
+        showToast(res?.error || "Error al aceptar solicitud.", "error");
+    }
+}
+
+async function eliminarAmistad(id_amistad, btn) {
+    if (!confirm("¿Eliminar esta amistad?")) return;
+    const res = await api.delete(`/amigos/${id_amistad}`);
+    if (res?.mensaje) {
+        btn.outerHTML = `<button class="btn-primary" id="btnAgregar" onclick="enviarSolicitud(${userId}, this)">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar amigo
+        </button>`;
+        showToast("Amistad eliminada.");
+    } else {
+        showToast(res?.error || "Error al eliminar amistad.", "error");
     }
 }
 

@@ -25,6 +25,4 @@ def upload_file():
 
 @upload_bp.route("/files/<filename>", methods=["GET"])
 def serve_file(filename):
-    resp = send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)
-    resp.headers["Access-Control-Allow-Origin"] = "*"
-    return resp
+    return send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)

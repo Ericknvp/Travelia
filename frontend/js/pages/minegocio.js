@@ -2,6 +2,8 @@ requireAuth();
 renderSidebar("minegocio.html");
 renderTopbar("Mi Negocio");
 
+let currentNeg = null;
+
 async function cargarMiNegocio() {
     const content = document.getElementById("pageContent");
     content.innerHTML = `<div class="page-inner"><p class="loading">Cargando...</p></div>`;
@@ -21,20 +23,154 @@ async function cargarMiNegocio() {
 }
 
 function mostrarNegocioExistente(neg) {
+    currentNeg = neg;
     const container = document.getElementById("negocioView");
     const tipoLabel = neg.tipo === "hotel" ? "Hotel / Hospedaje" : "Restaurante";
     container.innerHTML = `
     <div class="glass-card" style="text-align:center;padding:40px;">
+        ${neg.url_foto_portada ? `<img src="${neg.url_foto_portada}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;">` : `
         <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        </div>
+        </div>`}
         <h3 style="font-size:20px;font-weight:700;margin-bottom:6px;">${neg.nombre}</h3>
         <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">${tipoLabel}${neg.ciudad ? " · " + neg.ciudad : ""}</div>
-        <div style="display:flex;gap:12px;justify-content:center;">
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
             <a href="negocio.html?id=${neg.id_negocio}" class="btn-primary">Ver perfil del negocio</a>
-            <button class="btn-outline" onclick="mostrarFormulario()">Registrar otro</button>
+            <button class="btn-outline" onclick="mostrarFormularioEdicion()">Editar negocio</button>
+            <button class="btn-outline" style="color:var(--danger);border-color:rgba(248,113,113,0.3);" onclick="eliminarNegocio(${neg.id_negocio})">Eliminar negocio</button>
         </div>
     </div>`;
+}
+
+async function eliminarNegocio(id_negocio) {
+    if (!confirm("¿Eliminar este negocio? Esta acción no se puede deshacer.")) return;
+    const res = await api.delete(`/negocios/${id_negocio}`);
+    if (res?.mensaje) {
+        showToast("Negocio eliminado.");
+        currentNeg = null;
+        mostrarFormulario();
+    } else {
+        showToast(res?.error || "Error al eliminar negocio.", "error");
+    }
+}
+
+function mostrarFormularioEdicion() {
+    const neg = currentNeg;
+    if (!neg) return;
+    const container = document.getElementById("negocioView");
+    container.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+        <div class="glass-card">
+            <div style="font-size:16px;font-weight:600;margin-bottom:20px;">Editar mi negocio</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+                <div>
+                    <label class="form-label">Nombre del negocio</label>
+                    <input class="form-input" id="negNombre" value="${neg.nombre || ""}">
+                </div>
+                <div>
+                    <label class="form-label">Tipo</label>
+                    <select class="form-input" id="negTipo">
+                        <option value="hotel" ${neg.tipo === "hotel" ? "selected" : ""}>Hotel / Hospedaje</option>
+                        <option value="restaurante" ${neg.tipo === "restaurante" ? "selected" : ""}>Restaurante</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-input" id="negDesc" rows="3" style="resize:vertical;">${neg.descripcion || ""}</textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="form-label">Ciudad</label>
+                        <input class="form-input" id="negCiudad" value="${neg.ciudad || ""}">
+                    </div>
+                    <div>
+                        <label class="form-label">País</label>
+                        <input class="form-input" id="negPais" value="${neg.pais || ""}">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Dirección</label>
+                    <input class="form-input" id="negDireccion" value="${neg.direccion || ""}">
+                </div>
+                <div>
+                    <label class="form-label">Foto de portada</label>
+                    <input type="file" id="negFotoFile" accept="image/*" style="display:none;">
+                    <div id="negFotoArea" onclick="document.getElementById('negFotoFile').click()" style="border:2px dashed var(--glass-border);border-radius:var(--radius-md);padding:16px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-bottom:8px;">
+                        ${neg.url_foto_portada
+                            ? `<img src="${neg.url_foto_portada}" style="max-height:120px;border-radius:var(--radius-sm);object-fit:cover;"><div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Haz clic para cambiar</div>`
+                            : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <div style="font-size:12px;color:var(--text-muted);">Haz clic para subir foto de portada</div>`
+                        }
+                    </div>
+                    <input class="form-input" id="negFoto" value="${neg.url_foto_portada || ""}" placeholder="O pega una URL...">
+                </div>
+                <p id="negError" style="color:var(--accent-warm);font-size:13px;" hidden></p>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn-primary" id="btnGuardarNeg" style="flex:1;justify-content:center;">Guardar cambios</button>
+                    <button class="btn-outline" onclick="mostrarNegocioExistente(currentNeg)">Cancelar</button>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card">
+            <div class="widget-title">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Editar negocio
+            </div>
+            <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Actualiza la información de tu negocio. Los cambios serán visibles de inmediato en tu perfil.</p>
+        </div>
+    </div>`;
+
+    document.getElementById("negFotoFile")?.addEventListener("change", e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const area = document.getElementById("negFotoArea");
+            area.innerHTML = `<img src="${ev.target.result}" style="max-height:120px;border-radius:var(--radius-sm);object-fit:cover;"><div style="font-size:11px;color:var(--text-muted);margin-top:6px;">${file.name}</div>`;
+            document.getElementById("negFoto").value = "";
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById("btnGuardarNeg").addEventListener("click", async () => {
+        const nombre      = document.getElementById("negNombre").value.trim();
+        const tipo        = document.getElementById("negTipo").value;
+        const descripcion = document.getElementById("negDesc").value.trim();
+        const ciudad      = document.getElementById("negCiudad").value.trim();
+        const pais        = document.getElementById("negPais").value.trim();
+        const direccion   = document.getElementById("negDireccion").value.trim();
+        const errEl       = document.getElementById("negError");
+
+        if (!nombre) { errEl.textContent = "El nombre es requerido."; errEl.hidden = false; return; }
+        if (!ciudad)  { errEl.textContent = "La ciudad es requerida."; errEl.hidden = false; return; }
+        errEl.hidden = true;
+
+        const btn = document.getElementById("btnGuardarNeg");
+        btn.disabled = true; btn.textContent = "Guardando...";
+
+        let url_foto_portada = document.getElementById("negFoto").value.trim();
+        const fileInput = document.getElementById("negFotoFile");
+        if (fileInput?.files[0]) {
+            const fd = new FormData();
+            fd.append("file", fileInput.files[0]);
+            const up = await api.upload("/upload/", fd);
+            if (up?.url) url_foto_portada = up.url;
+            else { errEl.textContent = "Error al subir foto."; errEl.hidden = false; btn.disabled = false; btn.textContent = "Guardar cambios"; return; }
+        }
+
+        const res = await api.put(`/negocios/${neg.id_negocio}`, { nombre, tipo, descripcion, ciudad, pais, direccion, url_foto_portada });
+        btn.disabled = false; btn.textContent = "Guardar cambios";
+
+        if (res?.mensaje) {
+            showToast("Negocio actualizado correctamente.");
+            const updated = { ...neg, nombre, tipo, descripcion, ciudad, pais, direccion, url_foto_portada };
+            currentNeg = updated;
+            mostrarNegocioExistente(updated);
+        } else {
+            errEl.textContent = res?.error || "Error al guardar.";
+            errEl.hidden = false;
+        }
+    });
 }
 
 function mostrarFormulario() {

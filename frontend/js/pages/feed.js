@@ -20,7 +20,7 @@ function timeAgo(fecha) {
 }
 
 function badgeClass(tipo) {
-    const map = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad" };
+    const map = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad", sitio: "badge-sitio" };
     return map[tipo?.toLowerCase()] || "badge-tour";
 }
 

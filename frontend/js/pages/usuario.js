@@ -21,7 +21,7 @@ function timeAgo(fecha) {
 }
 
 const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
-const badgeMap = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad" };
+const badgeMap = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad", sitio: "badge-sitio" };
 
 async function cargarUsuario() {
     const content = document.getElementById("pageContent");

@@ -239,7 +239,7 @@ async function cargarMisPublicaciones() {
         container.innerHTML = `<p class="loading">No tienes publicaciones aún.</p>`;
         return;
     }
-    const badgeMap = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad" };
+    const badgeMap = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad", sitio: "badge-sitio" };
     container.innerHTML = `
     <div class="section-nav"><div class="section-tab active">Mis publicaciones (${mias.length})</div></div>
     <div style="display:flex;flex-direction:column;gap:14px;">

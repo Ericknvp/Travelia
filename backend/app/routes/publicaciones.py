@@ -65,6 +65,37 @@ def feed():
         conn.close()
 
 
+@pub_bp.route("/buscar", methods=["GET"])
+def buscar():
+    q        = request.args.get("q", "").strip()
+    categoria = request.args.get("categoria", "").strip()
+    like      = f"%{q}%"
+    conn = get_mysql_connection()
+    try:
+        with conn.cursor() as cur:
+            conditions = []
+            params     = []
+            if q:
+                conditions.append("(p.ciudad LIKE %s OR p.titulo LIKE %s OR p.contenido LIKE %s)")
+                params += [like, like, like]
+            if categoria:
+                conditions.append("p.categoria = %s")
+                params.append(categoria)
+            where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+            cur.execute(f"""
+                SELECT p.id_publicacion, p.titulo, p.contenido, p.categoria,
+                       p.ciudad, p.pais, p.url_imagen, p.fecha_creacion,
+                       u.nombre AS autor, u.id_usuario, u.url_foto_perfil AS foto_autor
+                FROM publicaciones p
+                JOIN usuarios u ON p.id_usuario = u.id_usuario
+                {where}
+                ORDER BY p.fecha_creacion DESC LIMIT 40
+            """, params)
+            return jsonify(cur.fetchall())
+    finally:
+        conn.close()
+
+
 @pub_bp.route("/", methods=["POST"])
 @token_required
 def crear():

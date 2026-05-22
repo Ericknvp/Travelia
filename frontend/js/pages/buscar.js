@@ -11,7 +11,7 @@ document.getElementById("pageContent").innerHTML = `
         <p>Busca hoteles, restaurantes, destinos turísticos y viajeros</p>
         <div class="search-big">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input id="searchInput" placeholder="Ej: Hoteles en Cartagena, restaurantes en Bogotá...">
+            <input id="searchInput" placeholder="Ej: Bogotá, Cartagena, playa...">
         </div>
     </div>
     <div class="filter-pills">
@@ -22,6 +22,10 @@ document.getElementById("pageContent").innerHTML = `
         <div class="filter-pill" data-filter="restaurantes">
             <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
             Restaurantes
+        </div>
+        <div class="filter-pill" data-filter="publicaciones">
+            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Publicaciones
         </div>
         <div class="filter-pill" data-filter="usuarios">
             <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -67,6 +71,36 @@ async function performSearch(q = "") {
                 </div>
             </div>
         </div>`).join("")}</div>`;
+
+    } else if (currentFilter === "publicaciones") {
+        const params = q ? `?q=${encodeURIComponent(q)}` : "";
+        const res = await api.get(`/publicaciones/buscar${params}`);
+        if (!res || res.error) { container.innerHTML = `<p class="loading">Error al buscar.</p>`; return; }
+        if (res.length === 0) { container.innerHTML = `<p class="loading">No se encontraron publicaciones${q ? ` para "${q}"` : ""}.</p>`; return; }
+
+        const badgeMap = { tour:"badge-tour", hospedaje:"badge-hospedaje", restaurante:"badge-restaurante", actividad:"badge-actividad", sitio:"badge-sitio" };
+        const colorList = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
+        container.innerHTML = `<div style="display:flex;flex-direction:column;gap:14px;">${res.map(p => {
+            const badge = badgeMap[p.categoria] || "badge-tour";
+            const avatarInner = p.foto_autor
+                ? `<img src="${p.foto_autor}" alt="${p.autor}" style="width:100%;height:100%;object-fit:cover;">`
+                : getInitials(p.autor);
+            const color = colorList[p.id_usuario % colorList.length];
+            return `
+            <div class="glass-card" style="cursor:pointer;display:flex;gap:14px;align-items:flex-start;" onclick="window.location.href='usuario.html?id=${p.id_usuario}'">
+                ${p.url_imagen ? `<img src="${p.url_imagen}" style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius-md);flex-shrink:0;">` : ""}
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <div class="avatar ${color}" style="width:28px;height:28px;font-size:10px;flex-shrink:0;">${avatarInner}</div>
+                        <span style="font-size:12px;color:var(--text-muted);">${p.autor}</span>
+                        <span class="post-badge ${badge}" style="margin-left:auto;">${p.categoria}</span>
+                    </div>
+                    <div style="font-size:14px;font-weight:600;margin-bottom:4px;">${p.titulo || ""}</div>
+                    <div style="font-size:13px;color:var(--text-secondary);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${p.contenido || ""}</div>
+                    ${p.ciudad ? `<div style="font-size:11px;color:var(--text-muted);margin-top:6px;">📍 ${p.ciudad}${p.pais ? ", " + p.pais : ""}</div>` : ""}
+                </div>
+            </div>`;
+        }).join("")}</div>`;
 
     } else if (currentFilter === "usuarios") {
         const res = await api.get(`/usuarios/buscar${q ? "?q=" + encodeURIComponent(q) : ""}`);

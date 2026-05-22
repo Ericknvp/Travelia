@@ -99,10 +99,15 @@ def me():
     try:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT id_usuario, nombre, username, correo, bio, ciudad, pais, url_foto_perfil, rol FROM usuarios WHERE id_usuario=%s",
+                "SELECT id_usuario, nombre, username, correo, bio, ciudad, pais, url_foto_perfil, rol, fecha_nacimiento FROM usuarios WHERE id_usuario=%s",
                 (g.user_id,)
             )
             user = cur.fetchone()
+            cur.execute(
+                "SELECT COUNT(*) AS total FROM amistades WHERE (id_solicitante=%s OR id_receptor=%s) AND estado='aceptada'",
+                (g.user_id, g.user_id)
+            )
+            user["total_amigos"] = cur.fetchone()["total"]
         return jsonify(user)
     finally:
         conn.close()

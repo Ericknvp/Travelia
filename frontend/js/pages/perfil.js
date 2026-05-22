@@ -24,11 +24,12 @@ function timeAgo(fecha) {
 
 function openEditModal() {
     if (!perfilData) return;
-    document.getElementById("editNombre").value   = perfilData.nombre || "";
-    document.getElementById("editUsername").value = perfilData.username || "";
-    document.getElementById("editBio").value      = perfilData.bio || "";
-    document.getElementById("editCiudad").value   = perfilData.ciudad || "";
-    document.getElementById("editPais").value     = perfilData.pais || "";
+    document.getElementById("editNombre").value          = perfilData.nombre || "";
+    document.getElementById("editUsername").value        = perfilData.username || "";
+    document.getElementById("editBio").value             = perfilData.bio || "";
+    document.getElementById("editCiudad").value          = perfilData.ciudad || "";
+    document.getElementById("editPais").value            = perfilData.pais || "";
+    document.getElementById("editFechaNacimiento").value = perfilData.fecha_nacimiento || "";
     document.getElementById("editError").hidden   = true;
     document.getElementById("editProfileModal").classList.add("open");
 }
@@ -56,12 +57,13 @@ document.getElementById("editFotoFile")?.addEventListener("change", e => {
 });
 
 document.getElementById("btnGuardarPerfil")?.addEventListener("click", async () => {
-    const nombre   = document.getElementById("editNombre").value.trim();
-    const username = document.getElementById("editUsername").value.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
-    const bio      = document.getElementById("editBio").value.trim();
-    const ciudad   = document.getElementById("editCiudad").value.trim();
-    const pais     = document.getElementById("editPais").value.trim();
-    const errEl    = document.getElementById("editError");
+    const nombre            = document.getElementById("editNombre").value.trim();
+    const username          = document.getElementById("editUsername").value.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+    const bio               = document.getElementById("editBio").value.trim();
+    const ciudad            = document.getElementById("editCiudad").value.trim();
+    const pais              = document.getElementById("editPais").value.trim();
+    const fecha_nacimiento  = document.getElementById("editFechaNacimiento").value || null;
+    const errEl             = document.getElementById("editError");
 
     if (!nombre) { errEl.textContent = "El nombre es requerido."; errEl.hidden = false; return; }
     errEl.hidden = true;
@@ -79,7 +81,7 @@ document.getElementById("btnGuardarPerfil")?.addEventListener("click", async () 
         else { errEl.textContent = "Error al subir foto."; errEl.hidden = false; btn.disabled = false; btn.textContent = "Guardar cambios"; return; }
     }
 
-    const res = await api.put("/usuarios/me", { nombre, username, bio, ciudad, pais, url_foto_perfil });
+    const res = await api.put("/usuarios/me", { nombre, username, bio, ciudad, pais, url_foto_perfil, fecha_nacimiento });
     btn.disabled = false; btn.textContent = "Guardar cambios";
 
     if (res?.mensaje) {
@@ -190,6 +192,12 @@ async function cargarPerfil() {
             <div>
                 <div class="glass-card profile-info-card">
                     ${res.bio ? `<p class="bio-text">${res.bio}</p>` : ""}
+                    <div style="display:flex;gap:24px;margin-bottom:16px;">
+                        <div style="text-align:center;">
+                            <div style="font-size:20px;font-weight:700;">${res.total_amigos ?? 0}</div>
+                            <div style="font-size:11px;color:var(--text-muted);">Amigos</div>
+                        </div>
+                    </div>
                     <div class="info-section">
                         <div class="info-section-title">Información</div>
                         <div class="info-row">
@@ -197,6 +205,7 @@ async function cargarPerfil() {
                             <span>Correo</span><span class="info-value" style="margin-left:auto;">${res.correo}</span>
                         </div>
                         ${res.ciudad ? `<div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span>Ciudad</span><span class="info-value" style="margin-left:auto;">${res.ciudad}</span></div>` : ""}
+                        ${res.fecha_nacimiento ? `<div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Cumpleaños</span><span class="info-value" style="margin-left:auto;">${new Date(res.fecha_nacimiento + 'T00:00:00').toLocaleDateString('es-ES', {day:'numeric',month:'long',year:'numeric'})}</span></div>` : ""}
                         <div class="info-row">
                             <span class="info-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
                             <span>Rol</span>

@@ -9,7 +9,7 @@ usuarios_bp = Blueprint("usuarios", __name__)
 @token_required
 def update_me():
     data = request.get_json()
-    campos = {k: v for k, v in data.items() if k in ("nombre", "bio", "ciudad", "pais", "url_foto_perfil", "username")}
+    campos = {k: v for k, v in data.items() if k in ("nombre", "bio", "ciudad", "pais", "url_foto_perfil", "username", "fecha_nacimiento")}
     if not campos:
         return jsonify({"error": "Sin campos para actualizar"}), 400
     conn = get_mysql_connection()
@@ -41,6 +41,12 @@ def get_usuario(user_id):
             user = cur.fetchone()
         if not user:
             return jsonify({"error": "Usuario no encontrado"}), 404
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT COUNT(*) AS total FROM amistades WHERE (id_solicitante=%s OR id_receptor=%s) AND estado='aceptada'",
+                (user_id, user_id)
+            )
+            user["total_amigos"] = cur.fetchone()["total"]
         return jsonify(user)
     finally:
         conn.close()

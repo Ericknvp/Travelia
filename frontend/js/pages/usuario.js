@@ -106,6 +106,12 @@ async function cargarUsuario() {
             <div>
                 <div class="glass-card profile-info-card">
                     ${u.bio ? `<p class="bio-text">${u.bio}</p>` : ""}
+                    <div style="display:flex;gap:24px;margin-bottom:16px;">
+                        <div style="text-align:center;">
+                            <div style="font-size:20px;font-weight:700;">${u.total_amigos ?? 0}</div>
+                            <div style="font-size:11px;color:var(--text-muted);">Amigos</div>
+                        </div>
+                    </div>
                     <div class="info-section">
                         <div class="info-section-title">Información</div>
                         ${u.ciudad ? `<div class="info-row"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span>Ciudad</span><span class="info-value" style="margin-left:auto;">${u.ciudad}</span></div>` : ""}

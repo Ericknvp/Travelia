@@ -105,6 +105,7 @@ function openEditPub(pub) {
     document.getElementById("editPubTitulo").value   = pub.titulo || "";
     document.getElementById("editPubContenido").value = pub.contenido || "";
     document.getElementById("editPubCiudad").value   = pub.ciudad || "";
+    document.getElementById("editPubPais").value     = pub.pais || "";
     document.getElementById("editPubError").hidden   = true;
     document.getElementById("editPubModal").classList.add("open");
 }
@@ -124,13 +125,14 @@ document.getElementById("btnGuardarPub")?.addEventListener("click", async () => 
     const titulo    = document.getElementById("editPubTitulo").value.trim();
     const contenido = document.getElementById("editPubContenido").value.trim();
     const ciudad    = document.getElementById("editPubCiudad").value.trim();
+    const pais      = document.getElementById("editPubPais").value.trim();
     const errEl     = document.getElementById("editPubError");
 
     if (!contenido) { errEl.textContent = "El contenido es requerido."; errEl.hidden = false; return; }
 
     const btn = document.getElementById("btnGuardarPub");
     btn.disabled = true; btn.textContent = "Guardando...";
-    const res = await api.put(`/publicaciones/${editPubId}`, { titulo, contenido, ciudad });
+    const res = await api.put(`/publicaciones/${editPubId}`, { titulo, contenido, ciudad, pais });
     btn.disabled = false; btn.textContent = "Guardar cambios";
 
     if (res?.mensaje) {

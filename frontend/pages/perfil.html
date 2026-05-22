@@ -65,7 +65,10 @@
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div><label class="form-label">Título</label><input class="form-input" id="editPubTitulo"></div>
         <div><label class="form-label">Contenido</label><textarea class="form-input" id="editPubContenido" rows="4" style="resize:vertical;"></textarea></div>
-        <div><label class="form-label">Ciudad</label><input class="form-input" id="editPubCiudad"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><label class="form-label">Ciudad</label><input class="form-input" id="editPubCiudad"></div>
+          <div><label class="form-label">País</label><input class="form-input" id="editPubPais"></div>
+        </div>
         <p id="editPubError" style="color:var(--accent-warm);font-size:13px;" hidden></p>
         <button class="btn-primary" id="btnGuardarPub" style="width:100%;justify-content:center;">Guardar cambios</button>
       </div>

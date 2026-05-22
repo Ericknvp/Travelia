@@ -99,7 +99,7 @@ def editar(pub_id):
             pub = cur.fetchone()
         if not pub or pub["id_usuario"] != g.user_id:
             return jsonify({"error": "Sin permiso"}), 403
-        campos = {k: v for k, v in data.items() if k in ("titulo", "contenido", "ciudad", "url_imagen")}
+        campos = {k: v for k, v in data.items() if k in ("titulo", "contenido", "ciudad", "pais", "url_imagen")}
         if not campos:
             return jsonify({"error": "Sin cambios"}), 400
         set_clause = ", ".join(f"{k}=%s" for k in campos)

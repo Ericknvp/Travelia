@@ -356,7 +356,58 @@ if (user) {
     if (avatar) avatar.textContent = getInitials(user.nombre);
 }
 
+async function cargarSugerencias() {
+    const cont = document.getElementById("sugerenciasList");
+    if (!cont) return;
+    if (!isLoggedIn()) return;
+
+    const data = await api.get("/usuarios/sugerencias");
+    if (!data || data.error || data.length === 0) {
+        cont.innerHTML = `<p style="font-size:12px;color:var(--text-muted);">No hay sugerencias por ahora.</p>`;
+        return;
+    }
+
+    const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
+    cont.innerHTML = data.slice(0, 5).map(u => {
+        const initials = u.nombre ? u.nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) : "?";
+        const avatar = u.url_foto_perfil
+            ? `<img src="${u.url_foto_perfil}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
+            : initials;
+        const color = colors[u.id_usuario % colors.length];
+        return `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--glass-border);" data-sug-id="${u.id_usuario}">
+            <a href="usuario.html?id=${u.id_usuario}" style="text-decoration:none;flex-shrink:0;">
+                <div class="avatar ${color}" style="width:36px;height:36px;font-size:12px;">${avatar}</div>
+            </a>
+            <div style="flex:1;min-width:0;">
+                <a href="usuario.html?id=${u.id_usuario}" style="color:var(--text-primary);text-decoration:none;font-size:13px;font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.nombre}</a>
+                ${u.ciudad ? `<div style="font-size:11px;color:var(--text-muted);">${u.ciudad}</div>` : ""}
+            </div>
+            <button class="btn-sug-agregar" data-id="${u.id_usuario}" style="font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--primary);background:transparent;color:var(--primary-light);cursor:pointer;white-space:nowrap;font-family:Inter,sans-serif;">Agregar</button>
+        </div>`;
+    }).join("");
+
+    cont.addEventListener("click", async e => {
+        const btn = e.target.closest(".btn-sug-agregar");
+        if (!btn) return;
+        const id = parseInt(btn.dataset.id);
+        btn.disabled = true;
+        btn.textContent = "Enviando...";
+        const res = await api.post("/amigos/solicitud", { id_receptor: id });
+        if (res?.mensaje) {
+            btn.textContent = "Enviada";
+            btn.style.color = "var(--text-muted)";
+            btn.style.borderColor = "var(--glass-border)";
+        } else {
+            btn.disabled = false;
+            btn.textContent = "Agregar";
+            showToast(res?.error || "Error al enviar solicitud.", "error");
+        }
+    }, { once: true });
+}
+
 cargarFeed();
+cargarSugerencias();
 
 setInterval(() => {
     document.querySelectorAll(".time-ago[data-fecha]").forEach(el => {

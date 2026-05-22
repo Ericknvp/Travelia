@@ -150,9 +150,21 @@ function toggleTheme() {
     localStorage.setItem("travelia_theme", html.dataset.theme);
 }
 
+function setColorScheme(color) {
+    const html = document.documentElement;
+    if (color === "purple") {
+        delete html.dataset.color;
+    } else {
+        html.dataset.color = color;
+    }
+    localStorage.setItem("travelia_color", color);
+}
+
 function initTheme() {
-    const saved = localStorage.getItem("travelia_theme") || "dark";
-    document.documentElement.dataset.theme = saved;
+    const savedTheme = localStorage.getItem("travelia_theme") || "dark";
+    const savedColor = localStorage.getItem("travelia_color") || "purple";
+    document.documentElement.dataset.theme = savedTheme;
+    if (savedColor !== "purple") document.documentElement.dataset.color = savedColor;
 }
 
 function showError(elementId, msg) {

@@ -91,14 +91,39 @@ async function cargarAjustes() {
 
                 <!-- section: apariencia -->
                 <div id="section-apariencia" style="display:none;">
-                    <div class="glass-card">
-                        <div class="settings-section"><div class="settings-section-title">Apariencia</div></div>
+                    <div class="glass-card" style="margin-bottom:16px;">
+                        <div class="settings-section"><div class="settings-section-title">Modo</div></div>
                         <div class="settings-row">
                             <div class="settings-row-info">
                                 <div class="settings-row-label">Tema</div>
                                 <div class="settings-row-sub">Cambia entre modo oscuro y claro</div>
                             </div>
                             <button class="btn-ghost-sm" onclick="toggleTheme()">Cambiar tema</button>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="settings-section"><div class="settings-section-title">Color de acento</div></div>
+                        <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Elige el color principal de la interfaz</div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;" id="colorSchemeGrid">
+                            ${[
+                                { id:"purple", label:"Morado",  bg:"#0F0E2A", primary:"#6C63FF" },
+                                { id:"indigo", label:"Índigo",  bg:"#0C0B25", primary:"#6366F1" },
+                                { id:"blue",   label:"Azul",    bg:"#080F1E", primary:"#3B82F6" },
+                                { id:"cyan",   label:"Cian",    bg:"#04121A", primary:"#06B6D4" },
+                                { id:"green",  label:"Verde",   bg:"#041A10", primary:"#10B981" },
+                                { id:"amber",  label:"Ámbar",   bg:"#140C00", primary:"#F59E0B" },
+                                { id:"orange", label:"Naranja", bg:"#160900", primary:"#F97316" },
+                                { id:"red",    label:"Rojo",    bg:"#160404", primary:"#EF4444" },
+                                { id:"pink",   label:"Rosa",    bg:"#18060F", primary:"#EC4899" },
+                            ].map(c => `
+                            <div class="color-scheme-card" data-color-id="${c.id}" onclick="setColorScheme('${c.id}');document.querySelectorAll('.color-scheme-card').forEach(el=>el.classList.remove('selected'));this.classList.add('selected');"
+                                style="cursor:pointer;border-radius:var(--radius-md);overflow:hidden;border:2px solid transparent;transition:border-color 0.2s;">
+                                <div style="background:${c.bg};height:64px;display:flex;align-items:center;justify-content:center;gap:6px;">
+                                    <div style="width:22px;height:22px;border-radius:50%;background:${c.primary};"></div>
+                                    <div style="width:14px;height:14px;border-radius:50%;background:${c.primary};opacity:0.5;"></div>
+                                </div>
+                                <div style="background:rgba(255,255,255,0.05);padding:8px;text-align:center;font-size:12px;font-weight:500;">${c.label}</div>
+                            </div>`).join("")}
                         </div>
                     </div>
                 </div>
@@ -114,6 +139,25 @@ async function cargarAjustes() {
         document.querySelectorAll("[id^='section-']").forEach(s => s.style.display = "none");
         const sec = document.getElementById(`section-${item.dataset.section}`);
         if (sec) sec.style.display = "block";
+        if (item.dataset.section === "apariencia") marcarColorActivo();
+    });
+
+    function marcarColorActivo() {
+        const current = localStorage.getItem("travelia_color") || "purple";
+        document.querySelectorAll(".color-scheme-card").forEach(card => {
+            const isActive = card.dataset.colorId === current;
+            card.classList.toggle("selected", isActive);
+            card.style.borderColor = isActive ? "var(--primary)" : "transparent";
+        });
+    }
+
+    document.getElementById("colorSchemeGrid")?.addEventListener("click", e => {
+        const card = e.target.closest(".color-scheme-card");
+        if (!card) return;
+        document.querySelectorAll(".color-scheme-card").forEach(c => {
+            c.style.borderColor = "transparent";
+        });
+        card.style.borderColor = "var(--primary)";
     });
 
     document.getElementById("ajFotoFile")?.addEventListener("change", e => {

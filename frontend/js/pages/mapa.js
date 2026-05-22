@@ -171,8 +171,6 @@ async function initMapa() {
     ).addTo(map);
 
     // Fetch
-    const setMsg = t => { const el = document.getElementById("loadingMsg"); if (el) el.textContent = t; };
-    setMsg("Cargando publicaciones...");
     const pubs = await api.get("/publicaciones/");
     if (!pubs || pubs.error) {
         document.getElementById("mapaLoading").innerHTML =
@@ -196,12 +194,10 @@ async function initMapa() {
         if (!cityMeta[key]) cityMeta[key] = { city, country, query: country ? `${city}, ${country}` : city };
     }
     const cityKeys = Object.keys(cityMeta);
-    setMsg(`Geocodificando ciudades (0/${cityKeys.length})...`);
 
     for (let i = 0; i < cityKeys.length; i++) {
         const key = cityKeys[i];
         const { query } = cityMeta[key];
-        setMsg(`Geocodificando ciudades (${i + 1}/${cityKeys.length})...`);
         const alreadyCached = geoGet(query) !== undefined;
         const coords = await geocodeCity(query);
         if (coords) coordsMap[key] = coords;

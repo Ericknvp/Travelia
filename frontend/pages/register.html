@@ -5,13 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travelia - Registro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
-<body>
-    <div class="auth-container">
-        <div class="glass-card auth-card">
+<body class="auth-body">
+<div class="auth-split">
+
+    <!-- ══ LEFT HERO ══ -->
+    <div class="auth-hero" id="authHero">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-orb hero-orb-3"></div>
+
+        <div class="hero-scene" id="heroScene">
+
+            <!-- Globe (background layer) -->
+            <div class="globe-bg">
+                <svg class="globe-svg" viewBox="0 0 300 300">
+                    <defs>
+                        <radialGradient id="gGlow2" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%"   stop-color="var(--primary)" stop-opacity="0.13"/>
+                            <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+
+                    <circle cx="150" cy="150" r="142" fill="url(#gGlow2)"/>
+                    <circle cx="150" cy="150" r="142" class="g-outline" stroke-width="1"/>
+
+                    <ellipse cx="150" cy="150" rx="142" ry="24"  class="g-lat"/>
+                    <ellipse cx="150" cy="150" rx="142" ry="62"  class="g-lat"/>
+                    <ellipse cx="150" cy="150" rx="142" ry="100" class="g-lat"/>
+                    <ellipse cx="150" cy="150" rx="142" ry="130" class="g-lat" opacity="0.1"/>
+
+                    <line x1="8" y1="150" x2="292" y2="150" class="g-eq"/>
+
+                    <ellipse cx="150" cy="150" ry="142" class="g-logi">
+                        <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="0s"      calcMode="linear"/>
+                    </ellipse>
+                    <ellipse cx="150" cy="150" ry="142" class="g-logi">
+                        <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-1.33s"  calcMode="linear"/>
+                    </ellipse>
+                    <ellipse cx="150" cy="150" ry="142" class="g-logi">
+                        <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-2.67s"  calcMode="linear"/>
+                    </ellipse>
+                    <ellipse cx="150" cy="150" ry="142" class="g-logi">
+                        <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-4s"     calcMode="linear"/>
+                    </ellipse>
+                    <ellipse cx="150" cy="150" ry="142" class="g-logi">
+                        <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-5.33s"  calcMode="linear"/>
+                    </ellipse>
+                    <ellipse cx="150" cy="150" ry="142" class="g-logi">
+                        <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-6.67s"  calcMode="linear"/>
+                    </ellipse>
+
+                    <circle cx="108" cy="107" r="5" class="g-dot-p" opacity="0.9"/>
+                    <circle cx="108" cy="107" r="5" class="g-dot-p" opacity="0.3">
+                        <animate attributeName="r"       values="5;17;5"    dur="2.6s" repeatCount="indefinite" begin="0s"/>
+                        <animate attributeName="opacity" values="0.3;0;0.3" dur="2.6s" repeatCount="indefinite" begin="0s"/>
+                    </circle>
+
+                    <circle cx="200" cy="156" r="4" class="g-dot-a" opacity="0.85"/>
+                    <circle cx="200" cy="156" r="4" class="g-dot-a" opacity="0.25">
+                        <animate attributeName="r"       values="4;14;4"    dur="3.2s" repeatCount="indefinite" begin="1s"/>
+                        <animate attributeName="opacity" values="0.3;0;0.3" dur="3.2s" repeatCount="indefinite" begin="1s"/>
+                    </circle>
+
+                    <circle cx="158" cy="77"  r="4"   class="g-dot-p" opacity="0.8"/>
+                    <circle cx="158" cy="77"  r="4"   class="g-dot-p" opacity="0.25">
+                        <animate attributeName="r"       values="4;15;4"    dur="3.8s" repeatCount="indefinite" begin="0.5s"/>
+                        <animate attributeName="opacity" values="0.3;0;0.3" dur="3.8s" repeatCount="indefinite" begin="0.5s"/>
+                    </circle>
+
+                    <circle cx="88"  cy="190" r="3.5" class="g-dot-a" opacity="0.7"/>
+                    <circle cx="222" cy="113" r="3"   class="g-dot-p" opacity="0.7"/>
+                    <circle cx="175" cy="210" r="3.5" class="g-dot-a" opacity="0.65"/>
+                </svg>
+            </div>
+
+            <!-- Text content -->
+            <div class="hero-text">
+                <div class="hero-brand">
+                    <div class="auth-logo-icon">
+                        <svg width="21" height="21" viewBox="0 0 36 36" fill="none">
+                            <circle cx="18" cy="16" r="13" stroke="white" stroke-width="1.6" stroke-opacity="0.5"/>
+                            <path d="M18 3C13.03 3 9 7.03 9 12C9 18.75 18 29 18 29C18 29 27 18.75 27 12C27 7.03 22.97 3 18 3Z" fill="white" fill-opacity="0.18" stroke="white" stroke-width="1.5"/>
+                            <circle cx="18" cy="12" r="3.2" fill="white"/>
+                        </svg>
+                    </div>
+                    <span class="hero-brand-name">Travelia</span>
+                </div>
+
+                <h2 class="hero-headline">
+                    Tu próxima<br>
+                    <span class="grad-text">aventura</span><br>
+                    te espera
+                </h2>
+                <p class="hero-sub">Únete a miles de viajeros que comparten sus experiencias y descubren lugares increíbles cada día.</p>
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">2.4K+</div>
+                        <div class="hero-stat-label">Destinos</div>
+                    </div>
+                    <div class="hero-stat-div"></div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">18K+</div>
+                        <div class="hero-stat-label">Viajeros</div>
+                    </div>
+                    <div class="hero-stat-div"></div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">95K+</div>
+                        <div class="hero-stat-label">Reseñas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating destination cards -->
+        <div class="fc-wrap fc-w-1">
+            <div class="float-card" data-speed="28">
+                <span class="fc-emoji">🌅</span>
+                <div><div class="fc-name">Bali, Indonesia</div><div class="fc-stars">★★★★★</div></div>
+            </div>
+        </div>
+        <div class="fc-wrap fc-w-2">
+            <div class="float-card" data-speed="44">
+                <span class="fc-emoji">🏯</span>
+                <div><div class="fc-name">Tokio, Japón</div><div class="fc-stars">★★★★★</div></div>
+            </div>
+        </div>
+        <div class="fc-wrap fc-w-3">
+            <div class="float-card" data-speed="36">
+                <span class="fc-emoji">🦁</span>
+                <div><div class="fc-name">Safari, Kenia</div><div class="fc-stars">★★★★★</div></div>
+            </div>
+        </div>
+        <div class="fc-wrap fc-w-4">
+            <div class="float-card" data-speed="20">
+                <span class="fc-emoji">🧊</span>
+                <div><div class="fc-name">Islandia</div><div class="fc-stars">★★★★★</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ RIGHT FORM PANEL ══ -->
+    <div class="auth-form-panel">
+        <div class="auth-card">
             <div class="auth-logo-icon">
                 <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
                     <circle cx="18" cy="16" r="13" stroke="white" stroke-width="1.6" stroke-opacity="0.5"/>
@@ -20,7 +161,9 @@
                 </svg>
             </div>
             <h1>Crear cuenta</h1>
-            <form id="registerForm">
+            <span class="auth-tagline">Únete y empieza a explorar el mundo</span>
+
+            <form id="registerForm" style="text-align:left;">
                 <div class="form-group">
                     <label>Nombre completo</label>
                     <input type="text" id="nombre" required placeholder="Tu nombre">
@@ -34,14 +177,49 @@
                     <input type="password" id="contrasena" required placeholder="Mínimo 8 caracteres">
                 </div>
                 <p id="errorMsg" class="error-msg" hidden></p>
-                <button type="submit" class="btn btn-primary btn-full">Registrarme</button>
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top:6px;">Registrarme</button>
             </form>
+
             <p class="auth-link">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
         </div>
     </div>
-    <script src="../js/api.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/ui.js"></script>
-    <script src="../js/pages/register.js"></script>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/ui.js"></script>
+<script src="../js/pages/register.js"></script>
+<script>
+(function () {
+    const hero  = document.getElementById("authHero");
+    const scene = document.getElementById("heroScene");
+    if (!hero || !scene) return;
+
+    const cards = hero.querySelectorAll(".float-card");
+    let tx = 0, ty = 0, mx = 0, my = 0;
+
+    hero.addEventListener("mousemove", e => {
+        const r = hero.getBoundingClientRect();
+        mx = (e.clientX - r.left) / r.width  - 0.5;
+        my = (e.clientY - r.top)  / r.height - 0.5;
+    });
+    hero.addEventListener("mouseleave", () => { mx = 0; my = 0; });
+
+    (function tick() {
+        tx += (mx - tx) * 0.07;
+        ty += (my - ty) * 0.07;
+
+        scene.style.transform =
+            `perspective(900px) rotateX(${-ty * 5}deg) rotateY(${tx * 5}deg)`;
+
+        cards.forEach(c => {
+            const s = +(c.dataset.speed || 30);
+            c.style.transform = `translate(${tx * s}px, ${ty * s}px)`;
+        });
+
+        requestAnimationFrame(tick);
+    })();
+})();
+</script>
 </body>
 </html>

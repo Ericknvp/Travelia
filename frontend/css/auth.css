@@ -1,0 +1,253 @@
+/* ── Auth split layout ── */
+.auth-body { overflow: hidden; }
+
+.auth-split {
+    display: flex;
+    height: 100vh;
+}
+
+/* ══════════════════════════════════
+   LEFT HERO PANEL
+══════════════════════════════════ */
+.auth-hero {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-deep);
+}
+
+/* Dot grid background */
+.auth-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Glowing orbs */
+.hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+}
+.hero-orb-1 {
+    width: 500px; height: 500px;
+    background: var(--primary);
+    opacity: 0.11;
+    top: -220px; left: -120px;
+    animation: orbDrift 14s ease-in-out infinite;
+}
+.hero-orb-2 {
+    width: 380px; height: 380px;
+    background: var(--accent);
+    opacity: 0.08;
+    bottom: -140px; right: -80px;
+    animation: orbDrift 18s ease-in-out infinite reverse;
+}
+.hero-orb-3 {
+    width: 220px; height: 220px;
+    background: var(--primary);
+    opacity: 0.07;
+    top: 42%; left: 58%;
+    animation: orbDrift 11s ease-in-out infinite 4s;
+}
+@keyframes orbDrift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(28px, -38px) scale(1.06); }
+    66%       { transform: translate(-22px, 26px) scale(0.96); }
+}
+
+/* 3D scene wrapper — JS applies rotateX/Y here */
+.hero-scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding: 40px;
+    will-change: transform;
+}
+
+/* ── Globe ── */
+.globe-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 420px; height: 420px;
+    margin-top: -210px; margin-left: -210px;
+    z-index: 0;
+    pointer-events: none;
+}
+.globe-svg { width: 100%; height: 100%; overflow: visible; }
+
+/* Globe line colors via CSS so they respect theme */
+.g-outline { stroke: var(--primary); fill: none; opacity: 0.32; }
+.g-lat     { stroke: var(--primary); fill: none; opacity: 0.16; stroke-width: 0.7; }
+.g-logi    { stroke: var(--primary); fill: none; opacity: 0.2;  stroke-width: 0.8; }
+.g-eq      { stroke: var(--primary); fill: none; opacity: 0.28; stroke-width: 0.9; }
+.g-glow    { fill: var(--primary); }
+.g-dot-p   { fill: var(--primary); }
+.g-dot-a   { fill: var(--accent); }
+
+/* ── Hero text ── */
+.hero-text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    width: 100%;
+}
+
+.hero-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 34px;
+}
+.hero-brand .auth-logo-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    margin: 0;
+}
+.hero-brand-name {
+    font-size: 19px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--text-primary), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-headline {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.18;
+    margin: 0 0 16px;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+.hero-headline .grad-text {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    max-width: 330px;
+    margin: 0 auto 32px;
+}
+
+.hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+}
+.hero-stat { text-align: center; }
+.hero-stat-num {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+.hero-stat-div {
+    width: 1px; height: 34px;
+    background: var(--glass-border);
+}
+
+/* ── Floating destination cards ── */
+.fc-wrap {
+    position: absolute;
+    z-index: 4;
+}
+.fc-w-1 { top: 7%;  left: 3%;  animation: fcUp 7s   ease-in-out infinite; }
+.fc-w-2 { top: 16%; right: 3%; animation: fcUp 9s   ease-in-out infinite 1.8s; }
+.fc-w-3 { bottom: 21%; left: 3%;  animation: fcUp 8s ease-in-out infinite 3.2s; }
+.fc-w-4 { bottom: 10%; right: 4%; animation: fcUp 6s ease-in-out infinite 0.6s; }
+@keyframes fcUp {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-11px); }
+}
+
+.float-card {
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 14px;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+    white-space: nowrap;
+    user-select: none;
+    /* JS sets inline transform for parallax */
+}
+.fc-emoji { font-size: 22px; line-height: 1; }
+.fc-name  { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.fc-stars { font-size: 10px; color: #FBBF24; margin-top: 2px; letter-spacing: 1px; }
+
+/* ══════════════════════════════════
+   RIGHT FORM PANEL
+══════════════════════════════════ */
+.auth-form-panel {
+    width: 460px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    background: var(--bg-mid);
+    border-left: 1px solid var(--glass-border);
+    overflow-y: auto;
+}
+
+/* Override base.css .auth-card */
+.auth-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    text-align: center;
+}
+.auth-card h1 {
+    margin: 14px 0 6px;
+    font-size: 1.55rem;
+    font-weight: 700;
+}
+.auth-tagline {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    display: block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 820px) {
+    .auth-split { flex-direction: column; }
+    .auth-hero  { display: none; }
+    .auth-form-panel {
+        width: 100%;
+        min-height: 100vh;
+        border-left: none;
+        padding: 40px 24px;
+    }
+    .auth-body { overflow: auto; }
+}

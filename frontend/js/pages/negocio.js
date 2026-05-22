@@ -78,7 +78,8 @@ async function cargarNegocio() {
             </div>
         </div>
 
-        <div style="margin-top:24px;display:flex;flex-direction:column;gap:24px;">
+        <div style="margin-top:24px;display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;">
+
             <div id="negPubsSection">
                 ${!pubs || pubs.error || pubs.length === 0
                     ? `<p class="loading">No hay publicaciones de este negocio.</p>`
@@ -103,32 +104,31 @@ async function cargarNegocio() {
             </div>
 
             <div id="reseniasSection">
-                <div style="margin-bottom:14px;font-size:15px;font-weight:600;">Reseñas (${Array.isArray(resenias) ? resenias.length : 0})</div>
                 ${!isOwner ? `
-                <div class="glass-card" style="padding:20px;margin-bottom:16px;" id="formResenia">
-                    <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Deja tu reseña</div>
-                    <div style="display:flex;gap:6px;margin-bottom:12px;" id="starSelector">
-                        ${[1,2,3,4,5].map(n => `
-                        <span data-val="${n}" style="font-size:28px;cursor:pointer;color:var(--text-muted);transition:color 0.15s;" onmouseover="hoverStars(${n})" onmouseout="resetStars()" onclick="selectStar(${n})">★</span>`).join("")}
+                <div class="glass-card" style="padding:20px;margin-bottom:16px;">
+                    <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Deja tu reseña</div>
+                    <div style="display:flex;gap:4px;margin-bottom:12px;" id="starSelector">
+                        ${[1,2,3,4,5].map(n => `<span data-val="${n}" style="font-size:30px;cursor:pointer;color:var(--text-muted);transition:color 0.1s;" onmouseover="hoverStars(${n})" onmouseout="resetStars()" onclick="selectStar(${n})">★</span>`).join("")}
                     </div>
                     <textarea class="form-input" id="reseniaTexto" rows="3" placeholder="Cuéntanos tu experiencia..." style="resize:vertical;margin-bottom:10px;"></textarea>
                     <p id="reseniaError" style="color:var(--accent-warm);font-size:13px;margin-bottom:8px;" hidden></p>
                     <button class="btn-primary" id="btnEnviarResenia" style="width:100%;justify-content:center;">Enviar reseña</button>
                 </div>` : ""}
-                <div style="display:flex;flex-direction:column;gap:12px;" id="reseniasList">
+                <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Reseñas (${Array.isArray(resenias) ? resenias.length : 0})</div>
+                <div style="display:flex;flex-direction:column;gap:12px;">
                     ${!Array.isArray(resenias) || resenias.length === 0
-                        ? `<p class="loading">Aún no hay reseñas. ¡Sé el primero!</p>`
+                        ? `<p class="loading">Aún no hay reseñas.</p>`
                         : resenias.map(r => {
                             const initials = r.autor ? r.autor.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2) : "?";
                             const avatarInner = r.foto_autor ? `<img src="${r.foto_autor}" alt="${r.autor}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials;
                             const starsHtml = Array.from({length:5},(_,i) => `<span style="color:${i < r.calificacion ? "#FBBF24" : "var(--text-muted)"};">★</span>`).join("");
                             return `
-                            <div class="glass-card" style="padding:16px;">
-                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-                                    <div class="avatar av-purple" style="width:36px;height:36px;font-size:12px;flex-shrink:0;">${avatarInner}</div>
+                            <div class="glass-card" style="padding:14px;">
+                                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                                    <div class="avatar av-purple" style="width:34px;height:34px;font-size:12px;flex-shrink:0;">${avatarInner}</div>
                                     <div>
                                         <div style="font-size:13px;font-weight:600;">${r.autor}</div>
-                                        <div style="font-size:18px;line-height:1;">${starsHtml}</div>
+                                        <div style="font-size:16px;line-height:1;">${starsHtml}</div>
                                     </div>
                                 </div>
                                 ${r.texto ? `<div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${r.texto}</div>` : ""}

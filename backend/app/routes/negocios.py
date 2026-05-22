@@ -113,7 +113,6 @@ def listar_resenias(id_negocio):
                 FROM resenias r
                 JOIN usuarios u ON r.id_usuario = u.id_usuario
                 WHERE r.id_negocio = %s
-                ORDER BY r.fecha_resenia DESC
             """, (id_negocio,))
             return jsonify(cur.fetchall())
     finally:

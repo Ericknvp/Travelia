@@ -216,7 +216,7 @@ function confirmLogout() {
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </div>
             <h3 style="margin-bottom:8px;font-size:17px;">¿Cerrar sesión?</h3>
-            <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">Tu sesión se cerrará y tendrás que volver a iniciar sesión.</p>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">¿Estás seguro que deseas cerrar sesión?</p>
             <div style="display:flex;gap:10px;">
                 <button id="logoutCancel" class="btn-outline" style="flex:1;justify-content:center;">Cancelar</button>
                 <button id="logoutConfirm" style="flex:1;justify-content:center;background:var(--danger);border:none;color:#fff;padding:10px 16px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:6px;">Cerrar sesión</button>

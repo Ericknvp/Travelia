@@ -1,4 +1,4 @@
-/* ── Auth split layout ── */
+
 .auth-body { overflow: hidden; }
 
 .auth-split {
@@ -6,9 +6,6 @@
     height: 100vh;
 }
 
-/* ══════════════════════════════════
-   LEFT HERO PANEL
-══════════════════════════════════ */
 .auth-hero {
     flex: 1;
     position: relative;
@@ -16,7 +13,6 @@
     background: var(--bg-deep);
 }
 
-/* Dot grid background */
 .auth-hero::before {
     content: '';
     position: absolute;
@@ -27,7 +23,6 @@
     pointer-events: none;
 }
 
-/* Glowing orbs */
 .hero-orb {
     position: absolute;
     border-radius: 50%;

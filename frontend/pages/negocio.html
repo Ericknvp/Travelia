@@ -29,18 +29,19 @@
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div><label class="form-label">Título</label><input class="form-input" id="negPostTitulo" placeholder="Título de la publicación"></div>
         <div><label class="form-label">Contenido</label><textarea class="form-input" id="negPostContenido" rows="4" placeholder="Describe tu oferta, novedad o experiencia..." style="resize:vertical;"></textarea></div>
+        <div>
+          <label class="form-label">Categoría</label>
+          <select class="form-input" id="negPostCategoria">
+            <option value="tour">Tour</option>
+            <option value="hospedaje">Hospedaje</option>
+            <option value="restaurante">Restaurante</option>
+            <option value="actividad">Actividad</option>
+            <option value="sitio">Sitio turístico</option>
+          </select>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div>
-            <label class="form-label">Categoría</label>
-            <select class="form-input" id="negPostCategoria">
-              <option value="tour">Tour</option>
-              <option value="hospedaje">Hospedaje</option>
-              <option value="restaurante">Restaurante</option>
-              <option value="actividad">Actividad</option>
-              <option value="sitio">Sitio turístico</option>
-            </select>
-          </div>
           <div><label class="form-label">Ciudad</label><input class="form-input" id="negPostCiudad" placeholder="Ej: Cartagena"></div>
+          <div><label class="form-label">País</label><input class="form-input" id="negPostPais" placeholder="Ej: Colombia"></div>
         </div>
         <div>
           <label class="form-label">Foto</label>

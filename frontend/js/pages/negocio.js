@@ -52,7 +52,7 @@ async function cargarNegocio() {
 
     content.innerHTML = `
     <div style="position:relative;height:200px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:0;overflow:hidden;margin:0;">
-        ${neg.url_foto_portada ? `<img src="${neg.url_foto_portada}" alt="${neg.nombre}" style="width:100%;height:100%;object-fit:cover;opacity:0.7;">` : ""}
+        ${neg.url_foto_portada ? `<img src="${resolveImg(neg.url_foto_portada)}" alt="${neg.nombre}" style="width:100%;height:100%;object-fit:cover;opacity:0.7;">` : ""}
         <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);"></div>
     </div>
     <div style="padding:0 28px 28px;">
@@ -92,7 +92,7 @@ async function cargarNegocio() {
                                  <span style="font-size:12px;color:var(--text-muted);margin-left:auto;">${timeAgo(p.fecha_creacion)}</span>
                              </div>
                              ${p.titulo ? `<div style="font-size:15px;font-weight:600;margin-bottom:6px;">${p.titulo}</div>` : ""}
-                             ${p.url_imagen ? `<img src="${p.url_imagen}" style="width:100%;height:auto;max-height:520px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:8px;">` : ""}
+                             ${p.url_imagen ? `<img src="${resolveImg(p.url_imagen)}" style="width:100%;height:auto;max-height:520px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:8px;">` : ""}
                              <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${p.contenido}</div>
                              <div style="display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--text-muted);">
                                  <span style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${p.likes || 0}</span>
@@ -120,7 +120,7 @@ async function cargarNegocio() {
                         ? `<p class="loading">Aún no hay reseñas.</p>`
                         : resenias.map(r => {
                             const initials = r.autor ? r.autor.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2) : "?";
-                            const avatarInner = r.foto_autor ? `<img src="${r.foto_autor}" alt="${r.autor}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials;
+                            const avatarInner = r.foto_autor ? `<img src="${resolveImg(r.foto_autor)}" alt="${r.autor}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : initials;
                             const starsHtml = Array.from({length:5},(_,i) => `<span style="color:${i < r.calificacion ? "#FBBF24" : "var(--text-muted)"};">★</span>`).join("");
                             return `
                             <div class="glass-card" style="padding:14px;">
@@ -151,6 +151,7 @@ function closeNegPost() {
     document.getElementById("negPostTitulo").value = "";
     document.getElementById("negPostContenido").value = "";
     document.getElementById("negPostCiudad").value = "";
+    document.getElementById("negPostPais").value = "";
     document.getElementById("negPostFile").value = "";
     document.getElementById("negPostFilePlaceholder").style.display = "block";
     document.getElementById("negPostFilePreview").style.display = "none";
@@ -179,6 +180,7 @@ document.getElementById("btnSubmitNegPost")?.addEventListener("click", async () 
     const contenido = document.getElementById("negPostContenido").value.trim();
     const categoria = document.getElementById("negPostCategoria").value;
     const ciudad    = document.getElementById("negPostCiudad").value.trim() || negocioData?.ciudad || "";
+    const pais      = document.getElementById("negPostPais").value.trim() || negocioData?.pais || "";
     const fileInput = document.getElementById("negPostFile");
     const errEl     = document.getElementById("negPostError");
 
@@ -204,7 +206,7 @@ document.getElementById("btnSubmitNegPost")?.addEventListener("click", async () 
     }
 
     const res = await api.post("/publicaciones/", {
-        titulo, contenido, categoria, ciudad, url_imagen,
+        titulo, contenido, categoria, ciudad, pais, url_imagen,
         id_negocio_etiquetado: parseInt(negocioId)
     });
 

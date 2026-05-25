@@ -15,12 +15,14 @@ def enviar_solicitud():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # INSERT IGNORE no da error si ya existe la combinacion solicitante-receptor
             cur.execute(
                 "INSERT IGNORE INTO amistades (id_solicitante, id_receptor) VALUES (%s,%s)",
                 (g.user_id, id_receptor)
             )
             conn.commit()
             affected = cur.rowcount
+        # solo creo la notificacion si se inserto una fila nueva, no si ya existia
         if affected:
             try:
                 db = get_mongo_db()
@@ -46,6 +48,7 @@ def responder_solicitud(id_amistad):
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # el AND id_receptor garantiza que solo quien recibio la solicitud pueda responderla
             cur.execute(
                 "UPDATE amistades SET estado=%s, fecha_respuesta=NOW() WHERE id_amistad=%s AND id_receptor=%s",
                 (estado, id_amistad, g.user_id)
@@ -61,6 +64,7 @@ def eliminar_amistad(id_amistad):
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # cualquiera de los dos puede eliminar la amistad, por eso el OR
             cur.execute(
                 "DELETE FROM amistades WHERE id_amistad=%s AND (id_solicitante=%s OR id_receptor=%s)",
                 (id_amistad, g.user_id, g.user_id)
@@ -78,6 +82,8 @@ def listar_amigos():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # el CASE WHEN determina cual de los dos campos es el "otro" usuario segun quien soy yo
+            # si yo envie la solicitud el amigo es el receptor, si yo la recibi el amigo es el solicitante
             cur.execute("""
                 SELECT a.id_amistad, u.id_usuario, u.nombre, u.username, u.url_foto_perfil, u.ciudad
                 FROM amistades a
@@ -96,6 +102,7 @@ def estado_amistad(target_id):
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # busco la relacion en cualquier direccion: yo envie o yo recibi
             cur.execute("""
                 SELECT id_amistad, id_solicitante, id_receptor, estado
                 FROM amistades
@@ -109,6 +116,7 @@ def estado_amistad(target_id):
         if rel["estado"] == "aceptada":
             return jsonify({"estado": "amigos", "id_amistad": rel["id_amistad"]})
         if rel["estado"] == "pendiente":
+            # distingo si yo envie o si me enviaron para que el frontend muestre el boton correcto
             if rel["id_solicitante"] == g.user_id:
                 return jsonify({"estado": "solicitud_enviada", "id_amistad": rel["id_amistad"]})
             return jsonify({"estado": "solicitud_recibida", "id_amistad": rel["id_amistad"]})
@@ -122,6 +130,7 @@ def solicitudes_pendientes():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # traigo solo las solicitudes donde yo soy el receptor y aun no he respondido
             cur.execute("""
                 SELECT a.id_amistad, u.id_usuario, u.nombre, u.username, u.url_foto_perfil, a.fecha_solicitud
                 FROM amistades a

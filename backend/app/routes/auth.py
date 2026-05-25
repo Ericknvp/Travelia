@@ -8,9 +8,11 @@ auth_bp = Blueprint("auth", __name__)
 
 
 def _gen_username(base, cur):
+    # limpio la base del username: solo letras, numeros y guion bajo
     base = re.sub(r"[^a-z0-9_]", "", base.lower()) or "user"
     username = base
     suffix = 1
+    # si el username ya existe le agrego un numero hasta encontrar uno libre
     while True:
         cur.execute("SELECT id_usuario FROM usuarios WHERE username=%s", (username,))
         if not cur.fetchone():
@@ -28,14 +30,18 @@ def register():
     username  = data.get("username", "").strip().lower()
     if not nombre or not correo or not password:
         return jsonify({"error": "Todos los campos son obligatorios"}), 400
+    # hasheo la contrasena con bcrypt antes de guardarla, nunca se guarda en texto plano
+    # gensalt(10) define el costo del hash, a mayor numero mas seguro pero mas lento
     hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(10)).decode()
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # verifico que el correo no este registrado ya
             cur.execute("SELECT id_usuario FROM usuarios WHERE correo=%s", (correo,))
             if cur.fetchone():
                 return jsonify({"error": "Correo ya registrado"}), 409
             if not username:
+                # si no mando username, genero uno automaticamente a partir del correo
                 username = _gen_username(correo.split("@")[0], cur)
             else:
                 cur.execute("SELECT id_usuario FROM usuarios WHERE username=%s", (username,))
@@ -69,8 +75,10 @@ def login():
                 (correo,)
             )
             user = cur.fetchone()
+        # checkpw compara la contrasena ingresada con el hash guardado sin desencriptar
         if not user or not bcrypt.checkpw(password.encode(), user["contrasena_hash"].encode()):
             return jsonify({"error": "Credenciales inválidas"}), 401
+        # genero el token JWT con el id y rol del usuario, expira segun la variable de entorno
         exp = datetime.datetime.utcnow() + datetime.timedelta(hours=int(os.getenv("JWT_EXPIRATION_HOURS", 8)))
         token = jwt.encode(
             {"sub": user["id_usuario"], "rol": user["rol"], "exp": exp},
@@ -98,11 +106,13 @@ def me():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # traigo todos los datos del perfil del usuario autenticado
             cur.execute(
                 "SELECT id_usuario, nombre, username, correo, bio, ciudad, pais, url_foto_perfil, rol, fecha_nacimiento FROM usuarios WHERE id_usuario=%s",
                 (g.user_id,)
             )
             user = cur.fetchone()
+            # agrego el conteo de amigos aceptados al perfil
             cur.execute(
                 "SELECT COUNT(*) AS total FROM amistades WHERE (id_solicitante=%s OR id_receptor=%s) AND estado='aceptada'",
                 (g.user_id, g.user_id)

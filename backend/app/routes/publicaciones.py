@@ -10,6 +10,7 @@ pub_bp = Blueprint("publicaciones", __name__)
 
 @pub_bp.route("/", methods=["GET"])
 def feed():
+    # intento leer el token aunque la ruta sea publica, para saber si el usuario dio like
     auth_header = request.headers.get("Authorization", "")
     user_id = None
     if auth_header.startswith("Bearer "):
@@ -25,6 +26,7 @@ def feed():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # dependiendo de los filtros que lleguen, traigo publicaciones de un negocio, de un usuario, o todas
             if filter_negocio:
                 cur.execute("""
                     SELECT p.*, u.nombre AS autor, u.url_foto_perfil AS foto_autor,
@@ -55,10 +57,12 @@ def feed():
                     ORDER BY p.fecha_creacion DESC LIMIT 50
                 """)
             pubs = cur.fetchall()
+        # los likes y comentarios viven en MongoDB, los agrego a cada publicacion
         db = get_mongo_db()
         for pub in pubs:
             pub["likes"] = db.likes.count_documents({"id_publicacion": pub["id_publicacion"]})
             pub["comentarios"] = db.comentarios.count_documents({"id_publicacion": pub["id_publicacion"]})
+            # si hay sesion activa, verifico si este usuario ya dio like
             pub["liked"] = bool(db.likes.find_one({"id_publicacion": pub["id_publicacion"], "id_usuario": user_id})) if user_id else False
         return jsonify(pubs)
     finally:
@@ -73,6 +77,7 @@ def buscar():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # construyo el WHERE dinamicamente segun los filtros que lleguen
             conditions = []
             params     = []
             if q:
@@ -103,6 +108,7 @@ def crear():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # inserto la publicacion con todos los campos que llegan del frontend
             cur.execute(
                 "INSERT INTO publicaciones (id_usuario, titulo, contenido, categoria, ciudad, pais, url_imagen, id_negocio_etiquetado) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                 (g.user_id, data.get("titulo"), data.get("contenido"), data.get("categoria"),
@@ -110,6 +116,7 @@ def crear():
             )
             conn.commit()
             pub_id = cur.lastrowid
+        # registro el evento en auditoria, si falla no corta el flujo principal
         try:
             registrar_evento(g.user_id, "publicacion", {"id_publicacion": pub_id}, request.remote_addr)
         except Exception:
@@ -125,11 +132,13 @@ def editar(pub_id):
     data = request.get_json()
     conn = get_mysql_connection()
     try:
+        # primero verifico que la publicacion exista y que pertenezca al usuario que hace la peticion
         with conn.cursor() as cur:
             cur.execute("SELECT id_usuario FROM publicaciones WHERE id_publicacion=%s", (pub_id,))
             pub = cur.fetchone()
         if not pub or pub["id_usuario"] != g.user_id:
             return jsonify({"error": "Sin permiso"}), 403
+        # solo actualizo los campos permitidos que llegaron en el body
         campos = {k: v for k, v in data.items() if k in ("titulo", "contenido", "ciudad", "pais", "url_imagen")}
         if not campos:
             return jsonify({"error": "Sin cambios"}), 400
@@ -148,6 +157,7 @@ def editar(pub_id):
 def eliminar(pub_id):
     conn = get_mysql_connection()
     try:
+        # verifico que la publicacion sea del usuario antes de borrar
         with conn.cursor() as cur:
             cur.execute("SELECT id_usuario FROM publicaciones WHERE id_publicacion=%s", (pub_id,))
             pub = cur.fetchone()
@@ -156,6 +166,7 @@ def eliminar(pub_id):
         with conn.cursor() as cur:
             cur.execute("DELETE FROM publicaciones WHERE id_publicacion=%s", (pub_id,))
             conn.commit()
+        # borro tambien los likes, comentarios y notificaciones relacionados en MongoDB
         db = get_mongo_db()
         db.likes.delete_many({"id_publicacion": pub_id})
         db.comentarios.delete_many({"id_publicacion": pub_id})
@@ -170,10 +181,12 @@ def eliminar(pub_id):
 def toggle_like(pub_id):
     db = get_mongo_db()
     filtro = {"id_publicacion": pub_id, "id_usuario": g.user_id}
+    # si ya existe el like lo quito, si no existe lo agrego (toggle)
     if db.likes.find_one(filtro):
         db.likes.delete_one(filtro)
         return jsonify({"liked": False})
     db.likes.insert_one(filtro)
+    # solo notifico al dueno de la publicacion si es otra persona distinta al que da like
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
@@ -196,11 +209,13 @@ def toggle_like(pub_id):
 @pub_bp.route("/<int:pub_id>/comentarios", methods=["GET"])
 def get_comentarios(pub_id):
     db = get_mongo_db()
+    # traigo los comentarios de MongoDB ordenados de mas antiguo a mas reciente
     comentarios = list(db.comentarios.find({"id_publicacion": pub_id}).sort("fecha", 1))
     for c in comentarios:
         c["_id"] = str(c["_id"])
         if isinstance(c.get("fecha"), datetime.datetime):
             c["fecha"] = c["fecha"].isoformat()
+    # los comentarios solo guardan el id del usuario, busco el nombre y foto en MySQL
     if comentarios:
         ids = list({c["id_usuario"] for c in comentarios})
         conn = get_mysql_connection()
@@ -229,12 +244,14 @@ def comentar(pub_id):
     if not texto:
         return jsonify({"error": "Texto requerido"}), 400
     db = get_mongo_db()
+    # el comentario se guarda en MongoDB con el id del usuario y la fecha actual
     db.comentarios.insert_one({
         "id_publicacion": pub_id,
         "id_usuario": g.user_id,
         "texto": texto,
         "fecha": datetime.datetime.utcnow()
     })
+    # notifico al dueno de la publicacion si es distinto al que comenta
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
@@ -264,6 +281,7 @@ def comentar(pub_id):
 def eliminar_comentario(pub_id, comment_id):
     from bson import ObjectId
     db = get_mongo_db()
+    # el _id en MongoDB es un ObjectId, hay que convertirlo desde el string que llega
     try:
         oid = ObjectId(comment_id)
     except Exception:
@@ -271,6 +289,7 @@ def eliminar_comentario(pub_id, comment_id):
     comentario = db.comentarios.find_one({"_id": oid, "id_publicacion": pub_id})
     if not comentario:
         return jsonify({"error": "Comentario no encontrado"}), 404
+    # solo el autor del comentario puede borrarlo
     if comentario["id_usuario"] != g.user_id:
         return jsonify({"error": "Sin permiso"}), 403
     db.comentarios.delete_one({"_id": oid})
@@ -295,5 +314,6 @@ def editar_comentario(pub_id, comment_id):
         return jsonify({"error": "Comentario no encontrado"}), 404
     if comentario["id_usuario"] != g.user_id:
         return jsonify({"error": "Sin permiso"}), 403
+    # uso $set para actualizar solo los campos necesarios y marco el comentario como editado
     db.comentarios.update_one({"_id": oid}, {"$set": {"texto": texto, "editado": True}})
     return jsonify({"mensaje": "Comentario editado"})

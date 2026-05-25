@@ -6,6 +6,7 @@ negocios_bp = Blueprint("negocios", __name__)
 
 @negocios_bp.route("/", methods=["GET"])
 def listar():
+    # si llega el parametro tipo, filtro por hotel o restaurante, si no devuelvo todos
     tipo = request.args.get("tipo")
     conn = get_mysql_connection()
     try:
@@ -25,6 +26,7 @@ def crear():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # el id_usuario viene del token, no del body, para que nadie pueda crear un negocio a nombre de otro
             cur.execute(
                 "INSERT INTO negocios (id_usuario, nombre, tipo, descripcion, ciudad, pais, direccion, url_foto_portada) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                 (g.user_id, data.get("nombre"), data.get("tipo"), data.get("descripcion"),
@@ -41,6 +43,7 @@ def mi_negocio():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # busco el negocio del usuario autenticado, solo puede tener uno
             cur.execute("SELECT * FROM negocios WHERE id_usuario=%s LIMIT 1", (g.user_id,))
             neg = cur.fetchone()
         if not neg:
@@ -68,11 +71,13 @@ def editar(id_negocio):
     data = request.get_json()
     conn = get_mysql_connection()
     try:
+        # verifico que el negocio exista y que pertenezca al usuario que hace la peticion
         with conn.cursor() as cur:
             cur.execute("SELECT id_usuario FROM negocios WHERE id_negocio=%s", (id_negocio,))
             neg = cur.fetchone()
         if not neg or neg["id_usuario"] != g.user_id:
             return jsonify({"error": "Sin permiso"}), 403
+        # solo actualizo los campos permitidos que llegaron en el body
         campos = {k: v for k, v in data.items() if k in ("nombre", "tipo", "descripcion", "ciudad", "pais", "direccion", "url_foto_portada")}
         if not campos:
             return jsonify({"error": "Sin cambios"}), 400
@@ -90,6 +95,7 @@ def editar(id_negocio):
 def eliminar(id_negocio):
     conn = get_mysql_connection()
     try:
+        # verifico que sea el dueno antes de eliminar
         with conn.cursor() as cur:
             cur.execute("SELECT id_usuario FROM negocios WHERE id_negocio=%s", (id_negocio,))
             neg = cur.fetchone()
@@ -108,6 +114,7 @@ def listar_resenias(id_negocio):
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # hago JOIN con usuarios para traer el nombre y foto del autor de cada resenia
             cur.execute("""
                 SELECT r.*, u.nombre AS autor, u.url_foto_perfil AS foto_autor
                 FROM resenias r
@@ -128,10 +135,12 @@ def crear_resenia(id_negocio):
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # ON DUPLICATE KEY UPDATE permite que el usuario actualice su resenia si ya tenia una
             cur.execute(
                 "INSERT INTO resenias (id_negocio, id_usuario, calificacion, texto) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE calificacion=%s, texto=%s",
                 (id_negocio, g.user_id, calificacion, data.get("texto"), calificacion, data.get("texto"))
             )
+            # recalculo el promedio del negocio con todas sus resenias actuales
             cur.execute(
                 "UPDATE negocios SET calificacion_promedio = (SELECT AVG(calificacion) FROM resenias WHERE id_negocio=%s) WHERE id_negocio=%s",
                 (id_negocio, id_negocio)

@@ -12,6 +12,7 @@ def crear():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # antes de crear la reserva verifico si esa mesa ya esta ocupada en esa fecha y hora
             cur.execute("""
                 SELECT id_mesa FROM reservas
                 WHERE id_mesa=%s AND fecha_reserva=%s AND hora_reserva=%s AND estado != 'cancelada'
@@ -35,6 +36,7 @@ def mis_reservas():
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # hago JOIN con mesas y negocios para devolver la informacion completa de cada reserva
             cur.execute("""
                 SELECT r.*, m.numero_mesa, m.capacidad, n.nombre AS negocio, n.tipo
                 FROM reservas r
@@ -52,6 +54,7 @@ def cancelar(id_reserva):
     conn = get_mysql_connection()
     try:
         with conn.cursor() as cur:
+            # el AND id_usuario garantiza que solo el dueno de la reserva pueda cancelarla
             cur.execute(
                 "UPDATE reservas SET estado='cancelada', fecha_cancelacion=NOW() WHERE id_reserva=%s AND id_usuario=%s",
                 (id_reserva, g.user_id)

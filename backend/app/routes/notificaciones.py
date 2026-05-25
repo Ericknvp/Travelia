@@ -10,17 +10,20 @@ notif_bp = Blueprint("notificaciones", __name__)
 @token_required
 def get_notificaciones():
     db = get_mongo_db()
+    # traigo las notificaciones del usuario ordenadas por fecha, las mas recientes primero
     notifs = list(db.notificaciones.find(
         {"id_usuario_destino": g.user_id},
         sort=[("fecha", -1)],
         limit=50
     ))
     for n in notifs:
+        # el _id de MongoDB es un ObjectId, lo convierto a string para poder enviarlo como JSON
         n["_id"] = str(n["_id"])
         if isinstance(n.get("fecha"), datetime.datetime):
             n["fecha"] = n["fecha"].isoformat()
 
     if notifs:
+        # las notificaciones solo guardan el id del usuario origen, busco nombre y foto en MySQL
         ids = list({n["id_usuario_origen"] for n in notifs})
         conn = get_mysql_connection()
         try:
@@ -33,6 +36,7 @@ def get_notificaciones():
                 users = {u["id_usuario"]: u for u in cur.fetchall()}
         finally:
             conn.close()
+        # agrego el nombre y foto a cada notificacion antes de enviarla
         for n in notifs:
             u = users.get(n["id_usuario_origen"], {})
             n["nombre_origen"] = u.get("nombre", "Alguien")
@@ -44,6 +48,7 @@ def get_notificaciones():
 @token_required
 def count_unread():
     db = get_mongo_db()
+    # cuento solo las no leidas para mostrar el badge en la navegacion
     count = db.notificaciones.count_documents({"id_usuario_destino": g.user_id, "leida": False})
     return jsonify({"count": count})
 
@@ -51,6 +56,7 @@ def count_unread():
 @token_required
 def marcar_leidas():
     db = get_mongo_db()
+    # update_many actualiza todos los documentos que coincidan con el filtro de una sola vez
     db.notificaciones.update_many(
         {"id_usuario_destino": g.user_id, "leida": False},
         {"$set": {"leida": True}}

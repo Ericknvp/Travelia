@@ -20,11 +20,7 @@ def create_app():
     app.config["UPLOAD_FOLDER"] = os.path.join(os.path.dirname(__file__), "uploads")
 
     CORS(app,
-         origins=[
-             os.getenv("FRONTEND_URL", "http://localhost:5500"),
-             "http://127.0.0.1:5500",
-             "http://localhost:5500",
-         ],
+         origins="*",
          supports_credentials=True,
          allow_headers=["Content-Type", "Authorization"],
          expose_headers=["Content-Type"],

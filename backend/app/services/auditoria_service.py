@@ -8,8 +8,8 @@ def registrar_evento(id_usuario, tipo, detalle, ip=None):
     db = get_mongo_db()
     db.auditoria.insert_one({
         "id_usuario": id_usuario,
-        "tipo": tipo,       # ej: "login", "registro", "publicacion", "reserva"
-        "detalle": detalle, # datos extra del evento, varia segun el tipo
+        "tipo": tipo,       # login, registro, publicación, reserva
+        "detalle": detalle, # datos extra de la acción, varia segun el tipo
         "ip": ip,           # ip desde donde se hizo la accion
         "fecha": datetime.datetime.utcnow()
     })

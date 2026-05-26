@@ -6,6 +6,7 @@ const negocioId = params.get("id");
 
 let negocioData = null;
 
+// convierte una fecha a tiempo relativo
 function timeAgo(fecha) {
     const diff = Date.now() - new Date(fecha).getTime();
     const m = Math.floor(diff / 60000);
@@ -19,6 +20,7 @@ function timeAgo(fecha) {
 
 const badgeMap = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad", sitio: "badge-sitio" };
 
+// genera las estrellas de calificación como HTML
 function stars(val) {
     const v = Math.round(val || 0);
     return Array.from({ length: 5 }, (_, i) =>
@@ -26,6 +28,7 @@ function stars(val) {
     ).join("");
 }
 
+// carga el negocio, sus publicaciones y reseñas en paralelo
 async function cargarNegocio() {
     const content = document.getElementById("pageContent");
     if (!negocioId) {
@@ -141,9 +144,12 @@ async function cargarNegocio() {
     </div>`;
 }
 
+// abre el modal para publicar como negocio
 function openNegPost() {
     document.getElementById("negPostModal").classList.add("open");
 }
+
+// cierra el modal de publicación y limpia los campos
 function closeNegPost() {
     document.getElementById("negPostModal").classList.remove("open");
     document.getElementById("negPostTitulo").value = "";
@@ -160,6 +166,7 @@ document.getElementById("negPostModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("negPostModal")) closeNegPost();
 });
 
+// previsualiza la imagen seleccionada para la publicación del negocio
 document.getElementById("negPostFile")?.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -173,6 +180,7 @@ document.getElementById("negPostFile")?.addEventListener("change", e => {
     reader.readAsDataURL(file);
 });
 
+// envía la publicación del negocio al servidor
 document.getElementById("btnSubmitNegPost")?.addEventListener("click", async () => {
     const titulo    = document.getElementById("negPostTitulo").value.trim();
     const contenido = document.getElementById("negPostContenido").value.trim();
@@ -223,23 +231,27 @@ document.getElementById("btnSubmitNegPost")?.addEventListener("click", async () 
 
 let selectedStar = 0;
 
+// ilumina las estrellas al hacer hover
 function hoverStars(n) {
     document.querySelectorAll("#starSelector span").forEach((s, i) => {
         s.style.color = i < n ? "#FBBF24" : "var(--text-muted)";
     });
 }
 
+// vuelve al estado de selección actual
 function resetStars() {
     document.querySelectorAll("#starSelector span").forEach((s, i) => {
         s.style.color = i < selectedStar ? "#FBBF24" : "var(--text-muted)";
     });
 }
 
+// selecciona una puntuación en las estrellas
 function selectStar(n) {
     selectedStar = n;
     resetStars();
 }
 
+// envía la reseña del usuario al negocio
 document.addEventListener("click", async e => {
     if (!e.target.matches("#btnEnviarResenia")) return;
     if (!isLoggedIn()) { requireAuthOrModal(() => {}); return; }

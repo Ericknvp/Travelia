@@ -4,11 +4,13 @@ renderTopbar("Mi Perfil");
 
 let perfilData = null;
 
+// saca las iniciales de un nombre
 function getInitials(nombre) {
     if (!nombre) return "?";
     return nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
+// convierte una fecha a tiempo relativo
 function timeAgo(fecha) {
     const diff = Date.now() - new Date(fecha).getTime();
     const m = Math.floor(diff / 60000);
@@ -20,6 +22,7 @@ function timeAgo(fecha) {
     return `Hace ${d} día${d > 1 ? "s" : ""}`;
 }
 
+// abre el modal de editar perfil con los datos actuales
 function openEditModal() {
     if (!perfilData) return;
     document.getElementById("editNombre").value          = perfilData.nombre || "";
@@ -41,6 +44,7 @@ document.getElementById("editProfileModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("editProfileModal")) closeEditModal();
 });
 
+// previsualiza la foto de perfil seleccionada
 document.getElementById("editFotoFile")?.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -54,6 +58,7 @@ document.getElementById("editFotoFile")?.addEventListener("change", e => {
     reader.readAsDataURL(file);
 });
 
+// guarda los cambios del perfil (incluyendo la foto si se cambió)
 document.getElementById("btnGuardarPerfil")?.addEventListener("click", async () => {
     const nombre            = document.getElementById("editNombre").value.trim();
     const username          = document.getElementById("editUsername").value.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
@@ -96,6 +101,7 @@ document.getElementById("btnGuardarPerfil")?.addEventListener("click", async () 
 
 let editPubId = null;
 
+// abre el modal de editar publicación con los datos actuales
 function openEditPub(pub) {
     editPubId = pub.id_publicacion;
     document.getElementById("editPubTitulo").value   = pub.titulo || "";
@@ -116,6 +122,7 @@ document.getElementById("editPubModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("editPubModal")) closeEditPub();
 });
 
+// guarda los cambios de una publicación
 document.getElementById("btnGuardarPub")?.addEventListener("click", async () => {
     if (!editPubId) return;
     const titulo    = document.getElementById("editPubTitulo").value.trim();
@@ -140,6 +147,7 @@ document.getElementById("btnGuardarPub")?.addEventListener("click", async () => 
     }
 });
 
+// elimina una publicación del usuario
 async function eliminarPublicacion(id) {
     if (!confirm("¿Eliminar esta publicación?")) return;
     const res = await api.delete(`/publicaciones/${id}`);
@@ -147,6 +155,7 @@ async function eliminarPublicacion(id) {
     else showToast(res?.error || "Error al eliminar.", "error");
 }
 
+// carga los datos del perfil y construye la vista
 async function cargarPerfil() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/auth/me");
@@ -224,6 +233,7 @@ async function cargarPerfil() {
     cargarMisPublicaciones();
 }
 
+// filtra y muestra solo las publicaciones del usuario actual
 async function cargarMisPublicaciones() {
     const container = document.getElementById("misPublicaciones");
     if (!container) return;

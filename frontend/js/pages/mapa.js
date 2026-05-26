@@ -1,6 +1,7 @@
 renderSidebar("mapa.html");
 renderTopbar("Mapa de publicaciones");
 
+// colores y etiquetas por categoría de publicación
 const CAT_COLORS = {
     tour:        "#6C63FF",
     hospedaje:   "#00D4AA",
@@ -21,6 +22,7 @@ const CAT_CHIP_ACTIVE = {
     sitio:       "background:#4ADE80;border-color:#4ADE80;color:#000;",
 };
 
+// cache de geocodificación en sessionStorage para no repetir peticiones
 function geoGet(city) {
     const raw = sessionStorage.getItem("tgeo_" + city);
     if (raw === null) return undefined;
@@ -30,6 +32,7 @@ function geoSet(city, val) {
     try { sessionStorage.setItem("tgeo_" + city, JSON.stringify(val)); } catch {}
 }
 
+// obtiene coordenadas de una ciudad usando Nominatim, con caché
 async function geocodeCity(city) {
     const cached = geoGet(city);
     if (cached !== undefined) return cached;
@@ -49,6 +52,8 @@ async function geocodeCity(city) {
 }
 
 let _pinSeq = 0;
+
+// genera el icono SVG del pin del mapa con color y contador
 function pinIcon(color, count) {
     const fid = "psf" + (++_pinSeq);
     const label = count > 1
@@ -68,6 +73,7 @@ function pinIcon(color, count) {
     return L.divIcon({ html: svg, className: "", iconSize: [32, 46], iconAnchor: [16, 46], popupAnchor: [0, -48] });
 }
 
+// genera el HTML de una fila de publicación dentro del popup del pin
 function postRow(p) {
     const color = CAT_COLORS[p.categoria] || "#8B85FF";
     const label = CAT_LABELS[p.categoria] || p.categoria;
@@ -86,6 +92,7 @@ function postRow(p) {
     </div>`;
 }
 
+// construye el popup de un pin con las publicaciones de esa ciudad
 function buildPopup(city, posts) {
     const shown = posts.slice(0, 4).map(postRow).join("");
     const extra = posts.length > 4
@@ -101,6 +108,7 @@ function buildPopup(city, posts) {
 
 let map, leafletMarkers = [], allPubs = [], coordsMap = {}, activeFilter = "all";
 
+// pone los marcadores en el mapa según el filtro activo
 function renderMarkers() {
     leafletMarkers.forEach(m => m.remove());
     leafletMarkers = [];
@@ -144,6 +152,7 @@ function renderMarkers() {
     }
 }
 
+// inicializa el mapa Leaflet, geocodifica las ciudades y renderiza los marcadores
 async function initMapa() {
     const dark = document.documentElement.dataset.theme !== "light";
     map = L.map("mapa", { zoomControl: true }).setView([10, 0], 2);
@@ -172,6 +181,7 @@ async function initMapa() {
         return;
     }
 
+    // agrupa ciudades únicas para geocodificar
     const cityMeta = {};
     for (const p of allPubs) {
         const city = p.ciudad.trim();
@@ -209,6 +219,7 @@ async function initMapa() {
     }
 }
 
+// cambia el filtro de categoría y vuelve a dibujar los marcadores
 document.querySelectorAll(".mapa-chip").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".mapa-chip").forEach(b => {

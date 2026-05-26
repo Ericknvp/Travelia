@@ -1,6 +1,7 @@
 renderSidebar("restaurantes.html");
 renderTopbar("Restaurantes");
 
+// carga los restaurantes desde la API y los renderiza en tarjetas
 async function cargarRestaurantes() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/negocios/?tipo=restaurante");

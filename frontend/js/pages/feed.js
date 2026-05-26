@@ -3,11 +3,13 @@ renderTopbar("Feed de viajes");
 
 let currentCommentPost = null;
 
+// saca las iniciales de un nombre
 function getInitials(nombre) {
     if (!nombre) return "?";
     return nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
+// convierte una fecha a tiempo relativo (hace X min, X h, X días
 function timeAgo(fecha) {
     const diff = Date.now() - new Date(fecha).getTime();
     const m = Math.floor(diff / 60000);
@@ -19,11 +21,13 @@ function timeAgo(fecha) {
     return `Hace ${d} día${d > 1 ? "s" : ""}`;
 }
 
+// devuelve la clase CSS del badge según el tipo de publicación
 function badgeClass(tipo) {
     const map = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad", sitio: "badge-sitio" };
     return map[tipo?.toLowerCase()] || "badge-tour";
 }
 
+// construye el HTML de una publicación (post card)
 function renderPost(p) {
     const isNegocio = !!p.id_negocio_etiquetado && !!p.negocio_nombre;
     const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
@@ -83,6 +87,7 @@ function renderPost(p) {
     </div>`;
 }
 
+// carga y muestra todas las publicaciones del feed
 async function cargarFeed() {
     const lista = document.getElementById("postsList");
     lista.innerHTML = `<p class="loading">Cargando publicaciones...</p>`;
@@ -98,6 +103,7 @@ async function cargarFeed() {
     lista.innerHTML = pubs.map(renderPost).join("");
 }
 
+// da o quita like a una publicación y actualiza el contador
 async function toggleLike(id, btn) {
     requireAuthOrModal(async () => {
         const res = await api.post(`/publicaciones/${id}/like`);
@@ -109,7 +115,7 @@ async function toggleLike(id, btn) {
     });
 }
 
-
+// abre el modal de comentarios para una publicación
 function openComments(id) {
     currentCommentPost = id;
     const modal = document.getElementById("commentsModal");
@@ -127,12 +133,14 @@ function openComments(id) {
     }
 }
 
+// cierra el modal de comentarios y limpia el estado
 function closeComments() {
     document.getElementById("commentsModal").classList.remove("open");
     document.getElementById("commentInput").value = "";
     currentCommentPost = null;
 }
 
+// construye el HTML de un comentario individual
 function renderComment(c, myUser) {
     const isOwn = myUser && c.id_usuario === myUser.id;
     const initials = getInitials(c.autor);
@@ -156,6 +164,7 @@ function renderComment(c, myUser) {
     </div>`;
 }
 
+// carga los comentarios de una publicación
 async function loadComments(id) {
     const list = document.getElementById("commentsList");
     list.innerHTML = `<p class="loading" style="padding:20px 0;">Cargando comentarios...</p>`;
@@ -177,6 +186,7 @@ document.getElementById("commentsModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("commentsModal")) closeComments();
 });
 
+// maneja acciones sobre comentarios: editar, guardar, cancelar, eliminar
 document.getElementById("commentsList")?.addEventListener("click", async e => {
     const deleteBtn = e.target.closest("[data-delete-comment]");
     const editBtn   = e.target.closest("[data-edit-comment]");
@@ -230,6 +240,7 @@ document.getElementById("commentsList")?.addEventListener("click", async e => {
     }
 });
 
+// envía un nuevo comentario a la publicación actual
 document.getElementById("btnSendComment")?.addEventListener("click", async () => {
     const texto = document.getElementById("commentInput").value.trim();
     if (!texto || !currentCommentPost) return;
@@ -245,7 +256,7 @@ document.getElementById("btnSendComment")?.addEventListener("click", async () =>
     }
 });
 
-
+// maneja clicks en las acciones de las publicaciones (like, comentario, compartir)
 document.addEventListener("click", e => {
     const btn = e.target.closest("[data-action]");
     if (!btn) return;
@@ -258,7 +269,7 @@ document.addEventListener("click", e => {
     }
 });
 
-
+// abre y cierra el modal de crear publicación
 function openCreatePost()  { document.getElementById("createPostModal")?.classList.add("open"); }
 function closeCreatePost() { document.getElementById("createPostModal")?.classList.remove("open"); }
 
@@ -271,6 +282,7 @@ document.getElementById("createPostModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("createPostModal")) closeCreatePost();
 });
 
+// previsualiza la imagen seleccionada antes de publicar
 document.getElementById("postFile")?.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -285,6 +297,7 @@ document.getElementById("postFile")?.addEventListener("change", e => {
     reader.readAsDataURL(file);
 });
 
+// limpia la imagen seleccionada del modal
 function clearFile(e) {
     e?.stopPropagation();
     document.getElementById("postFile").value = "";
@@ -293,6 +306,7 @@ function clearFile(e) {
     document.getElementById("removeFile").style.display = "none";
 }
 
+// envía la nueva publicación al servidor (con o sin imagen)
 document.getElementById("btnSubmitPost")?.addEventListener("click", async () => {
     const titulo     = document.getElementById("postTitulo").value.trim();
     const contenido  = document.getElementById("postContenido").value.trim();
@@ -345,7 +359,7 @@ document.getElementById("btnSubmitPost")?.addEventListener("click", async () => 
     }
 });
 
-
+// muestra el avatar del usuario en el box de crear publicación
 const user = getUser();
 if (user) {
     const photoInner = user.foto
@@ -362,6 +376,7 @@ if (user) {
     if (modalName) modalName.textContent = user.nombre;
 }
 
+// carga sugerencias de usuarios para agregar como amigos
 async function cargarSugerencias() {
     const cont = document.getElementById("sugerenciasList");
     if (!cont) return;
@@ -393,6 +408,7 @@ async function cargarSugerencias() {
         </div>`;
     }).join("");
 
+    // envía solicitud al hacer clic en "Agregar" desde las sugerencias
     cont.addEventListener("click", async e => {
         const btn = e.target.closest(".btn-sug-agregar");
         if (!btn) return;
@@ -415,6 +431,7 @@ async function cargarSugerencias() {
 cargarFeed();
 cargarSugerencias();
 
+// actualiza los tiempos relativos cada minuto
 setInterval(() => {
     document.querySelectorAll(".time-ago[data-fecha]").forEach(el => {
         el.textContent = timeAgo(el.dataset.fecha);

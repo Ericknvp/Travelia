@@ -4,6 +4,7 @@ renderTopbar("Buscar");
 let currentFilter = "hoteles";
 let searchTimeout = null;
 
+// estructura inicial de la página: buscador y filtros
 document.getElementById("pageContent").innerHTML = `
 <div class="page-inner">
     <div class="search-hero">
@@ -35,6 +36,7 @@ document.getElementById("pageContent").innerHTML = `
     <div id="searchResults"><p class="loading">Cargando...</p></div>
 </div>`;
 
+// saca las iniciales de un nombre
 function getInitials(nombre) {
     if (!nombre) return "?";
     return nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
@@ -42,6 +44,7 @@ function getInitials(nombre) {
 
 const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
 
+// realiza la búsqueda según el filtro activo (hoteles, restaurantes, publicaciones o usuarios)
 async function performSearch(q = "") {
     const container = document.getElementById("searchResults");
     if (!container) return;
@@ -131,6 +134,7 @@ async function performSearch(q = "") {
     }
 }
 
+// envía solicitud de amistad desde la búsqueda
 async function enviarSolicitudBuscar(id_receptor, btn) {
     btn.disabled = true;
     btn.textContent = "Enviando...";
@@ -146,6 +150,7 @@ async function enviarSolicitudBuscar(id_receptor, btn) {
     }
 }
 
+// cambia el filtro activo y lanza la búsqueda
 document.querySelectorAll(".filter-pill").forEach(pill => {
     pill.addEventListener("click", () => {
         document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
@@ -155,6 +160,7 @@ document.querySelectorAll(".filter-pill").forEach(pill => {
     });
 });
 
+// búsqueda con debounce al escribir
 document.getElementById("searchInput")?.addEventListener("input", e => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => performSearch(e.target.value.trim()), 400);

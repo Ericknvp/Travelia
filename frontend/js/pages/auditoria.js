@@ -2,12 +2,14 @@ requireAuth();
 renderSidebar("auditoria.html");
 renderTopbar("Auditoría del sistema");
 
+// solo admins pueden ver esta página
 const user = getUser();
 if (user?.rol !== "admin") {
     document.getElementById("pageContent").innerHTML = `<div class="page-inner"><p class="loading">Acceso denegado. Solo administradores.</p></div>`;
     throw new Error("not admin");
 }
 
+// convierte una fecha a tiempo relativo
 function timeAgo(fecha) {
     const diff = Date.now() - new Date(fecha).getTime();
     const m = Math.floor(diff / 60000);
@@ -19,6 +21,7 @@ function timeAgo(fecha) {
     return `Hace ${d} día${d > 1 ? "s" : ""}`;
 }
 
+// configuración visual por tipo de evento (color, icono, etiqueta)
 const TIPO_CONFIG = {
     login:       { label: "Login",        color: "#6C63FF", bg: "rgba(108,99,255,0.15)", icon: `<svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>` },
     registro:    { label: "Registro",     color: "#34D399", bg: "rgba(52,211,153,0.15)", icon: `<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>` },
@@ -27,10 +30,12 @@ const TIPO_CONFIG = {
     reserva:     { label: "Reserva",      color: "#38BDF8", bg: "rgba(56,189,248,0.15)",  icon: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>` },
 };
 
+// configuración por defecto para tipos no mapeados
 function tipoDefault(tipo) {
     return { label: tipo, color: "var(--text-muted)", bg: "rgba(255,255,255,0.05)", icon: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>` };
 }
 
+// extrae un texto legible del campo detalle según el tipo de evento
 function detalleTexto(tipo, detalle) {
     if (!detalle || typeof detalle !== "object") return "";
     if (tipo === "registro" && detalle.correo) return `Correo: ${detalle.correo}`;
@@ -44,6 +49,7 @@ let todosEventos = [];
 let filtroTipo = "";
 let filtroUsuario = "";
 
+// construye la tabla de eventos con el HTML de cada fila
 function renderTabla(eventos) {
     if (eventos.length === 0) {
         return `<p class="loading" style="padding:32px 0;">No hay eventos que coincidan.</p>`;
@@ -82,6 +88,7 @@ function renderTabla(eventos) {
     </div>`;
 }
 
+// aplica los filtros de tipo y usuario sobre los eventos cargados
 function aplicarFiltros() {
     let eventos = todosEventos;
     if (filtroTipo) eventos = eventos.filter(e => e.tipo === filtroTipo);
@@ -90,6 +97,7 @@ function aplicarFiltros() {
     document.getElementById("auditoriaCount").textContent = `${eventos.length} evento${eventos.length !== 1 ? "s" : ""}`;
 }
 
+// carga los eventos de auditoría y construye la interfaz con filtros y tabla
 async function cargarAuditoria() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/auditoria/");
@@ -147,6 +155,7 @@ async function cargarAuditoria() {
         </div>
     </div>`;
 
+    // filtros de tipo y usuario
     document.getElementById("filtroTipoSel").addEventListener("change", e => {
         filtroTipo = e.target.value;
         aplicarFiltros();

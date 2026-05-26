@@ -2,6 +2,7 @@ requireAuth();
 renderSidebar("reservas.html");
 renderTopbar("Mis Reservas");
 
+// carga las reservas del usuario y las muestra en lista
 async function cargarReservas() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/reservas/mis-reservas");
@@ -23,6 +24,8 @@ async function cargarReservas() {
         </div>`;
         return;
     }
+
+    // construye cada item de reserva con su estado y tipo
     const items = res.map(r => `
     <div class="reserva-item">
         <div class="reserva-icon ${r.tipo === "hotel" ? "ri-hotel" : "ri-rest"}">

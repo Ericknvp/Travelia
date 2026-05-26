@@ -2,6 +2,7 @@ requireAuth();
 renderSidebar("notificaciones.html");
 renderTopbar("Notificaciones");
 
+// convierte una fecha a tiempo relativo
 function timeAgo(fecha) {
     const diff = Date.now() - new Date(fecha).getTime();
     const m = Math.floor(diff / 60000);
@@ -13,11 +14,13 @@ function timeAgo(fecha) {
     return `Hace ${d} día${d > 1 ? "s" : ""}`;
 }
 
+// saca las iniciales de un nombre
 function getInitials(nombre) {
     if (!nombre) return "?";
     return nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
+// devuelve el SVG del icono según el tipo de notificación
 function iconForTipo(tipo) {
     if (tipo === "like") return `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
     if (tipo === "comentario") return `<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
@@ -25,11 +28,13 @@ function iconForTipo(tipo) {
     return `<svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`;
 }
 
+// devuelve la clase de color según el tipo de notificación
 function colorForTipo(tipo) {
     const map = { like: "ni-pink", comentario: "ni-purple", amistad: "ni-teal" };
     return map[tipo] || "ni-coral";
 }
 
+// genera el texto legible de una notificación
 function textoNotif(n) {
     const link = `<a href="usuario.html?id=${n.id_usuario_origen}" style="color:inherit;text-decoration:none;font-weight:600;">${n.nombre_origen}</a>`;
     if (n.tipo === "like") return `${link} le dio me gusta a tu publicación`;
@@ -38,6 +43,7 @@ function textoNotif(n) {
     return `Nueva notificación de ${link}`;
 }
 
+// carga las notificaciones y las renderiza con filtros
 async function cargarNotificaciones() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/notificaciones/");
@@ -100,6 +106,7 @@ async function cargarNotificaciones() {
         </div>
     </div>`;
 
+    // marca todas las notificaciones como leídas
     document.getElementById("btnMarcarLeidas")?.addEventListener("click", async () => {
         await api.put("/notificaciones/marcar-leidas");
         const dot = document.getElementById("navNotifDot");

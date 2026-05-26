@@ -4,11 +4,13 @@ renderTopbar("Perfil de usuario");
 const params = new URLSearchParams(window.location.search);
 const userId = params.get("id");
 
+// saca las iniciales de un nombre
 function getInitials(nombre) {
     if (!nombre) return "?";
     return nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 }
 
+// convierte una fecha a tiempo relativo
 function timeAgo(fecha) {
     const diff = Date.now() - new Date(fecha).getTime();
     const m = Math.floor(diff / 60000);
@@ -23,6 +25,7 @@ function timeAgo(fecha) {
 const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
 const badgeMap = { tour: "badge-tour", hospedaje: "badge-hospedaje", restaurante: "badge-restaurante", actividad: "badge-actividad", sitio: "badge-sitio" };
 
+// carga el perfil del usuario y muestra sus datos y publicaciones
 async function cargarUsuario() {
     const content = document.getElementById("pageContent");
     if (!userId) {
@@ -45,12 +48,14 @@ async function cargarUsuario() {
 
     const isMe = myUser && myUser.id === u.id_usuario;
 
+    // consulta el estado de amistad con el usuario visitado
     let friendshipStatus = { estado: "ninguno" };
     if (loggedIn && !isMe) {
         const fs = await api.get(`/amigos/estado/${u.id_usuario}`);
         if (fs && !fs.error) friendshipStatus = fs;
     }
 
+    // determina el botón de amistad según el estado actual
     let friendBtn = "";
     if (isMe) {
         friendBtn = `<a href="perfil.html" class="btn-outline">Mi perfil</a>`;
@@ -150,6 +155,7 @@ async function cargarUsuario() {
     </div>`;
 }
 
+// envía solicitud de amistad al usuario
 async function enviarSolicitud(id_receptor, btn) {
     btn.disabled = true;
     btn.textContent = "Enviando...";
@@ -166,6 +172,7 @@ async function enviarSolicitud(id_receptor, btn) {
     }
 }
 
+// acepta una solicitud de amistad pendiente
 async function aceptarSolicitud(id_amistad, btn) {
     btn.disabled = true;
     btn.textContent = "Aceptando...";
@@ -183,6 +190,7 @@ async function aceptarSolicitud(id_amistad, btn) {
     }
 }
 
+// elimina la amistad con el usuario actual
 async function eliminarAmistad(id_amistad, btn) {
     if (!confirm("¿Eliminar esta amistad?")) return;
     const res = await api.delete(`/amigos/${id_amistad}`);

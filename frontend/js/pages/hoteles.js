@@ -1,6 +1,7 @@
 renderSidebar("hoteles.html");
 renderTopbar("Hoteles");
 
+// carga los hoteles desde la API y los renderiza en tarjetas
 async function cargarHoteles() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/negocios/?tipo=hotel");

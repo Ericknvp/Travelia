@@ -1,6 +1,7 @@
 renderSidebar("amigos.html");
 renderTopbar("Amigos");
 
+// saca las iniciales de un nombre
 function getInitials(nombre) {
     if (!nombre) return "?";
     return nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
@@ -8,6 +9,7 @@ function getInitials(nombre) {
 
 const colors = ["av-purple","av-teal","av-coral","av-pink","av-green","av-indigo"];
 
+// genera el avatar de un usuario (foto o iniciales)
 function avatar(u, size = "44px") {
     const initials = getInitials(u.nombre);
     const colorClass = colors[u.id_usuario % colors.length];
@@ -18,6 +20,7 @@ function avatar(u, size = "44px") {
 
 let currentTab = "sugerencias";
 
+// carga la página de amigos con tabs, o muestra pantalla de login si no hay sesión
 async function cargarAmigos() {
     const content = document.getElementById("pageContent");
 
@@ -47,6 +50,7 @@ async function cargarAmigos() {
         <p class="loading">Cargando...</p>
     </div>`;
 
+    // cambia de tab al hacer clic
     document.getElementById("amigosTabs")?.addEventListener("click", e => {
         const tab = e.target.closest("[data-tab]");
         if (!tab) return;
@@ -59,6 +63,7 @@ async function cargarAmigos() {
     renderTab(currentTab);
 }
 
+// renderiza el contenido de cada tab (amigos, solicitudes o sugerencias)
 async function renderTab(tab) {
     const container = document.getElementById("amigosContent");
     if (!container) return;
@@ -137,6 +142,7 @@ async function renderTab(tab) {
     }
 }
 
+// envía una solicitud de amistad
 async function enviarSolicitud(id_receptor, btn) {
     btn.disabled = true;
     btn.textContent = "Enviando...";
@@ -152,6 +158,7 @@ async function enviarSolicitud(id_receptor, btn) {
     }
 }
 
+// acepta o rechaza una solicitud de amistad
 async function responderSolicitud(id_amistad, estado, btn) {
     btn.disabled = true;
     const res = await api.put(`/amigos/solicitud/${id_amistad}`, { estado });
@@ -165,6 +172,7 @@ async function responderSolicitud(id_amistad, estado, btn) {
     }
 }
 
+// elimina una amistad existente
 async function eliminarAmistad(id_amistad, btn) {
     if (!confirm("¿Eliminar esta amistad?")) return;
     btn.disabled = true;

@@ -4,6 +4,7 @@ renderTopbar("Mi Negocio");
 
 let currentNeg = null;
 
+// carga el negocio del usuario actual; muestra formulario si no tiene uno
 async function cargarMiNegocio() {
     const content = document.getElementById("pageContent");
     content.innerHTML = `<div class="page-inner"><p class="loading">Cargando...</p></div>`;
@@ -22,6 +23,7 @@ async function cargarMiNegocio() {
     }
 }
 
+// muestra el resumen del negocio con opciones de editar y eliminar
 function mostrarNegocioExistente(neg) {
     currentNeg = neg;
     const container = document.getElementById("negocioView");
@@ -42,6 +44,7 @@ function mostrarNegocioExistente(neg) {
     </div>`;
 }
 
+// elimina el negocio del usuario con confirmación
 async function eliminarNegocio(id_negocio) {
     if (!confirm("¿Eliminar este negocio? Esta acción no se puede deshacer.")) return;
     const res = await api.delete(`/negocios/${id_negocio}`);
@@ -54,6 +57,7 @@ async function eliminarNegocio(id_negocio) {
     }
 }
 
+// muestra el formulario de edición del negocio con los datos actuales
 function mostrarFormularioEdicion() {
     const neg = currentNeg;
     if (!neg) return;
@@ -120,6 +124,7 @@ function mostrarFormularioEdicion() {
         </div>
     </div>`;
 
+    // previsualiza la nueva foto de portada
     document.getElementById("negFotoFile")?.addEventListener("change", e => {
         const file = e.target.files[0];
         if (!file) return;
@@ -132,6 +137,7 @@ function mostrarFormularioEdicion() {
         reader.readAsDataURL(file);
     });
 
+    // guarda los cambios del negocio
     document.getElementById("btnGuardarNeg").addEventListener("click", async () => {
         const nombre      = document.getElementById("negNombre").value.trim();
         const tipo        = document.getElementById("negTipo").value;
@@ -173,6 +179,7 @@ function mostrarFormularioEdicion() {
     });
 }
 
+// muestra el formulario de registro de un nuevo negocio
 function mostrarFormulario() {
     const container = document.getElementById("negocioView");
     container.innerHTML = `
@@ -248,6 +255,7 @@ function mostrarFormulario() {
         </div>
     </div>`;
 
+    // previsualiza la foto de portada del nuevo negocio
     document.getElementById("negFotoFile")?.addEventListener("change", e => {
         const file = e.target.files[0];
         if (!file) return;
@@ -260,6 +268,7 @@ function mostrarFormulario() {
         reader.readAsDataURL(file);
     });
 
+    // registra el nuevo negocio en el servidor
     document.getElementById("btnRegistrarNeg").addEventListener("click", async () => {
         const nombre      = document.getElementById("negNombre").value.trim();
         const tipo        = document.getElementById("negTipo").value;
@@ -300,6 +309,7 @@ function mostrarFormulario() {
     });
 }
 
+// muestra pantalla de éxito al registrar el negocio
 function mostrarExito(id, nombre, tipo) {
     const container = document.getElementById("negocioView");
     container.innerHTML = `

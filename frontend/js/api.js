@@ -1,5 +1,7 @@
+// URL base de la API, detecta el host dinámicamente
 const API_URL = `${window.location.protocol}//${window.location.hostname}:5000/api`;
 
+// hace el fetch autenticado, maneja token expirado y redirige al login
 async function apiFetch(endpoint, options = {}) {
     try {
         const token = localStorage.getItem("travelia_token");
@@ -24,6 +26,7 @@ async function apiFetch(endpoint, options = {}) {
     }
 }
 
+// sube archivos al servidor con autenticación
 async function apiUpload(endpoint, formData) {
     try {
         const token = localStorage.getItem("travelia_token");
@@ -47,6 +50,7 @@ async function apiUpload(endpoint, formData) {
     }
 }
 
+// ajusta URLs de imágenes para que funcionen en cualquier host
 function resolveImg(url) {
     if (!url) return url;
     if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -61,6 +65,7 @@ function resolveImg(url) {
     return `${window.location.protocol}//${window.location.hostname}:5000${url}`;
 }
 
+// métodos del api: get, post, put, delete, upload
 const api = {
     get:    (url)           => apiFetch(url),
     post:   (url, body)     => apiFetch(url, { method: "POST",   body: JSON.stringify(body) }),

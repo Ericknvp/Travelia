@@ -1,5 +1,7 @@
+// si ya hay sesión activa, va directo al feed
 if (isLoggedIn()) window.location.href = "index.html";
 
+// envía las credenciales y guarda la sesión si son válidas
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const correo    = document.getElementById("correo").value;

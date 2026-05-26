@@ -1,3 +1,4 @@
+// items del menú de navegación con sus iconos y secciones
 const NAV_ITEMS = [
     {
         href: "index.html", label: "Feed", section: "Principal",
@@ -49,6 +50,7 @@ const NAV_ITEMS = [
     },
 ];
 
+// abre o cierra el sidebar en móvil
 function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("sidebarOverlay");
@@ -57,11 +59,13 @@ function toggleSidebar() {
     if (overlay) overlay.classList.toggle("open", isOpen);
 }
 
+// cierra el sidebar y el overlay
 function closeSidebar() {
     document.getElementById("sidebar")?.classList.remove("open");
     document.getElementById("sidebarOverlay")?.classList.remove("open");
 }
 
+// construye y renderiza el sidebar con nav, avatar y footer del usuario
 function renderSidebar(activePage = "") {
     const sidebar = document.getElementById("sidebar");
     if (!sidebar) return;
@@ -144,6 +148,7 @@ function renderSidebar(activePage = "") {
     }
 }
 
+// revisa si hay notificaciones sin leer y muestra el punto en el nav
 async function _fetchNotifBadge() {
     try {
         const res = await api.get("/notificaciones/count");
@@ -152,6 +157,7 @@ async function _fetchNotifBadge() {
     } catch (e) {}
 }
 
+// construye la topbar con búsqueda, notificaciones y cambio de tema
 function renderTopbar(title = "Feed de viajes") {
     const topbar = document.getElementById("topbar");
     if (!topbar) return;
@@ -180,12 +186,14 @@ function renderTopbar(title = "Feed de viajes") {
     `;
 }
 
+// alterna entre tema oscuro y claro
 function toggleTheme() {
     const html = document.documentElement;
     html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
     localStorage.setItem("travelia_theme", html.dataset.theme);
 }
 
+// aplica un esquema de color de acento
 function setColorScheme(color) {
     const html = document.documentElement;
     if (color === "purple") {
@@ -196,6 +204,7 @@ function setColorScheme(color) {
     localStorage.setItem("travelia_color", color);
 }
 
+// carga el tema y color guardados en localStorage
 function initTheme() {
     const savedTheme = localStorage.getItem("travelia_theme") || "dark";
     const savedColor = localStorage.getItem("travelia_color") || "purple";
@@ -203,11 +212,13 @@ function initTheme() {
     if (savedColor !== "purple") document.documentElement.dataset.color = savedColor;
 }
 
+// muestra un mensaje de error en el elemento indicado
 function showError(elementId, msg) {
     const el = document.getElementById(elementId);
     if (el) { el.textContent = msg; el.hidden = false; }
 }
 
+// abre el modal de login para usuarios no autenticados
 function openLoginModal() {
     const modal = document.getElementById("loginModal");
     if (modal) modal.classList.add("open");
@@ -218,6 +229,7 @@ function closeLoginModal() {
     if (modal) modal.classList.remove("open");
 }
 
+// ejecuta el callback si hay sesión, si no abre el modal de login
 function requireAuthOrModal(callback) {
     if (isLoggedIn()) {
         callback();
@@ -226,6 +238,7 @@ function requireAuthOrModal(callback) {
     }
 }
 
+// cierra el modal de login al hacer clic en el botón o en el overlay
 document.addEventListener("DOMContentLoaded", () => {
     const closeBtn = document.getElementById("closeLoginModal");
     if (closeBtn) closeBtn.addEventListener("click", closeLoginModal);
@@ -236,6 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// modal de confirmación antes de cerrar sesión
 function confirmLogout() {
     let modal = document.getElementById("logoutConfirmModal");
     if (!modal) {
@@ -262,6 +276,7 @@ function confirmLogout() {
     modal.classList.add("open");
 }
 
+// muestra un toast de notificación con tipo success, error o info
 function showToast(msg, type = "success") {
     let container = document.getElementById("toast-container");
     if (!container) {

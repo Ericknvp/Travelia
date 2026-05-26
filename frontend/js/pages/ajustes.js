@@ -2,6 +2,7 @@ requireAuth();
 renderSidebar("ajustes.html");
 renderTopbar("Ajustes");
 
+// carga los ajustes del usuario y construye la interfaz de configuración
 async function cargarAjustes() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/auth/me");
@@ -130,6 +131,7 @@ async function cargarAjustes() {
         </div>
     </div>`;
 
+    // cambia entre secciones del menú de ajustes
     document.getElementById("settingsNav").addEventListener("click", e => {
         const item = e.target.closest("[data-section]");
         if (!item) return;
@@ -141,6 +143,7 @@ async function cargarAjustes() {
         if (item.dataset.section === "apariencia") marcarColorActivo();
     });
 
+    // marca el color activo en la grilla de colores
     function marcarColorActivo() {
         const current = localStorage.getItem("travelia_color") || "purple";
         document.querySelectorAll(".color-scheme-card").forEach(card => {
@@ -159,6 +162,7 @@ async function cargarAjustes() {
         card.style.borderColor = "var(--primary)";
     });
 
+    // previsualiza la foto de perfil al seleccionarla
     document.getElementById("ajFotoFile")?.addEventListener("change", e => {
         const file = e.target.files[0];
         if (!file) return;
@@ -171,6 +175,7 @@ async function cargarAjustes() {
         reader.readAsDataURL(file);
     });
 
+    // guarda los cambios del perfil desde ajustes
     document.getElementById("btnGuardarAjustes").addEventListener("click", async () => {
         const nombre   = document.getElementById("ajNombre").value.trim();
         const username = document.getElementById("ajUsername").value.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");

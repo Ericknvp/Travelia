@@ -287,3 +287,29 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
   from { opacity: 1; transform: translateY(0) scale(1); }
   to   { opacity: 0; transform: translateY(-10px) scale(0.95); }
 }
+
+/* ── Responsive: Tablet (≤1023px) ── */
+@media (max-width: 1023px) {
+  .main { margin-left: 0; }
+  .two-col   { grid-template-columns: 1fr; }
+  .two-col-r { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: repeat(2, 1fr); }
+  .four-col  { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Responsive: Mobile (≤767px) ── */
+@media (max-width: 767px) {
+  .page-inner { padding: 16px; }
+  .page-tabs  { padding: 14px 16px 0; }
+  .login-modal { padding: 28px 20px; }
+  .login-modal-overlay { padding: 12px; }
+}
+
+/* ── Responsive: Small mobile (≤480px) ── */
+@media (max-width: 480px) {
+  .page-inner { padding: 12px; }
+  .page-tabs  { padding: 12px 12px 0; }
+  .three-col  { grid-template-columns: 1fr; }
+  #toast-container { right: 12px; left: 12px; }
+  .toast { min-width: unset; max-width: unset; width: 100%; }
+}

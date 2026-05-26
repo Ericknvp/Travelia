@@ -49,9 +49,38 @@ const NAV_ITEMS = [
     },
 ];
 
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    if (!sidebar) return;
+    const isOpen = sidebar.classList.toggle("open");
+    if (overlay) overlay.classList.toggle("open", isOpen);
+}
+
+function closeSidebar() {
+    document.getElementById("sidebar")?.classList.remove("open");
+    document.getElementById("sidebarOverlay")?.classList.remove("open");
+}
+
 function renderSidebar(activePage = "") {
     const sidebar = document.getElementById("sidebar");
     if (!sidebar) return;
+
+    if (!document.getElementById("sidebarOverlay")) {
+        const ov = document.createElement("div");
+        ov.className = "sidebar-overlay";
+        ov.id = "sidebarOverlay";
+        ov.addEventListener("click", closeSidebar);
+        document.body.appendChild(ov);
+    }
+
+    if (!sidebar._navListener) {
+        sidebar.addEventListener("click", (e) => {
+            if (e.target.closest(".nav-item") && window.innerWidth < 1024) closeSidebar();
+        });
+        sidebar._navListener = true;
+    }
+
     const user = getUser();
     const currentFile = activePage || window.location.pathname.split("/").pop() || "index.html";
 
@@ -76,7 +105,7 @@ function renderSidebar(activePage = "") {
 
     const initials = user?.nombre ? user.nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) : "?";
     const avatarContent = user?.foto
-        ? `<img src="${user.foto}" alt="${user.nombre}">`
+        ? `<img src="${resolveImg(user.foto)}" alt="${user.nombre}">`
         : initials;
 
     const sidebarHtml = `
@@ -127,6 +156,9 @@ function renderTopbar(title = "Feed de viajes") {
     const topbar = document.getElementById("topbar");
     if (!topbar) return;
     topbar.innerHTML = `
+        <button class="topbar-menu-btn" onclick="toggleSidebar()" aria-label="Menú">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <span class="topbar-title">${title}</span>
         <div class="topbar-search">
             <span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>

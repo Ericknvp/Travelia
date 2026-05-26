@@ -44,3 +44,32 @@
 
 .icon-sun { display: none; } .icon-moon { display: block; }
 [data-theme="light"] .icon-sun { display: block; } [data-theme="light"] .icon-moon { display: none; }
+
+/* ── Hamburger button (hidden on desktop) ── */
+.topbar-menu-btn {
+  display: none;
+  width: 36px; height: 36px; background: var(--glass-bg);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-sm);
+  align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary); transition: all 0.2s;
+  flex-shrink: 0;
+}
+.topbar-menu-btn:hover { background: var(--glass-bg-strong); color: var(--text-primary); }
+.topbar-menu-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 1023px) {
+  .topbar-menu-btn { display: flex; }
+  .topbar-search { max-width: 280px; }
+}
+
+@media (max-width: 767px) {
+  .topbar { padding: 0 14px; gap: 8px; }
+  .topbar-title { font-size: 14px; max-width: 130px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .topbar-search { margin-left: 0; }
+  .topbar-actions { gap: 6px; }
+}
+
+@media (max-width: 480px) {
+  .topbar-title { display: none; }
+  .topbar-search input { font-size: 12px; padding: 6px 12px 6px 30px; }
+}

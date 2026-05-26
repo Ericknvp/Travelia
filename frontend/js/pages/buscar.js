@@ -58,7 +58,7 @@ async function performSearch(q = "") {
         container.innerHTML = `<div class="three-col">${res.map(n => `
         <div class="hotel-card">
             <div class="hotel-img">
-                ${n.url_foto_portada ? `<img src="${n.url_foto_portada}" alt="${n.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--primary),var(--accent));"></div>`}
+                ${n.url_foto_portada ? `<img src="${resolveImg(n.url_foto_portada)}" alt="${n.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--primary),var(--accent));"></div>`}
                 <div class="hotel-img-overlay"></div>
                 ${n.precio_promedio ? `<div class="hotel-price-badge">$${n.precio_promedio}</div>` : ""}
             </div>
@@ -83,12 +83,12 @@ async function performSearch(q = "") {
         container.innerHTML = `<div style="display:flex;flex-direction:column;gap:14px;">${res.map(p => {
             const badge = badgeMap[p.categoria] || "badge-tour";
             const avatarInner = p.foto_autor
-                ? `<img src="${p.foto_autor}" alt="${p.autor}" style="width:100%;height:100%;object-fit:cover;">`
+                ? `<img src="${resolveImg(p.foto_autor)}" alt="${p.autor}" style="width:100%;height:100%;object-fit:cover;">`
                 : getInitials(p.autor);
             const color = colorList[p.id_usuario % colorList.length];
             return `
             <div class="glass-card" style="cursor:pointer;display:flex;gap:14px;align-items:flex-start;" onclick="window.location.href='usuario.html?id=${p.id_usuario}'">
-                ${p.url_imagen ? `<img src="${p.url_imagen}" style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius-md);flex-shrink:0;">` : ""}
+                ${p.url_imagen ? `<img src="${resolveImg(p.url_imagen)}" style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius-md);flex-shrink:0;">` : ""}
                 <div style="flex:1;min-width:0;">
                     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
                         <div class="avatar ${color}" style="width:28px;height:28px;font-size:10px;flex-shrink:0;">${avatarInner}</div>
@@ -111,7 +111,7 @@ async function performSearch(q = "") {
             const initials = getInitials(u.nombre);
             const colorClass = colors[u.id_usuario % colors.length];
             const av = u.url_foto_perfil
-                ? `<img src="${u.url_foto_perfil}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
+                ? `<img src="${resolveImg(u.url_foto_perfil)}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
                 : initials;
             return `
             <div class="friend-card">
@@ -146,7 +146,6 @@ async function enviarSolicitudBuscar(id_receptor, btn) {
     }
 }
 
-// Filter pills
 document.querySelectorAll(".filter-pill").forEach(pill => {
     pill.addEventListener("click", () => {
         document.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
@@ -156,7 +155,6 @@ document.querySelectorAll(".filter-pill").forEach(pill => {
     });
 });
 
-// Search input with debounce
 document.getElementById("searchInput")?.addEventListener("input", e => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => performSearch(e.target.value.trim()), 400);

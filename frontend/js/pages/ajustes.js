@@ -39,7 +39,7 @@ async function cargarAjustes() {
                         <div class="settings-section"><div class="settings-section-title">Foto de perfil</div></div>
                         <div class="settings-row">
                             <div class="avatar-upload" style="display:flex;align-items:center;gap:16px;">
-                                <div class="avatar-lg">${u.url_foto_perfil ? `<img src="${u.url_foto_perfil}" alt="">` : initials}</div>
+                                <div class="avatar-lg">${u.url_foto_perfil ? `<img src="${resolveImg(u.url_foto_perfil)}" alt="">` : initials}</div>
                                 <div>
                                     <div style="font-size:13px;font-weight:500;">${u.nombre}</div>
                                     <div style="font-size:12px;color:var(--text-muted);">${handle}</div>
@@ -76,7 +76,7 @@ async function cargarAjustes() {
                                 <input type="file" id="ajFotoFile" accept="image/*" style="display:none;">
                                 <div id="ajFotoArea" onclick="document.getElementById('ajFotoFile').click()" style="border:2px dashed var(--glass-border);border-radius:var(--radius-md);padding:14px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-bottom:8px;">
                                     ${u.url_foto_perfil
-                                        ? `<img src="${u.url_foto_perfil}" style="max-height:100px;border-radius:var(--radius-sm);object-fit:cover;" id="ajFotoImg"><div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Haz clic para cambiar</div>`
+                                        ? `<img src="${resolveImg(u.url_foto_perfil)}" style="max-height:100px;border-radius:var(--radius-sm);object-fit:cover;" id="ajFotoImg"><div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Haz clic para cambiar</div>`
                                         : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><div style="font-size:12px;color:var(--text-muted);">Haz clic para subir foto</div>`
                                     }
                                 </div>

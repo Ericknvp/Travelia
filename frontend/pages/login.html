@@ -13,7 +13,7 @@
 <body class="auth-body">
 <div class="auth-split">
 
-    <!-- ══ LEFT HERO ══ -->
+    
     <div class="auth-hero" id="authHero">
         <div class="hero-orb hero-orb-1"></div>
         <div class="hero-orb hero-orb-2"></div>
@@ -21,7 +21,7 @@
 
         <div class="hero-scene" id="heroScene">
 
-            <!-- Globe (background layer) -->
+            
             <div class="globe-bg">
                 <svg class="globe-svg" viewBox="0 0 300 300">
                     <defs>
@@ -31,22 +31,22 @@
                         </radialGradient>
                     </defs>
 
-                    <!-- Glow fill -->
+                    
                     <circle cx="150" cy="150" r="142" fill="url(#gGlow)"/>
 
-                    <!-- Outer circle -->
+                    
                     <circle cx="150" cy="150" r="142" class="g-outline" stroke-width="1"/>
 
-                    <!-- Latitude lines -->
+                    
                     <ellipse cx="150" cy="150" rx="142" ry="24"  class="g-lat"/>
                     <ellipse cx="150" cy="150" rx="142" ry="62"  class="g-lat"/>
                     <ellipse cx="150" cy="150" rx="142" ry="100" class="g-lat"/>
                     <ellipse cx="150" cy="150" rx="142" ry="130" class="g-lat" opacity="0.1"/>
 
-                    <!-- Equator -->
+                    
                     <line x1="8" y1="150" x2="292" y2="150" class="g-eq"/>
 
-                    <!-- Longitude lines — 6 lines, each offset 1.33s (8s ÷ 6) -->
+                    
                     <ellipse cx="150" cy="150" ry="142" class="g-logi">
                         <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="0s"      calcMode="linear"/>
                     </ellipse>
@@ -66,7 +66,7 @@
                         <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-6.67s"  calcMode="linear"/>
                     </ellipse>
 
-                    <!-- Destination dots with sonar pulse -->
+                    
                     <circle cx="108" cy="107" r="5" class="g-dot-p" opacity="0.9"/>
                     <circle cx="108" cy="107" r="5" class="g-dot-p" opacity="0.3">
                         <animate attributeName="r"       values="5;17;5"    dur="2.6s" repeatCount="indefinite" begin="0s"/>
@@ -91,7 +91,7 @@
                 </svg>
             </div>
 
-            <!-- Text content -->
+            
             <div class="hero-text">
                 <div class="hero-brand">
                     <div class="auth-logo-icon">
@@ -130,7 +130,7 @@
             </div>
         </div>
 
-        <!-- Floating destination cards (outside scene for independent parallax) -->
+        
         <div class="fc-wrap fc-w-1">
             <div class="float-card" data-speed="28">
                 <div class="fc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
@@ -157,7 +157,7 @@
         </div>
     </div>
 
-    <!-- ══ RIGHT FORM PANEL ══ -->
+    
     <div class="auth-form-panel">
         <div class="auth-card">
             <div class="auth-logo-icon">

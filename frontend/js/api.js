@@ -47,6 +47,20 @@ async function apiUpload(endpoint, formData) {
     }
 }
 
+function resolveImg(url) {
+    if (!url) return url;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        try {
+            const u = new URL(url);
+            if (u.hostname === 'localhost' || u.hostname === '127.0.0.1') {
+                u.hostname = window.location.hostname;
+            }
+            return u.toString();
+        } catch { return url; }
+    }
+    return `${window.location.protocol}//${window.location.hostname}:5000${url}`;
+}
+
 const api = {
     get:    (url)           => apiFetch(url),
     post:   (url, body)     => apiFetch(url, { method: "POST",   body: JSON.stringify(body) }),

@@ -12,7 +12,7 @@ function avatar(u, size = "44px") {
     const initials = getInitials(u.nombre);
     const colorClass = colors[u.id_usuario % colors.length];
     return u.url_foto_perfil
-        ? `<div class="avatar ${colorClass}" style="width:${size};height:${size};cursor:pointer;" onclick="window.location.href='usuario.html?id=${u.id_usuario}'"><img src="${u.url_foto_perfil}" alt="${u.nombre}"></div>`
+        ? `<div class="avatar ${colorClass}" style="width:${size};height:${size};cursor:pointer;" onclick="window.location.href='usuario.html?id=${u.id_usuario}'"><img src="${resolveImg(u.url_foto_perfil)}" alt="${u.nombre}"></div>`
         : `<div class="avatar ${colorClass}" style="width:${size};height:${size};cursor:pointer;" onclick="window.location.href='usuario.html?id=${u.id_usuario}'">${initials}</div>`;
 }
 
@@ -116,7 +116,7 @@ async function renderTab(tab) {
                 const initials = getInitials(u.nombre);
                 const colorClass = colors[u.id_usuario % colors.length];
                 const av = u.url_foto_perfil
-                    ? `<img src="${u.url_foto_perfil}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
+                    ? `<img src="${resolveImg(u.url_foto_perfil)}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
                     : initials;
                 return `
                 <div class="friend-card" id="card-${u.id_usuario}">

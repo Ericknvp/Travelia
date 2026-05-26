@@ -22,7 +22,7 @@ async function cargarRestaurantes() {
         return `
     <div class="rest-card" style="cursor:pointer;" onclick="window.location.href='negocio.html?id=${r.id_negocio}'">
         <div class="rest-img">
-            ${r.url_foto_portada ? `<img src="${r.url_foto_portada}" alt="${r.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--accent-warm),#F97316);"></div>`}
+            ${r.url_foto_portada ? `<img src="${resolveImg(r.url_foto_portada)}" alt="${r.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--accent-warm),#F97316);"></div>`}
             <div class="rest-img-overlay"></div>
             ${rating ? `<div class="rest-price-badge">★ ${rating}</div>` : ""}
         </div>

@@ -90,7 +90,6 @@
 .sidebar-user-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-user-role { font-size: 11px; color: var(--text-muted); }
 
-/* ── Mobile sidebar overlay ── */
 .sidebar-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.55);

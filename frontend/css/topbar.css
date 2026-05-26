@@ -45,7 +45,6 @@
 .icon-sun { display: none; } .icon-moon { display: block; }
 [data-theme="light"] .icon-sun { display: block; } [data-theme="light"] .icon-moon { display: none; }
 
-/* ── Hamburger button (hidden on desktop) ── */
 .topbar-menu-btn {
   display: none;
   width: 36px; height: 36px; background: var(--glass-bg);

@@ -28,7 +28,7 @@ function mostrarNegocioExistente(neg) {
     const tipoLabel = neg.tipo === "hotel" ? "Hotel / Hospedaje" : "Restaurante";
     container.innerHTML = `
     <div class="glass-card" style="text-align:center;padding:40px;">
-        ${neg.url_foto_portada ? `<img src="${neg.url_foto_portada}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;">` : `
+        ${neg.url_foto_portada ? `<img src="${resolveImg(neg.url_foto_portada)}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;">` : `
         <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </div>`}
@@ -97,7 +97,7 @@ function mostrarFormularioEdicion() {
                     <input type="file" id="negFotoFile" accept="image/*" style="display:none;">
                     <div id="negFotoArea" onclick="document.getElementById('negFotoFile').click()" style="border:2px dashed var(--glass-border);border-radius:var(--radius-md);padding:16px;text-align:center;cursor:pointer;transition:border-color 0.2s;margin-bottom:8px;">
                         ${neg.url_foto_portada
-                            ? `<img src="${neg.url_foto_portada}" style="max-height:120px;border-radius:var(--radius-sm);object-fit:cover;"><div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Haz clic para cambiar</div>`
+                            ? `<img src="${resolveImg(neg.url_foto_portada)}" style="max-height:120px;border-radius:var(--radius-sm);object-fit:cover;"><div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Haz clic para cambiar</div>`
                             : `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 6px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             <div style="font-size:12px;color:var(--text-muted);">Haz clic para subir foto de portada</div>`
                         }

@@ -22,7 +22,7 @@ async function cargarHoteles() {
         return `
     <div class="hotel-card" style="cursor:pointer;" onclick="window.location.href='negocio.html?id=${h.id_negocio}'">
         <div class="hotel-img">
-            ${h.url_foto_portada ? `<img src="${h.url_foto_portada}" alt="${h.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--primary),var(--accent));"></div>`}
+            ${h.url_foto_portada ? `<img src="${resolveImg(h.url_foto_portada)}" alt="${h.nombre}" loading="lazy">` : `<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--primary),var(--accent));"></div>`}
             <div class="hotel-img-overlay"></div>
             ${rating ? `<div class="hotel-price-badge">★ ${rating}</div>` : ""}
         </div>

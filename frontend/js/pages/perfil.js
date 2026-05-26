@@ -20,8 +20,6 @@ function timeAgo(fecha) {
     return `Hace ${d} día${d > 1 ? "s" : ""}`;
 }
 
-// ── Edit profile modal ────────────────────────────────────────────────────────
-
 function openEditModal() {
     if (!perfilData) return;
     document.getElementById("editNombre").value          = perfilData.nombre || "";
@@ -96,8 +94,6 @@ document.getElementById("btnGuardarPerfil")?.addEventListener("click", async () 
     }
 });
 
-// ── Edit publication modal ────────────────────────────────────────────────────
-
 let editPubId = null;
 
 function openEditPub(pub) {
@@ -151,8 +147,6 @@ async function eliminarPublicacion(id) {
     else showToast(res?.error || "Error al eliminar.", "error");
 }
 
-// ── Load profile ──────────────────────────────────────────────────────────────
-
 async function cargarPerfil() {
     const content = document.getElementById("pageContent");
     const res = await api.get("/auth/me");
@@ -162,7 +156,7 @@ async function cargarPerfil() {
     }
     perfilData = res;
     const initials    = getInitials(res.nombre);
-    const avatarInner = res.url_foto_perfil ? `<img src="${res.url_foto_perfil}" alt="${res.nombre}">` : initials;
+    const avatarInner = res.url_foto_perfil ? `<img src="${resolveImg(res.url_foto_perfil)}" alt="${res.nombre}">` : initials;
     const handle      = res.username ? `@${res.username}` : `@${res.correo.split("@")[0]}`;
 
     content.innerHTML = `
@@ -259,7 +253,7 @@ async function cargarMisPublicaciones() {
                 </button>
             </div>
             ${p.titulo ? `<div style="font-size:15px;font-weight:600;margin-bottom:6px;">${p.titulo}</div>` : ""}
-            ${p.url_imagen ? `<img src="${p.url_imagen}" style="width:100%;height:auto;max-height:520px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:8px;">` : ""}
+            ${p.url_imagen ? `<img src="${resolveImg(p.url_imagen)}" style="width:100%;height:auto;max-height:520px;object-fit:cover;border-radius:var(--radius-md);margin-bottom:8px;">` : ""}
             <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">${p.contenido}</div>
             <div style="display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--text-muted);">
                 <span style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${p.likes || 0}</span>

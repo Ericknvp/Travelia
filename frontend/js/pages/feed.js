@@ -33,13 +33,13 @@ function renderPost(p) {
     if (isNegocio) {
         avatarHref  = `negocio.html?id=${p.id_negocio_etiquetado}`;
         avatarInner = p.foto_negocio
-            ? `<img src="${p.foto_negocio}" alt="${p.negocio_nombre}">`
+            ? `<img src="${resolveImg(p.foto_negocio)}" alt="${p.negocio_nombre}">`
             : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`;
         authorName  = `<a href="${avatarHref}" style="color:inherit;text-decoration:none;font-weight:600;">${p.negocio_nombre}</a>`;
         authorSub   = `<span style="font-size:11px;background:rgba(108,99,255,0.2);color:#A78BFA;padding:1px 7px;border-radius:20px;font-weight:500;margin-right:6px;">Negocio</span>`;
     } else {
         avatarHref  = `usuario.html?id=${p.id_usuario}`;
-        avatarInner = p.foto_autor ? `<img src="${p.foto_autor}" alt="${p.autor}">` : getInitials(p.autor);
+        avatarInner = p.foto_autor ? `<img src="${resolveImg(p.foto_autor)}" alt="${p.autor}">` : getInitials(p.autor);
         authorName  = `<a href="${avatarHref}" style="color:inherit;text-decoration:none;font-weight:600;">${p.autor}</a>`;
         authorSub   = "";
     }
@@ -48,7 +48,7 @@ function renderPost(p) {
     const badge = tipoBadge ? `<span class="post-badge ${badgeClass(tipoBadge)}">${tipoBadge}</span>` : "";
     const imagen = p.url_imagen ? `
         <div class="post-image">
-            <img src="${p.url_imagen}" alt="imagen" loading="lazy">
+            <img src="${resolveImg(p.url_imagen)}" alt="imagen" loading="lazy">
             <div class="post-image-overlay"></div>
         </div>` : "";
 
@@ -109,7 +109,6 @@ async function toggleLike(id, btn) {
     });
 }
 
-// ── Comments ────────────────────────────────────────────────────────────────
 
 function openComments(id) {
     currentCommentPost = id;
@@ -138,7 +137,7 @@ function renderComment(c, myUser) {
     const isOwn = myUser && c.id_usuario === myUser.id;
     const initials = getInitials(c.autor);
     const avatar = c.foto_autor
-        ? `<img src="${c.foto_autor}" alt="${c.autor}" style="width:100%;height:100%;object-fit:cover;">`
+        ? `<img src="${resolveImg(c.foto_autor)}" alt="${c.autor}" style="width:100%;height:100%;object-fit:cover;">`
         : initials;
     const actions = isOwn ? `
         <button data-edit-comment="${c._id}" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:Inter,sans-serif;padding:0;">Editar</button>
@@ -241,13 +240,11 @@ document.getElementById("btnSendComment")?.addEventListener("click", async () =>
     if (res?.mensaje) {
         document.getElementById("commentInput").value = "";
         loadComments(currentCommentPost);
-        // update comment count in feed
         const countEl = document.querySelector(`.post[data-id="${currentCommentPost}"] [data-action="comment"] .action-count`);
         if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1;
     }
 });
 
-// ── Event delegation ─────────────────────────────────────────────────────────
 
 document.addEventListener("click", e => {
     const btn = e.target.closest("[data-action]");
@@ -261,7 +258,6 @@ document.addEventListener("click", e => {
     }
 });
 
-// ── Create post ───────────────────────────────────────────────────────────────
 
 function openCreatePost()  { document.getElementById("createPostModal")?.classList.add("open"); }
 function closeCreatePost() { document.getElementById("createPostModal")?.classList.remove("open"); }
@@ -275,7 +271,6 @@ document.getElementById("createPostModal")?.addEventListener("click", e => {
     if (e.target === document.getElementById("createPostModal")) closeCreatePost();
 });
 
-// File preview
 document.getElementById("postFile")?.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -350,12 +345,11 @@ document.getElementById("btnSubmitPost")?.addEventListener("click", async () => 
     }
 });
 
-// ── Avatar & sidebar user ────────────────────────────────────────────────────
 
 const user = getUser();
 if (user) {
     const photoInner = user.foto
-        ? `<img src="${user.foto}" alt="${user.nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+        ? `<img src="${resolveImg(user.foto)}" alt="${user.nombre}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
         : getInitials(user.nombre);
 
     const avatar = document.getElementById("createAvatar");
@@ -383,7 +377,7 @@ async function cargarSugerencias() {
     cont.innerHTML = data.slice(0, 5).map(u => {
         const initials = u.nombre ? u.nombre.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) : "?";
         const avatar = u.url_foto_perfil
-            ? `<img src="${u.url_foto_perfil}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
+            ? `<img src="${resolveImg(u.url_foto_perfil)}" alt="${u.nombre}" style="width:100%;height:100%;object-fit:cover;">`
             : initials;
         const color = colors[u.id_usuario % colors.length];
         return `

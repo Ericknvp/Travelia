@@ -28,7 +28,6 @@
   --danger: #F87171;
 }
 
-/* ── Color schemes ── */
 [data-color="blue"] {
   --primary: #3B82F6; --primary-light: #60A5FA; --primary-dark: #1D4ED8;
   --glow-a: rgba(59,130,246,0.20);

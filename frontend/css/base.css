@@ -21,7 +21,6 @@ body::after {
   pointer-events:none; z-index:0;
 }
 
-/* ── Glass cards ── */
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
@@ -40,7 +39,6 @@ body::after {
   transition: background 0.3s, border-color 0.3s;
 }
 
-/* ── Buttons ── */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff; border: none; border-radius: 30px; padding: 10px 20px;
@@ -94,7 +92,6 @@ body::after {
 }
 .btn-ghost-sm:hover { background: var(--glass-bg-strong); }
 
-/* ── Forms ── */
 .form-input {
   width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm); padding: 9px 14px; font-size: 13px;
@@ -109,7 +106,6 @@ body::after {
 }
 select.form-input option { background: var(--bg-deep); color: var(--text-primary); }
 
-/* ── Auth pages ── */
 .auth-container {
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh; padding: 24px;
@@ -142,15 +138,12 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
 }
 .error-msg { color: var(--accent-warm); font-size: 0.875rem; margin-bottom: 12px; }
 
-/* ── Main layout ── */
 .main { margin-left: var(--sidebar-w); min-height: 100vh; position: relative; z-index: 1; }
 
-/* ── Page system ── */
 .page { display: none; }
 .page.visible { display: block; }
 .page-inner { padding: 24px 28px; }
 
-/* ── Layout helpers ── */
 .two-col { display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
 .two-col-r { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
 .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -163,7 +156,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
 .sec-count { font-size: 12px; color: var(--text-muted); }
 .divider { height: 1px; background: var(--glass-border); margin: 16px 0; }
 
-/* ── Page tabs ── */
 .page-tabs { display: flex; gap: 4px; padding: 20px 28px 0; flex-wrap: wrap; }
 .page-tab {
   padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: 500;
@@ -172,7 +164,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
 .page-tab.active { background: rgba(108,99,255,0.18); color: var(--primary-light); border-color: rgba(108,99,255,0.3); }
 .page-tab:hover:not(.active) { color: var(--text-secondary); }
 
-/* ── Toggle switch ── */
 .toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
 .toggle-label { font-size: 13px; color: var(--text-secondary); }
 .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
@@ -182,7 +173,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
 .toggle input:checked + .toggle-slider { background: rgba(108,99,255,0.3); border-color: var(--primary-light); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--primary-light); }
 
-/* ── Widget title ── */
 .widget-title {
   font-size: 11px; font-weight: 600; color: var(--text-secondary);
   margin-bottom: 14px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -190,15 +180,12 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
 }
 .widget-title svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* ── Stars ── */
 .stars { display: flex; gap: 2px; align-items: center; }
 .star-fill { color: #FBBF24; font-size: 12px; }
 .star-empty { color: var(--text-muted); font-size: 12px; }
 
-/* ── Loading ── */
 .loading { color: var(--text-muted); text-align: center; padding: 40px; }
 
-/* ── Login modal ── */
 .login-modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -246,7 +233,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
 }
 .login-modal-actions .btn-go-register:hover { background: var(--glass-bg-strong); }
 
-/* ── Toast notifications ── */
 #toast-container {
   position: fixed; top: 20px; right: 24px; z-index: 9999;
   display: flex; flex-direction: column; gap: 10px; pointer-events: none;
@@ -288,7 +274,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
   to   { opacity: 0; transform: translateY(-10px) scale(0.95); }
 }
 
-/* ── Responsive: Tablet (≤1023px) ── */
 @media (max-width: 1023px) {
   .main { margin-left: 0; }
   .two-col   { grid-template-columns: 1fr; }
@@ -297,7 +282,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
   .four-col  { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ── Responsive: Mobile (≤767px) ── */
 @media (max-width: 767px) {
   .page-inner { padding: 16px; }
   .page-tabs  { padding: 14px 16px 0; }
@@ -305,7 +289,6 @@ select.form-input option { background: var(--bg-deep); color: var(--text-primary
   .login-modal-overlay { padding: 12px; }
 }
 
-/* ── Responsive: Small mobile (≤480px) ── */
 @media (max-width: 480px) {
   .page-inner { padding: 12px; }
   .page-tabs  { padding: 12px 12px 0; }

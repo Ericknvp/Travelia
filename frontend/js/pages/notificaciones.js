@@ -65,7 +65,7 @@ async function cargarNotificaciones() {
                     ${res.length === 0 ? `<p class="loading" style="padding:32px 0;">No tienes notificaciones aún.</p>` : res.map(n => {
                         const initials = getInitials(n.nombre_origen);
                         const avatar = n.foto_origen
-                            ? `<img src="${n.foto_origen}" alt="${n.nombre_origen}" style="width:100%;height:100%;object-fit:cover;">`
+                            ? `<img src="${resolveImg(n.foto_origen)}" alt="${n.nombre_origen}" style="width:100%;height:100%;object-fit:cover;">`
                             : initials;
                         return `
                         <div class="notif-item ${!n.leida ? "unread" : ""}">

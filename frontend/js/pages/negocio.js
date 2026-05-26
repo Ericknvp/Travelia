@@ -141,8 +141,6 @@ async function cargarNegocio() {
     </div>`;
 }
 
-// ── Publish as business modal ─────────────────────────────────────────────────
-
 function openNegPost() {
     document.getElementById("negPostModal").classList.add("open");
 }
@@ -222,8 +220,6 @@ document.getElementById("btnSubmitNegPost")?.addEventListener("click", async () 
         errEl.hidden = false;
     }
 });
-
-// ── Star rating ───────────────────────────────────────────────────────────────
 
 let selectedStar = 0;
 

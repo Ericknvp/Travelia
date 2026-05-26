@@ -21,11 +21,9 @@ const CAT_CHIP_ACTIVE = {
     sitio:       "background:#4ADE80;border-color:#4ADE80;color:#000;",
 };
 
-// ── Geocoding ──────────────────────────────────────────────────────────────────
-
 function geoGet(city) {
     const raw = sessionStorage.getItem("tgeo_" + city);
-    if (raw === null) return undefined;          // clave no existe → no cacheado
+    if (raw === null) return undefined;
     try { return JSON.parse(raw); } catch { return undefined; }
 }
 function geoSet(city, val) {
@@ -34,7 +32,7 @@ function geoSet(city, val) {
 
 async function geocodeCity(city) {
     const cached = geoGet(city);
-    if (cached !== undefined) return cached;     // null = ya intentado sin resultado
+    if (cached !== undefined) return cached;
     try {
         const r = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`
@@ -49,8 +47,6 @@ async function geocodeCity(city) {
     geoSet(city, null);
     return null;
 }
-
-// ── Marker icon ────────────────────────────────────────────────────────────────
 
 let _pinSeq = 0;
 function pinIcon(color, count) {
@@ -72,14 +68,12 @@ function pinIcon(color, count) {
     return L.divIcon({ html: svg, className: "", iconSize: [32, 46], iconAnchor: [16, 46], popupAnchor: [0, -48] });
 }
 
-// ── Popup ──────────────────────────────────────────────────────────────────────
-
 function postRow(p) {
     const color = CAT_COLORS[p.categoria] || "#8B85FF";
     const label = CAT_LABELS[p.categoria] || p.categoria;
     const title = p.titulo || (p.contenido || "").slice(0, 45);
     const thumb = p.url_imagen
-        ? `<img src="${p.url_imagen}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0;">`
+        ? `<img src="${resolveImg(p.url_imagen)}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0;">`
         : "";
     return `
     <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07);">
@@ -105,11 +99,7 @@ function buildPopup(city, posts) {
     </div>`;
 }
 
-// ── State ──────────────────────────────────────────────────────────────────────
-
 let map, leafletMarkers = [], allPubs = [], coordsMap = {}, activeFilter = "all";
-
-// ── Render markers ─────────────────────────────────────────────────────────────
 
 function renderMarkers() {
     leafletMarkers.forEach(m => m.remove());
@@ -154,8 +144,6 @@ function renderMarkers() {
     }
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────────
-
 async function initMapa() {
     const dark = document.documentElement.dataset.theme !== "light";
     map = L.map("mapa", { zoomControl: true }).setView([10, 0], 2);
@@ -170,7 +158,6 @@ async function initMapa() {
         }
     ).addTo(map);
 
-    // Fetch
     const pubs = await api.get("/publicaciones/");
     if (!pubs || pubs.error) {
         document.getElementById("mapaLoading").innerHTML =
@@ -185,7 +172,6 @@ async function initMapa() {
         return;
     }
 
-    // Agrupa por ciudad+pais para evitar ambigüedades (ej: Cartagena España vs Colombia)
     const cityMeta = {};
     for (const p of allPubs) {
         const city = p.ciudad.trim();
@@ -217,14 +203,11 @@ async function initMapa() {
     document.getElementById("mapaLoading").style.display = "none";
     renderMarkers();
 
-    // Fit to all markers on first load
     if (leafletMarkers.length > 0) {
         const group = L.featureGroup(leafletMarkers);
         map.fitBounds(group.getBounds().pad(0.15), { maxZoom: 7 });
     }
 }
-
-// ── Filter chips ───────────────────────────────────────────────────────────────
 
 document.querySelectorAll(".mapa-chip").forEach(btn => {
     btn.addEventListener("click", () => {

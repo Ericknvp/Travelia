@@ -13,13 +13,17 @@
   <link rel="stylesheet" href="../css/components.css">
 </head>
 <body>
+
+  <!-- sidebar lateral -->
   <aside class="sidebar" id="sidebar"></aside>
+
+  <!-- contenido principal, se llena dinámicamente -->
   <main class="main">
     <div class="topbar" id="topbar"></div>
     <div id="pageContent"><p class="loading">Cargando...</p></div>
   </main>
 
-  
+  <!-- modal de editar perfil -->
   <div class="login-modal-overlay" id="editProfileModal">
     <div class="login-modal" style="max-width:480px;text-align:left;">
       <button class="login-modal-close" id="closeEditProfile">
@@ -35,6 +39,8 @@
           <div><label class="form-label">País</label><input class="form-input" id="editPais"></div>
         </div>
         <div><label class="form-label">Fecha de nacimiento <span style="color:var(--text-muted);font-weight:400;">(opcional)</span></label><input class="form-input" type="date" id="editFechaNacimiento"></div>
+
+        <!-- área de foto de perfil -->
         <div>
           <label class="form-label">Foto de perfil</label>
           <input type="file" id="editFotoFile" accept="image/*" style="display:none;">
@@ -55,7 +61,7 @@
     </div>
   </div>
 
-  
+  <!-- modal de editar publicación -->
   <div class="login-modal-overlay" id="editPubModal">
     <div class="login-modal" style="max-width:480px;text-align:left;">
       <button class="login-modal-close" id="closeEditPub">
@@ -75,6 +81,7 @@
     </div>
   </div>
 
+  <!-- scripts -->
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/ui.js"></script>

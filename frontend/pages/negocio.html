@@ -13,13 +13,17 @@
   <link rel="stylesheet" href="../css/components.css">
 </head>
 <body>
+
+  <!-- sidebar lateral -->
   <aside class="sidebar" id="sidebar"></aside>
+
+  <!-- contenido principal, se llena dinámicamente con el perfil del negocio -->
   <main class="main">
     <div class="topbar" id="topbar"></div>
     <div id="pageContent"><p class="loading">Cargando...</p></div>
   </main>
 
-  
+  <!-- modal de nueva publicación del negocio -->
   <div class="login-modal-overlay" id="negPostModal">
     <div class="login-modal" style="max-width:520px;text-align:left;">
       <button class="login-modal-close" id="closeNegPost">
@@ -43,6 +47,8 @@
           <div><label class="form-label">Ciudad</label><input class="form-input" id="negPostCiudad" placeholder="Ej: Cartagena"></div>
           <div><label class="form-label">País</label><input class="form-input" id="negPostPais" placeholder="Ej: Colombia"></div>
         </div>
+
+        <!-- área de subida de foto -->
         <div>
           <label class="form-label">Foto</label>
           <input type="file" id="negPostFile" accept="image/*" style="display:none;">
@@ -66,6 +72,7 @@
     </div>
   </div>
 
+  <!-- modal para usuarios sin sesión -->
   <div class="login-modal-overlay" id="loginModal">
     <div class="login-modal">
       <button class="login-modal-close" id="closeLoginModal"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -79,6 +86,7 @@
     </div>
   </div>
 
+  <!-- scripts -->
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/ui.js"></script>

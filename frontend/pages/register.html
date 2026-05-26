@@ -13,7 +13,7 @@
 <body class="auth-body">
 <div class="auth-split">
 
-    
+    <!-- panel izquierdo con el globo animado y estadísticas -->
     <div class="auth-hero" id="authHero">
         <div class="hero-orb hero-orb-1"></div>
         <div class="hero-orb hero-orb-2"></div>
@@ -21,7 +21,7 @@
 
         <div class="hero-scene" id="heroScene">
 
-            
+            <!-- fondo animado del globo -->
             <div class="globe-bg">
                 <svg class="globe-svg" viewBox="0 0 300 300">
                     <defs>
@@ -34,13 +34,16 @@
                     <circle cx="150" cy="150" r="142" fill="url(#gGlow2)"/>
                     <circle cx="150" cy="150" r="142" class="g-outline" stroke-width="1"/>
 
+                    <!-- líneas de latitud -->
                     <ellipse cx="150" cy="150" rx="142" ry="24"  class="g-lat"/>
                     <ellipse cx="150" cy="150" rx="142" ry="62"  class="g-lat"/>
                     <ellipse cx="150" cy="150" rx="142" ry="100" class="g-lat"/>
                     <ellipse cx="150" cy="150" rx="142" ry="130" class="g-lat" opacity="0.1"/>
 
+                    <!-- ecuador -->
                     <line x1="8" y1="150" x2="292" y2="150" class="g-eq"/>
 
+                    <!-- líneas de longitud animadas -->
                     <ellipse cx="150" cy="150" ry="142" class="g-logi">
                         <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="0s"      calcMode="linear"/>
                     </ellipse>
@@ -60,6 +63,7 @@
                         <animate attributeName="rx" values="0;142;0" dur="8s" repeatCount="indefinite" begin="-6.67s"  calcMode="linear"/>
                     </ellipse>
 
+                    <!-- puntos de destino con pulso -->
                     <circle cx="108" cy="107" r="5" class="g-dot-p" opacity="0.9"/>
                     <circle cx="108" cy="107" r="5" class="g-dot-p" opacity="0.3">
                         <animate attributeName="r"       values="5;17;5"    dur="2.6s" repeatCount="indefinite" begin="0s"/>
@@ -84,7 +88,7 @@
                 </svg>
             </div>
 
-            
+            <!-- texto del hero y estadísticas -->
             <div class="hero-text">
                 <div class="hero-brand">
                     <div class="auth-logo-icon">
@@ -123,7 +127,7 @@
             </div>
         </div>
 
-        
+        <!-- tarjetas flotantes con destinos -->
         <div class="fc-wrap fc-w-1">
             <div class="float-card" data-speed="28">
                 <div class="fc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2M4.93 10.93 2.5 8.5M19.07 10.93 21.5 8.5M2 18h20M6 18a6 6 0 0 1 12 0"/></svg></div>
@@ -150,7 +154,7 @@
         </div>
     </div>
 
-    
+    <!-- panel del formulario de registro -->
     <div class="auth-form-panel">
         <div class="auth-card">
             <div class="auth-logo-icon">
@@ -185,6 +189,7 @@
     </div>
 </div>
 
+<!-- scripts y efecto parallax del hero -->
 <script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/ui.js"></script>

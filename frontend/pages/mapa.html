@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="../css/topbar.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- estilos específicos del mapa y sus controles -->
     <style>
         body, .main { overflow: hidden; }
 
@@ -25,6 +27,7 @@
             background: var(--bg-deep);
         }
 
+        /* barra de filtros flotante */
         #mapaFilters {
             position: absolute;
             top: 14px;
@@ -58,6 +61,7 @@
         .mapa-chip:hover { color: var(--text-secondary); background: var(--glass-bg); }
         .mapa-chip.active { color: #fff; }
 
+        /* contador de marcadores visible */
         #mapaCounter {
             position: absolute;
             bottom: 18px;
@@ -74,6 +78,7 @@
             font-family: Inter, sans-serif;
         }
 
+        /* pantalla de carga inicial */
         #mapaLoading {
             position: absolute;
             inset: 0;
@@ -94,6 +99,7 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* estilos del popup de Leaflet */
         .leaflet-popup-content-wrapper {
             background: var(--bg-mid) !important;
             color: var(--text-primary) !important;
@@ -129,17 +135,25 @@
     </style>
 </head>
 <body>
+
+  <!-- sidebar lateral -->
   <aside class="sidebar" id="sidebar"></aside>
+
   <main class="main">
     <div class="topbar" id="topbar"></div>
+
+    <!-- contenedor del mapa con filtros y spinner -->
     <div id="mapaContainer">
 
+      <!-- pantalla de carga mientras se geocodifican los puntos -->
       <div id="mapaLoading">
         <div class="loading-spinner"></div>
       </div>
 
+      <!-- mapa de Leaflet -->
       <div id="mapa"></div>
 
+      <!-- chips de filtro por categoría -->
       <div id="mapaFilters">
         <button class="mapa-chip active" data-cat="all">Todos</button>
         <button class="mapa-chip" data-cat="tour">Tour</button>
@@ -149,10 +163,13 @@
         <button class="mapa-chip" data-cat="sitio">Sitio turístico</button>
       </div>
 
+      <!-- contador de marcadores activos -->
       <div id="mapaCounter"></div>
 
     </div>
   </main>
+
+  <!-- scripts: Leaflet primero, luego los propios -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>

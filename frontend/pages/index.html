@@ -14,18 +14,25 @@
 </head>
 <body>
 
+<!-- sidebar lateral -->
 <aside class="sidebar" id="sidebar"></aside>
 
+<!-- contenido principal -->
 <main class="main">
   <div class="topbar" id="topbar"></div>
 
   <div id="page-feed" class="page visible">
+
+    <!-- tabs del feed -->
     <div class="feed-tabs" id="feedTabs">
       <div class="feed-tab active" data-tab="todos">Para ti</div>
       <div class="feed-tab" data-tab="siguiendo">Siguiendo</div>
     </div>
+
     <div class="content">
       <div>
+
+        <!-- caja de crear publicación -->
         <div class="glass-card" style="margin-bottom:20px;">
           <div class="create-post">
             <div class="avatar av-purple" id="createAvatar">?</div>
@@ -46,8 +53,12 @@
             </button>
           </div>
         </div>
+
+        <!-- lista de publicaciones -->
         <div id="postsList"><p class="loading">Cargando publicaciones...</p></div>
       </div>
+
+      <!-- sidebar derecho con tendencias y sugerencias -->
       <div class="right-sidebar" id="rightSidebar">
         <div class="glass-card">
           <div class="widget-title">
@@ -71,6 +82,7 @@
   </div>
 </main>
 
+<!-- modal para usuarios sin sesión -->
 <div class="login-modal-overlay" id="loginModal">
   <div class="login-modal">
     <button class="login-modal-close" id="closeLoginModal">
@@ -88,6 +100,7 @@
   </div>
 </div>
 
+<!-- modal de nueva publicación -->
 <div class="login-modal-overlay" id="createPostModal">
   <div class="login-modal" style="max-width:520px;text-align:left;">
     <button class="login-modal-close" id="closeCreatePost">
@@ -127,6 +140,8 @@
           <input class="form-input" id="postPais" placeholder="Ej: Colombia">
         </div>
       </div>
+
+      <!-- área de subida de foto -->
       <div>
         <label class="form-label">Foto</label>
         <input type="file" id="postFile" accept="image/*" style="display:none;">
@@ -155,6 +170,7 @@
   </div>
 </div>
 
+<!-- modal de comentarios -->
 <div class="login-modal-overlay" id="commentsModal">
   <div class="login-modal" style="max-width:520px;text-align:left;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:85vh;">
     <div style="padding:20px 24px 16px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
@@ -176,6 +192,7 @@
   </div>
 </div>
 
+<!-- scripts -->
 <script src="../js/api.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/ui.js"></script>

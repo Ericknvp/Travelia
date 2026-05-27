@@ -123,6 +123,13 @@ La aplicacion estara disponible en `http://localhost:5500`.
 
 ---
 
+## Proximas Funcionalidades
+
+- Reservas de habitaciones en hoteles directamente desde la plataforma.
+- Reservas de mesas en restaurantes con seleccion de fecha, hora y numero de personas.
+
+---
+
 ## Stack Tecnológico
 
 | Capa | Tecnología | Rol |

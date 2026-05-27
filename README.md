@@ -35,6 +35,94 @@ El sistema implementa un registro automático de acciones relevantes para garant
 
 ---
 
+## Requisitos Previos
+
+- Python 3.10 o superior
+- MySQL 8.0 o superior
+- MongoDB Atlas (o instancia local de MongoDB)
+- Un servidor de archivos estáticos para el frontend (se recomienda la extensión Live Server de VS Code)
+
+---
+
+## Instalacion y Ejecucion
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/Ericknvp/Travelia.git
+cd Travelia
+```
+
+### 2. Configurar la base de datos MySQL
+
+Crear la base de datos e importar el esquema:
+
+```sql
+CREATE DATABASE travelia_db;
+```
+
+```bash
+mysql -u root -p travelia_db < backend/migrations/schema.sql
+```
+
+### 3. Configurar las variables de entorno
+
+Crear el archivo `backend/.env` a partir del siguiente modelo:
+
+```env
+FLASK_ENV=development
+SECRET_KEY=tu_clave_secreta
+JWT_SECRET=tu_clave_jwt
+JWT_EXPIRATION_HOURS=168
+
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=tu_contrasena_mysql
+MYSQL_DB=travelia_db
+
+MONGO_URI=mongodb+srv://<usuario>:<contrasena>@<cluster>.mongodb.net/travelia_nosql?retryWrites=true&w=majority
+
+FRONTEND_URL=http://localhost:5500
+```
+
+### 4. Instalar dependencias del backend
+
+```bash
+cd backend
+python -m venv venv
+```
+
+**Windows:**
+```bash
+venv\Scripts\activate
+```
+
+**Linux / macOS:**
+```bash
+source venv/bin/activate
+```
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Iniciar el servidor backend
+
+```bash
+python run.py
+```
+
+El servidor quedara disponible en `http://localhost:5000`.
+
+### 6. Servir el frontend
+
+Abrir el archivo `frontend/pages/index.html` con Live Server (puerto 5500 por defecto), o cualquier servidor de archivos estaticos de preferencia.
+
+La aplicacion estara disponible en `http://localhost:5500`.
+
+---
+
 ## Stack Tecnológico
 
 | Capa | Tecnología | Rol |

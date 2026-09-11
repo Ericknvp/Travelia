@@ -7,7 +7,7 @@ Travelia es un ecosistema digital integral diseñado para conectar a viajeros co
 
 ## Capacidades del Sistema
 
-El proyecto se divide en cuatro módulos estratégicos que definen su propuesta de valor
+El proyecto se divide en cuatro módulos estratégicos que definen su propuesta de valor:
 
 ### 1. Red Social Turística
 Interacción social dinámica centrada en el turismo. Los usuarios pueden:

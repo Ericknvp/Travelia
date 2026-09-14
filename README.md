@@ -1,4 +1,4 @@
-# Travelia
+# Traveli
 Plataforma Web de Turismo y Red Social
 
 Travelia es un ecosistema digital integral diseñado para conectar a viajeros con establecimientos turísticos. La plataforma combina la agilidad de una red social con la robustez de un sistema de gestión transaccional, permitiendo desde la interacción social hasta la reserva formal de servicios.
